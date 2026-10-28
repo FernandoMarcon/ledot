@@ -13,18 +13,18 @@ sudo apt install gh -y
 gh auth login        # GitHub.com → HTTPS → Login with a web browser
                      # open github.com/login/device on your phone, enter the code
 
-# 3. Clone .dotfiles
-gh repo clone FernandoMarcon/.dotfiles ~/.dotfiles
-# or: git clone https://github.com/FernandoMarcon/.dotfiles.git ~/.dotfiles
+# 3. Clone ledot
+gh repo clone FernandoMarcon/ledot ~/ledot
+# or: git clone https://github.com/FernandoMarcon/ledot.git ~/ledot
 ```
 
 ## Run
 
 ```bash
-bash ~/.dotfiles/setup/install.sh            # full: bootstrap → CLI → [desktop] → dotfiles → second-brain → syncthing
-bash ~/.dotfiles/setup/install.sh server     # headless: bootstrap → CLI → dotfiles
-bash ~/.dotfiles/setup/install.sh dev web    # specific steps
-bash ~/.dotfiles/setup/install.sh --list     # all steps
+bash ~/ledot/setup/install.sh            # full: bootstrap → CLI → [desktop] → dotfiles → second-brain → syncthing
+bash ~/ledot/setup/install.sh server     # headless: bootstrap → CLI → dotfiles
+bash ~/ledot/setup/install.sh dev web    # specific steps
+bash ~/ledot/setup/install.sh --list     # all steps
 ```
 
 ## Steps

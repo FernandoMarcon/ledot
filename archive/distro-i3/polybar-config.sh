@@ -1,6 +1,6 @@
 #!/bin/bash
 # polybar-config.sh — polybar step extracted from distro/04.manual-setup (archived with the i3 setup)
-DOTFILES="$HOME/.dotfiles"
+DOTFILES="$HOME/ledot"
 source "$DOTFILES/setup/lib/common.sh"
 # 10. POLYBAR CONFIG — partial
 # =============================================================================

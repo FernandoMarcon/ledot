@@ -40,5 +40,5 @@ case "$HOST" in
     ;;
 esac
 
-~/.dotfiles/tmux/load_sessions.sh
-~/.dotfiles/second-brain/setup.sh
+~/ledot/tmux/load_sessions.sh
+~/ledot/second-brain/setup.sh

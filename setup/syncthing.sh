@@ -1,6 +1,6 @@
 #!/bin/bash
 # syncthing.sh — mount data partition, link vault dirs, install and configure Syncthing
-# Usage: bash ~/.dotfiles/setup/syncthing.sh
+# Usage: bash ~/ledot/setup/syncthing.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"

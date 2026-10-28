@@ -1,7 +1,7 @@
 #!/bin/bash
 # minimal.sh — pkgs/minimal.list: essentials for a working CLI system
 # Also: GitHub CLI repo (newer gh), timezone
-# Usage: bash ~/.dotfiles/setup/minimal.sh
+# Usage: bash ~/ledot/setup/minimal.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"

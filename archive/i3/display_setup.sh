@@ -26,4 +26,4 @@ esac
 
 # Restart polybar so it lands on the correct monitor(s)
 sleep 0.5
-"$HOME"/.dotfiles/polybar/launch.sh
+"$HOME"/ledot/polybar/launch.sh

@@ -1,7 +1,7 @@
 #!/bin/bash
 # desktop.sh — pkgs/desktop.list: Hyprland session, launcher, terminals, fonts
 # Also: Hyprland PPA, Nerd Fonts, Zafiro + Qogir icon/cursor themes
-# Usage: bash ~/.dotfiles/setup/desktop.sh
+# Usage: bash ~/ledot/setup/desktop.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"

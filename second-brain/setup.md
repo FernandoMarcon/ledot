@@ -6,7 +6,7 @@ The `setup.sh` script bootstraps `~/Vaults/` on any new machine.
 ## Directory Structure
 
 ```
-~/.dotfiles/second-brain/
+~/ledot/second-brain/
 ├── setup.sh              # Bootstrap script (run once per machine)
 ├── setup.md              # This file
 ├── plan-vault-sync.md    # Architecture reference (Syncthing + GitHub sync plan)
@@ -82,8 +82,8 @@ into `<vault>/.obsidian/`, backing up any pre-existing real files as `<file>.bak
 ### New machine setup
 
 ```bash
-git clone git@github.com:FernandoMarcon/dotfiles.git ~/.dotfiles
-bash ~/.dotfiles/second-brain/setup.sh
+git clone git@github.com:FernandoMarcon/ledot.git ~/ledot
+bash ~/ledot/second-brain/setup.sh
 ```
 
 ### After adding a new vault
@@ -93,16 +93,16 @@ Add the remote to `VAULT_REMOTES` in `setup.sh`, then re-run the script. It is i
 ### Updating shared config
 
 Changes made in Obsidian (e.g. new hotkey, theme tweak) write through the symlink directly
-into `obsidian-configs/`. Commit and push from `~/.dotfiles`:
+into `obsidian-configs/`. Commit and push from `~/ledot`:
 
 ```bash
-cd ~/.dotfiles
+cd ~/ledot
 git add second-brain/obsidian-configs/
 git commit -m "update obsidian shared config"
 git push
 ```
 
-On other machines, a `git pull` in `~/.dotfiles` picks up the changes immediately —
+On other machines, a `git pull` in `~/ledot` picks up the changes immediately —
 no need to re-run `setup.sh`.
 
 ## How This Fits the Broader Sync Architecture
@@ -118,7 +118,7 @@ Phone ←── Syncthing (LAN/WiFi) ──→ ThinkPad
 - **Phone ↔ ThinkPad**: Syncthing syncs note content only. `.obsidian/` is excluded from
   Syncthing (phone manages its own Obsidian Mobile config).
 - **ThinkPad ↔ Work Ubuntu**: Each vault's git repo syncs notes + symlinks. The symlinks
-  resolve correctly as long as `~/.dotfiles` is cloned at the same path.
+  resolve correctly as long as `~/ledot` is cloned at the same path.
 - **Shared config**: Lives in this dotfiles repo, applied via symlinks. One `git pull`
   propagates config changes to all vaults on all machines.
 

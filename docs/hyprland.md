@@ -30,7 +30,7 @@ NVIDIA env vars and `cursor.no_hardware_cursors` are set in `hypr/hyprland.lua`.
 ## Link Config
 
 ```bash
-bash ~/.dotfiles/setup/dotfiles.sh hypr   # ~/.config/hypr -> ~/.dotfiles/config/hypr
+bash ~/ledot/setup/dotfiles.sh hypr   # ~/.config/hypr -> ~/ledot/config/hypr
 ```
 
 Log out and pick the **Hyprland** session in the display manager.

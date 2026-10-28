@@ -22,9 +22,9 @@ distro/
 ## Quick Start
 
 ```bash
-cd ~/.dotfiles/distro/
-# git clone https://github.com/archcraft-os/archcraft-i3wm ~/.dotfiles/distro/archcraft-i3wm
-gh repo clone https://github.com/archcraft-os/archcraft-i3wm ~/.dotfiles/distro/archcraft-i3wm
+cd ~/ledot/distro/
+# git clone https://github.com/archcraft-os/archcraft-i3wm ~/ledot/distro/archcraft-i3wm
+gh repo clone https://github.com/archcraft-os/archcraft-i3wm ~/ledot/distro/archcraft-i3wm
 
 cd setup/
 ./setup.sh

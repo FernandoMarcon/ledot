@@ -2,7 +2,7 @@
 # Creates persistent tmux sessions on startup (called by i3)
 
 declare -A SESSIONS
-SESSIONS[dotfiles]="$HOME/.dotfiles"
+SESSIONS[dotfiles]="$HOME/ledot"
 SESSIONS[tools]="$HOME/tools"
 
 for session in dotfiles tools; do

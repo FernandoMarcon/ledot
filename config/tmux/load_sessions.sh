@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TMUXDIR="${HOME}/.dotfiles/config/tmux"
+TMUXDIR="${HOME}/ledot/config/tmux"
 SESSIONS="${TMUXDIR}/sessions"
 
 while IFS=',' read -r SESSION SESSION_PATH; do

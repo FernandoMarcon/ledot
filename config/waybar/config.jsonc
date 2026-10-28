@@ -97,7 +97,7 @@
     },
     // PPA waybar is built without libcava ("Unknown module: cava"): stream cava.sh instead
     "custom/cava": {
-        "exec": "$HOME/.dotfiles/config/waybar/scripts/cava.sh",
+        "exec": "$HOME/ledot/config/waybar/scripts/cava.sh",
         "format": "{}",
         "tooltip": false
     },

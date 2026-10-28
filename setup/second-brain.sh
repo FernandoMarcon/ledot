@@ -1,13 +1,13 @@
 #!/bin/bash
 # second-brain.sh — Obsidian + Second Brain workspace (second-brain/setup.sh)
-# Usage: bash ~/.dotfiles/setup/second-brain.sh
+# Usage: bash ~/ledot/setup/second-brain.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
 SECOND_BRAIN_SETUP="${DOTFILES}/second-brain/setup.sh"
 
-[ -d "$DOTFILES" ] || die ".dotfiles not found at $DOTFILES"
+[ -d "$DOTFILES" ] || die "ledot not found at $DOTFILES"
 
 # ── Obsidian (latest .deb from GitHub releases) ──────────────────────────────
 if dpkg -s obsidian &>/dev/null; then

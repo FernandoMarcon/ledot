@@ -1,7 +1,7 @@
 #!/bin/bash
 # bootstrap.sh — SSH key, GitHub access, git identity
 # Run after: the manual first steps in setup/README.md (update, install gh, auth, clone)
-# Usage: bash ~/.dotfiles/setup/bootstrap.sh
+# Usage: bash ~/ledot/setup/bootstrap.sh
 
 set -uo pipefail
 
@@ -17,7 +17,7 @@ SSH_KEY_TITLE="$(hostname)-$(date +%Y%m%d)"
 header "Prerequisites"
 command -v gh  &>/dev/null || die "gh CLI not found. Complete the first steps in setup/README.md."
 command -v git &>/dev/null || die "git not found. Run: sudo apt install git"
-[ -d "$DOTFILES" ]         || die ".dotfiles not found at $DOTFILES. Complete the first steps in setup/README.md."
+[ -d "$DOTFILES" ]         || die "ledot not found at $DOTFILES. Complete the first steps in setup/README.md."
 info "Prerequisites OK"
 
 # =============================================================================
@@ -71,15 +71,15 @@ fi
 # =============================================================================
 # 4. SWITCH .DOTFILES REMOTE TO SSH — automated
 # =============================================================================
-header "4/5  Switch .dotfiles Remote to SSH  [automated]"
+header "4/5  Switch ledot Remote to SSH  [automated]"
 echo ""
 
 CURRENT_REMOTE=$(git -C "$DOTFILES" remote get-url origin 2>/dev/null || echo "")
 if [[ "$CURRENT_REMOTE" == git@* ]]; then
-    info ".dotfiles remote is already SSH — skipping"
-elif confirm "Switch .dotfiles remote to SSH?"; then
-    git -C "$DOTFILES" remote set-url origin "git@github.com:${GH_USER}/.dotfiles.git"
-    info ".dotfiles remote switched to SSH"
+    info "ledot remote is already SSH — skipping"
+elif confirm "Switch ledot remote to SSH?"; then
+    git -C "$DOTFILES" remote set-url origin "git@github.com:${GH_USER}/ledot.git"
+    info "ledot remote switched to SSH"
 fi
 
 # =============================================================================

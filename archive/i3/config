@@ -46,8 +46,8 @@ tiling_drag modifier titlebar
 
 ### --- ROFI
 bindsym $mod+d exec --no-startup-id rofi -show drun
-bindsym $mod+n exec --no-startup-id $HOME/.dotfiles/dmenu/dmenu_notes
-bindsym $mod+c exec --no-startup-id $HOME/.dotfiles/dmenu/dmenu_calc
+bindsym $mod+n exec --no-startup-id $HOME/ledot/dmenu/dmenu_notes
+bindsym $mod+c exec --no-startup-id $HOME/ledot/dmenu/dmenu_calc
 
 
 # enter fullscreen mode for the focused container
@@ -246,7 +246,7 @@ bindsym $mod+Mod1+Shift+j resize grow height 3 px or 3 ppt
 #bar {
 #        status_command i3status
 #}
-exec_always --no-startup-id ${HOME}/.dotfiles/i3/display_setup.sh
+exec_always --no-startup-id ${HOME}/ledot/i3/display_setup.sh
 
 
 
@@ -259,11 +259,11 @@ bindsym $mod+Shift+Print exec --no-startup-id maim --hidecursor --select "/home/
 
 # === LGCM
 # --- Load Workspace/Monitor setup
-include ${HOME}/.dotfiles/i3/monitor_setup
-exec --no-startup-id ${HOME}/.dotfiles/i3/workspace_startup.sh
+include ${HOME}/ledot/i3/monitor_setup
+exec --no-startup-id ${HOME}/ledot/i3/workspace_startup.sh
 
 # --- Create tmux sessions
-exec --no-startup-id ${HOME}/.dotfiles/tmux/tmux_startup.sh
+exec --no-startup-id ${HOME}/ledot/tmux/tmux_startup.sh
 
 # --- Water Reminder
 exec --no-startup-id ${HOME}/tools/water_reminder.py &
@@ -276,5 +276,5 @@ for_window [class="^Brave-browser$"] floating disable
 # bindsym ctrl+Mod1+v exec --no-startup-id alacritty -e bash -c 'vim ~/Vault/Notes/$(date +"%d-%m-%Y_%H%M%S").md'
 bindsym ctrl+Mod1+v exec --no-startup-id alacritty -e bash -c 'vim ~/Vaults/LGCM/Daily\ Notes/$(date +%d-%m-%Y).md'
 bindsym ctrl+Mod1+h exec --no-startup-id alacritty -e htop
-bindsym ctrl+Mod1+c exec --no-startup-id ~/.dotfiles/dmenu/dmenu_calc
-bindsym ctrl+Mod1+n exec --no-startup-id ~/.dotfiles/dmenu/dmenu_notes
+bindsym ctrl+Mod1+c exec --no-startup-id ~/ledot/dmenu/dmenu_calc
+bindsym ctrl+Mod1+n exec --no-startup-id ~/ledot/dmenu/dmenu_notes

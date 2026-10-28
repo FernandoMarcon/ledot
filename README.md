@@ -23,9 +23,9 @@ Don't press Enter (no browser on a server). Instead, **open `github.com/login/de
 Then clone:
 
 ```bash
-gh repo clone FernandoMarcon/.dotfiles ~/.dotfiles
+gh repo clone FernandoMarcon/ledot ~/ledot
 # or
-git clone https://github.com/FernandoMarcon/.dotfiles.git ~/.dotfiles
+git clone https://github.com/FernandoMarcon/ledot.git ~/ledot
 ```
 
 ---
@@ -45,8 +45,8 @@ cat ~/.ssh/id_ed25519.pub
 Then add it to GitHub: **Settings → SSH and GPG keys → New SSH key**, paste it in. From then on you can switch your remote to SSH:
 
 ```bash
-cd ~/.dotfiles
-git remote set-url origin git@github.com:FernandoMarcon/.dotfiles.git
+cd ~/ledot
+git remote set-url origin git@github.com:FernandoMarcon/ledot.git
 ```
 
 ## Main Programs
@@ -59,8 +59,8 @@ git remote set-url origin git@github.com:FernandoMarcon/.dotfiles.git
 
 Run:
 ```bash
-git clone git@github.com:FernandoMarcon/.dotfiles.git ~/.dotfiles
-bash ~/.dotfiles/setup/install.sh
+git clone git@github.com:FernandoMarcon/ledot.git ~/ledot
+bash ~/ledot/setup/install.sh
 ```
 
 ## TO-DO

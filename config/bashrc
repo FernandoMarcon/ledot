@@ -108,7 +108,7 @@ if [[ "$(hostname)" == "slurm-login-0" ]] && ! tput longname &>/dev/null 2>&1; t
     export TERM=xterm-256color
 fi
 
-DOTFILES="${HOME}/.dotfiles"
+DOTFILES="${HOME}/ledot"
 
 # Alias definitions.
 . "${DOTFILES}/config/aliases"

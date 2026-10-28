@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-BASEDIR="${HOME}/.dotfiles/archive/distro-i3"
+BASEDIR="${HOME}/ledot/archive/distro-i3"
 SCRIPT_DIR="${BASEDIR}/setup"
 # archcraft-i3wm may live beside dotfiles or inside them
 if [[ -d "${HOME}/distro/archcraft-i3wm" ]]; then

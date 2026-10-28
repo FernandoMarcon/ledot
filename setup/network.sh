@@ -1,7 +1,7 @@
 #!/bin/bash
 # network.sh — pkgs/network.list: VPN, remote filesystems, mesh networking
 # Also: Tailscale repo, vpn-slice
-# Usage: bash ~/.dotfiles/setup/network.sh
+# Usage: bash ~/ledot/setup/network.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"

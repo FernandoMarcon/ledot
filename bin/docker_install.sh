@@ -1,7 +1,7 @@
 #!/bin/bash
 # docker_install.sh — install Docker Engine from Docker's official apt repo
 # Safe to re-run. Replaces Ubuntu's docker.io stack if present (images/volumes in /var/lib/docker are kept).
-# Usage: sudo bash ~/.dotfiles/bin/docker_install.sh
+# Usage: sudo bash ~/ledot/bin/docker_install.sh
 
 set -euo pipefail
 

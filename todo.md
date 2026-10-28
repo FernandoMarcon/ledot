@@ -78,7 +78,7 @@ GUI Utilities:
 - [x] Tor Browser                       → 04.manual-setup (torbrowser-launcher)
 
 ### Refactor
-- [ ] refactor configs from archcraft pattern (all in i3/) to each on its on folder in .dotfiles
+- [ ] refactor configs from archcraft pattern (all in i3/) to each on its on folder in ledot
 - [ ] add keymap to auto-detect available displays (turn on laptop display when hdmi is no longer connected)
 - [ ] automate git clone for: tools, bench, etc
 - [ ] achar solução melhor e + simples de se lidar com git-crypt no tools (.env)

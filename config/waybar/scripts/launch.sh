@@ -1,7 +1,7 @@
 #!/bin/bash
 # (Re)start waybar with a config adapted to this machine's hardware.
 
-DOTFILES="$HOME/.dotfiles"
+DOTFILES="$HOME/ledot"
 SRC="$DOTFILES/bin"
 WAYBAR="$DOTFILES/config/waybar"
 

@@ -7,7 +7,7 @@
 -- Autostart necessary processes (like notifications daemons, status bars, etc.)
 -- Or execute your favorite apps at launch like this:
 --
-local dotfiles = os.getenv("HOME") .. "/.dotfiles"
+local dotfiles = os.getenv("HOME") .. "/ledot"
 local config   = os.getenv("HOME") .. "/.config"
 
 hl.on("hyprland.start", function ()

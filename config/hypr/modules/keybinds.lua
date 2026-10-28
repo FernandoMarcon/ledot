@@ -3,7 +3,7 @@
 ---------------------
 
 local home        = os.getenv( "HOME" )
-local dotfiles    = home .. "/.dotfiles"
+local dotfiles    = home .. "/ledot"
 local config      = home .. "/.config"
 
 -- Set programs that you use

@@ -30,9 +30,9 @@ alias grep='grep --color=auto'
 
 # --- CONFIG
 alias reload-bash="source ~/.bashrc"
-#alias conf-alias="vim ${HOME}/.dotfiles/aliases"
+#alias conf-alias="vim ${HOME}/ledot/aliases"
 #alias conf-bash="vim ~/.bashrc"
-#alias conf-keymaps="vim ${HOME}/.dotfiles/sxhkd/sxhkdrc"
+#alias conf-keymaps="vim ${HOME}/ledot/sxhkd/sxhkdrc"
 #alias reload-zsh="exec zsh"
 #alias conf-zsh="vim ~/.zshrc"
 

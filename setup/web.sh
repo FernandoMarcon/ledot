@@ -1,7 +1,7 @@
 #!/bin/bash
 # web.sh — pkgs/web.list: browsers, torrents
 # Also: Brave repo, browser account logins, Tor Browser, brotab
-# Usage: bash ~/.dotfiles/setup/web.sh
+# Usage: bash ~/ledot/setup/web.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"

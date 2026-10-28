@@ -1,6 +1,6 @@
 #!/bin/bash
 # audio.sh — pkgs/audio.list: PipeWire stack, mixers, visualizer
-# Usage: bash ~/.dotfiles/setup/audio.sh
+# Usage: bash ~/ledot/setup/audio.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"

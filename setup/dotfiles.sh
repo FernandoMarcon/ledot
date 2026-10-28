@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-DOTFILES="${HOME}/.dotfiles"
+DOTFILES="${HOME}/ledot"
 CONFIG="${HOME}/.config"
 STATE_FILE="${DOTFILES}/config/dotfiles.state"
 
