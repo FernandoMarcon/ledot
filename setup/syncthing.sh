@@ -1,5 +1,5 @@
 #!/bin/bash
-# syncthing.sh — mount data partition, link vault dirs, install and configure Syncthing
+# syncthing.sh — mount data partition, link ~/<dir> → /data/drive/<dir>, install and configure Syncthing
 # Usage: bash ~/ledot/setup/syncthing.sh
 
 set -euo pipefail
@@ -10,7 +10,7 @@ KEYRING="/usr/share/keyrings/syncthing-archive-keyring.gpg"
 SOURCES="/etc/apt/sources.list.d/syncthing.list"
 DATA_DEV="/dev/nvme0n1p3"
 DATA_MNT="/data"
-VAULT_DIR="/data/vault"
+DRIVE_DIR="/data/drive"   # synced as one Syncthing folder ("Drive")
 
 command -v curl &>/dev/null || die "curl not found — run setup/minimal.sh first"
 command -v systemctl &>/dev/null || die "systemd not found"
@@ -19,7 +19,7 @@ command -v systemctl &>/dev/null || die "systemd not found"
 setup_data_mount() {
     [ -b "$DATA_DEV" ] || die "$DATA_DEV not found — is the NVMe drive present?"
 
-    # Create mount point and vault dir
+    # Create mount point
     sudo mkdir -p "$DATA_MNT"
     info "Mount point $DATA_MNT ready"
 
@@ -43,35 +43,25 @@ setup_data_mount() {
         info "Added fstab entry (${fstype}): $DATA_DEV → $DATA_MNT"
     fi
 
-    # Create vault subdir (after mount so it lands on the right fs)
-    sudo mkdir -p "$VAULT_DIR"
-    sudo chown "${USER}:${USER}" "$VAULT_DIR"
-    info "Vault dir ready: $VAULT_DIR"
+    # Create drive dir (after mount so it lands on the right fs)
+    sudo mkdir -p "$DRIVE_DIR"
+    sudo chown "${USER}:${USER}" "$DRIVE_DIR"
+    info "Drive dir ready: $DRIVE_DIR"
 }
 
-# ── 2. Create vault dirs and home symlinks ────────────────────────────────────
-setup_vault_links() {
-    local -a LINKS=(
-        "Documents:${HOME}/Documents"
-        "Music:${HOME}/Music"
-        "Pictures:${HOME}/Pictures"
-        "Videos:${HOME}/Videos"
-        "code:${HOME}/code"
-        "homelab:${HOME}/homelab"
-        "work:${HOME}/work"
-        "Vaults:${HOME}/Vaults"
-    )
+# ── 2. Create drive dirs and home symlinks (~/<dir> → /data/drive/<dir>) ─────
+setup_drive_links() {
+    local -a DIRS=(Audio Cursos Data Documents Images Projects Vaults Videos Work dockers utils)
 
-    for entry in "${LINKS[@]}"; do
-        local name="${entry%%:*}"
-        local home_path="${entry#*:}"
-        local vault_path="${VAULT_DIR}/${name}"
+    for name in "${DIRS[@]}"; do
+        local home_path="${HOME}/${name}"
+        local drive_path="${DRIVE_DIR}/${name}"
 
-        mkdir -p "$vault_path"
+        mkdir -p "$drive_path"
 
         # Already correctly linked — skip
-        if [ -L "$home_path" ] && [ "$(readlink -f "$home_path")" = "$vault_path" ]; then
-            info "Already linked: $home_path → $vault_path"
+        if [ -L "$home_path" ] && [ "$(readlink -f "$home_path")" = "$drive_path" ]; then
+            info "Already linked: $home_path → $drive_path"
             continue
         fi
 
@@ -84,15 +74,18 @@ setup_vault_links() {
         # Real directory — migrate existing contents then replace with symlink
         if [ -d "$home_path" ]; then
             if [ -n "$(ls -A "$home_path" 2>/dev/null)" ]; then
-                info "Migrating $home_path → $vault_path"
-                cp -a "${home_path}/." "$vault_path/"
+                info "Migrating $home_path → $drive_path"
+                cp -a "${home_path}/." "$drive_path/"
             fi
             rm -rf "$home_path"
         fi
 
-        ln -sf "$vault_path" "$home_path"
-        info "Linked: $home_path → $vault_path"
+        ln -sf "$drive_path" "$home_path"
+        info "Linked: $home_path → $drive_path"
     done
+
+    # homelab lives inside Projects
+    mkdir -p "${DRIVE_DIR}/Projects/homelab"
 }
 
 # ── 3. Add Syncthing apt repo ────────────────────────────────────────────────
@@ -209,7 +202,7 @@ show_info() {
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 setup_data_mount
-setup_vault_links
+setup_drive_links
 setup_repo
 install_syncthing
 enable_service

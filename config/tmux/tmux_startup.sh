@@ -3,7 +3,7 @@
 
 declare -A SESSIONS
 SESSIONS[dotfiles]="$HOME/ledot"
-SESSIONS[tools]="$HOME/tools"
+SESSIONS[tools]="$HOME/utils"
 
 for session in dotfiles tools; do
     dir="${SESSIONS[$session]}"

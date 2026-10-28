@@ -19,5 +19,5 @@ fi
 install_list network
 
 # ── vpn-slice ────────────────────────────────────────────────────────────────
-# Used by ~/tools/vpn to route only internal IPs (INCOR, GitLab) through the tunnel
+# Used by ~/utils/vpn to route only internal IPs (INCOR, GitLab) through the tunnel
 pipx_install vpn-slice

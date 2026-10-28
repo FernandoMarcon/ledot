@@ -82,5 +82,5 @@ alias monitor="kernelview --live"
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # --- AI
-alias summarize="bash ~/tools/llm-tools/fabric-summarize "
+alias summarize="bash ~/utils/llm-tools/fabric-summarize "
 alias gemini="npx gemini"

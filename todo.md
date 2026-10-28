@@ -121,14 +121,8 @@ There were 17 warnings (use warnings() to see them)
 
 - [x] immplement: 06.setup_data
       1. mount /dev/nvme0n1p3 to /data
-      2. mkdir /data/vault
-      3. link:
-          3.1 /data/vault/Documents → ~/Documents
-          3.2 ~/code → /data/vault/code
-          3.3 ~/homelab -> /data/vault/homelab
-          3.4 /data/vault/Music → ~/Music
-          3.5 /data/vault/Pictures → ~/Pictures
-          3.6 /data/vault/Videos → ~/Videos
-          3.7 ~/work → /data/vault/work
-          3.8 ~/Vaults → /data/vault/Vaults
+      2. mkdir /data/drive (Syncthing "Drive" folder)
+      3. link ~/<dir> → /data/drive/<dir>:
+          Audio Cursos Data Documents Images Projects Vaults Videos Work dockers utils
+          (homelab in Projects/homelab)
             

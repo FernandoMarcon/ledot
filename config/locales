@@ -1,6 +1,6 @@
 #!/usr/bin/env bash 
 
-TOOLS=$HOME/tools
+TOOLS=$HOME/utils
 DOTFILES=$HOME/ledot
 
 export PATH="$TOOLS:$PATH"
