@@ -60,7 +60,7 @@ git remote set-url origin git@github.com:FernandoMarcon/ledot.git
 Run:
 ```bash
 git clone git@github.com:FernandoMarcon/ledot.git ~/ledot
-bash ~/ledot/setup/install.sh
+bash ~/ledot/install.sh
 ```
 
 ## TO-DO

@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-DISTRO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DISTRO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/setup"
 source "${DISTRO}/lib/common.sh"
 
 CLI_STEPS=(minimal network files dev)
@@ -40,7 +40,6 @@ case "${1:-}" in
         echo "Steps (setup/<step>.sh):"
         for f in "${DISTRO}"/*.sh; do
             step="$(basename "$f" .sh)"
-            [ "$step" = install ] && continue
             printf "  %-14s %s\n" "$step" "$(sed -n '2s/^# [^ ]* — //p' "$f")"
         done
         exit 0

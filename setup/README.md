@@ -21,10 +21,10 @@ gh repo clone FernandoMarcon/ledot ~/ledot
 ## Run
 
 ```bash
-bash ~/ledot/setup/install.sh            # full: bootstrap → CLI → [desktop] → dotfiles → second-brain → syncthing
-bash ~/ledot/setup/install.sh server     # headless: bootstrap → CLI → dotfiles
-bash ~/ledot/setup/install.sh dev web    # specific steps
-bash ~/ledot/setup/install.sh --list     # all steps
+bash ~/ledot/install.sh            # full: bootstrap → CLI → [desktop] → dotfiles → second-brain → syncthing
+bash ~/ledot/install.sh server     # headless: bootstrap → CLI → dotfiles
+bash ~/ledot/install.sh dev web    # specific steps
+bash ~/ledot/install.sh --list     # all steps
 ```
 
 ## Steps
