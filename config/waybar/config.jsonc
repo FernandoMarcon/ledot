@@ -1,8 +1,8 @@
 // 
 {
     "layer": "top",
-    "width": 1500,
-    "output": "HDMI-A-1",
+    // "width": 1500,
+    // "output": "HDMI-A-1",
     "modules-left": [
         "custom/power",
         "hyprland/workspaces",
@@ -66,20 +66,20 @@
             "3": "",
             "4": "",
             "5": "",
-            "active": "",
-            "default": ""
+            // "active": "",
+            // "default": ""
         }
     },
     "battery": {
         "interval": 60,
-        "format": "{icon} {capacity}%",
+        "format": "{icon} {capacity}% ",
         "format-icons": {
             "default": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
             "charging": ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
         }
     },
     "pulseaudio": {
-        "format": "{icon} {volume}%",
+        "format": " | {icon} {volume}%",
         "format-bluetooth": " {volume}%",
         "format-muted": "",
         "format-icons": {
@@ -95,13 +95,11 @@
         "scroll-step": 1,
         "on-click": "pavucontrol"
     },
-    // PPA waybar is built without libcava ("Unknown module: cava"): stream cava.sh instead
     "custom/cava": {
-        "exec": "$HOME/ledot/config/waybar/scripts/cava.sh",
+        "exec": "$XDG_CONFIG_HOME/waybar/scripts/cava.sh",
         "format": "{}",
         "tooltip": false
     },
-    // Built-in module, unused until waybar is built with -Dcava=enabled
     "cava": {
         "cava_config": "$XDG_CONFIG_HOME/cava/config",
         "framerate": 30,
@@ -127,11 +125,11 @@
         // "interface": "", // replaced by launch.sh via src/get_net_interface.sh
         "format": "{ifname}",
         "family": "ipv4",
-        "format-wifi": "|   {essid} ({signalStrength}%) {ipaddr} ",
+        "format-wifi": "|   {essid} ({signalStrength}%) ",
         "format-ethernet": "|   {ipaddr} ",
         "format-disconnected": "|  ",
         "tooltip-format": "{ifname}",
-        "tooltip-format-wifi": "   {essid} ({signalStrength}%) ",
+        "tooltip-format-wifi": " ip: {ipaddr} ",
         "tooltip-format-ethernet": "   {ifname} ",
         "tooltip-format-disconnected": " Disconnected ",
         "max-length": 50
@@ -150,7 +148,7 @@
         "spacing": 10,
         "icons": {
             "blueman": "bluetooth", // applet only started when bin/get_bluetooth.sh finds an adapter
-            // "Grayjay": "app.grayjay.Grayjay"
+            "Grayjay": "app.grayjay.Grayjay"
         },
         "tooltip": false
     }

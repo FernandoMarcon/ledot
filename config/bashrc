@@ -134,8 +134,6 @@ set -o vi
 # --- Starship
 command -v starship &>/dev/null && eval "$(starship init bash)"
 
-source "${HOME}/tools/functions"
-
 bind -x '"\C-l": clear'  # Bind CTRL+l to clear terminal
 
 # Auto-attach to tmux session on terminal open

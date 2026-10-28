@@ -14,6 +14,12 @@ sed_args=(-e '')   # no-op script, so sed never treats $config as its script
 # No battery: drop it from the modules list
 "$SRC/has_battery.sh" || sed_args+=(-e '/^\s*"battery",\?\s*$/d')
 
+# Pinned output not connected (e.g. laptop undocked): show on whatever is there
+pinned="$(sed -n 's/^\s*"output": "\([^"]*\)".*/\1/p' "$config")"
+if [[ -n "$pinned" ]] && ! hyprctl monitors | grep -q "^Monitor $pinned "; then
+    sed_args+=(-e '/^\s*"output":/d')
+fi
+
 # # Pin network module to the interface in use; offline: let waybar pick
 # if iface="$("$SRC/get_net_interface.sh")"; then
 #     sed_args+=(-e "s/\"interface\": \"[^\"]*\"/\"interface\": \"$iface\"/")
