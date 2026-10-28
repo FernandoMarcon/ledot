@@ -13,7 +13,7 @@ local terminal    = "alacritty"
 local fileManager = terminal .. " -e ranger" -- TUI, needs a terminal
 -- local menu        = "hyprlauncher"
 -- local menu        = "rofi -show drun"
-local menu        = "/home/fernando/.config/rofi/type-2/launcher.sh"
+local menu        = config .. "/rofi/type-2/launcher.sh"
 local browser     = "firefox"
 
 local waybar_launcher = config .. "/waybar/scripts/launch.sh"
