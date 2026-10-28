@@ -1,6 +1,6 @@
 #!/bin/bash
 # web.sh — pkgs/web.list: browsers, torrents
-# Also: Brave repo, browser account logins, Tor Browser, brotab
+# Also: Brave + Mozilla repos, browser account logins, Tor Browser, brotab
 # Usage: bash ~/ledot/setup/web.sh
 
 set -euo pipefail
@@ -10,6 +10,19 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 if ! command -v brave-browser &>/dev/null; then
     info "Setting up Brave browser..."
     curl -fsS https://dl.brave.com/install.sh | sh
+fi
+
+# ── Mozilla repo (Ubuntu's firefox is a snap wrapper; snapd is pinned off) ──
+if [ ! -f /etc/apt/sources.list.d/mozilla.list ]; then
+    sudo install -d -m 0755 /etc/apt/keyrings
+    curl -fsSL https://packages.mozilla.org/apt/repo-signing-key.gpg \
+        | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
+    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" \
+        | sudo tee /etc/apt/sources.list.d/mozilla.list > /dev/null
+    printf 'Package: *\nPin: origin packages.mozilla.org\nPin-Priority: 1000\n' \
+        | sudo tee /etc/apt/preferences.d/mozilla > /dev/null
+    sudo apt-get update -qq
+    info "Mozilla repo added"
 fi
 
 install_list web

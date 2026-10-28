@@ -12,7 +12,7 @@ DISTRO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${DISTRO}/lib/common.sh"
 
 CLI_STEPS=(minimal network files dev)
-GUI_STEPS=(desktop display audio bluetooth media web system)
+GUI_STEPS=(desktop display audio bluetooth media web system apps)
 
 run() {
     local step

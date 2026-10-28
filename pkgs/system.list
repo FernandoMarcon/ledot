@@ -1,5 +1,7 @@
-# system.list — disks, power (desktop)
+# system.list — disks, power, monitoring (desktop)
 
 acpi
 gnome-disk-utility
 gparted
+btop
+hardinfo2

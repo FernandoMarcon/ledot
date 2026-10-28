@@ -1,6 +1,6 @@
 # setup/ — machine setup (Ubuntu 26.04)
 
-One script per package list: `setup/<name>.sh` installs `pkgs/<name>.list` plus that theme's extra setup (apt repos, non-apt installs, config). Every script is idempotent and safe to re-run.
+One script per package list: `setup/<name>.sh` installs `pkgs/<name>.list` (and `pkgs/<name>.flatpak` from Flathub) plus that theme's extra setup (apt repos, non-apt installs, config). Every script is idempotent and safe to re-run.
 
 ## First steps (by hand, fresh install)
 
@@ -38,16 +38,17 @@ bash ~/ledot/setup/install.sh --list     # all steps
 | `files` | `files.list` | |
 | `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Antigravity, Miniconda + `tools` env (`python.libs`), R packages (`r-build.list`, `r.libs`), radian, fabric, Singularity |
 | **Desktop** | | |
-| `desktop` | `desktop.list` | Hyprland PPA, Nerd Fonts, Zafiro + Qogir themes |
+| `desktop` | `desktop.list` | Hyprland PPA (incl. hyprsunset night light), Nerd Fonts, Zafiro + Qogir themes |
 | `display` | `display.list` | |
 | `audio` | `audio.list` | |
 | `bluetooth` | `bluetooth.list` | |
-| `media` | `media.list` | |
-| `web` | `web.list` | Brave repo, browser logins, Tor Browser, brotab |
+| `media` | `media.list`, `media.flatpak` | |
+| `web` | `web.list` | Brave + Mozilla repos, browser logins, Tor Browser, brotab |
 | `system` | `system.list` | |
+| `apps` | `apps.list`, `apps.flatpak` | FUTO Notes repo, Thunar as default folder handler |
 | **After packages** | | |
-| `dotfiles` | | symlinks from `config/dotfiles.state`, ~/tools repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
+| `dotfiles` | | symlinks from `config/dotfiles.state`, ~/utils repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
 | `second-brain` | | Obsidian, `second-brain/setup.sh` |
-| `syncthing` | syncthing | data partition mount, vault links, Syncthing repo + service |
+| `syncthing` | syncthing | data partition mount, `~/<dir> → /data/drive/<dir>` links, Syncthing repo + service |
 
-Shared helpers (colors, `confirm`, `install_list`, `pipx_install`) live in `lib/common.sh`.
+Shared helpers (colors, `confirm`, `install_list`, `install_flatpaks`, `pipx_install`) live in `lib/common.sh`.

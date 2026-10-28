@@ -2,9 +2,9 @@
 # dotfiles.sh — manage dotfile symlinks via state file
 # Run after: the package scripts (packages must exist for post-activate hooks)
 # Usage:
-#   dotfiles.sh              — apply current state from dotfiles.state, then ~/tools and /etc/hosts
-#   dotfiles.sh --links      — apply state links only (no ~/tools, /etc/hosts or plugin installs)
-#   dotfiles.sh [item ...]   — activate specific items (use 'tools' to set up ~/tools)
+#   dotfiles.sh              — apply current state from dotfiles.state, then ~/utils and /etc/hosts
+#   dotfiles.sh --links      — apply state links only (no ~/utils, /etc/hosts or plugin installs)
+#   dotfiles.sh [item ...]   — activate specific items (use 'tools' to set up ~/utils)
 
 set -euo pipefail
 
@@ -16,6 +16,7 @@ declare -A ITEM_SRC ITEM_DST
 
 ITEM_SRC[aliases]="${DOTFILES}/config/aliases";       ITEM_DST[aliases]="${HOME}/.aliases"
 ITEM_SRC[alacritty]="${DOTFILES}/config/alacritty";   ITEM_DST[alacritty]="${CONFIG}/alacritty"
+ITEM_SRC[btop]="${DOTFILES}/config/btop";             ITEM_DST[btop]="${CONFIG}/btop"
 ITEM_SRC[bashrc]="${DOTFILES}/config/bashrc";         ITEM_DST[bashrc]="${HOME}/.bashrc"
 ITEM_SRC[cava]="${DOTFILES}/config/cava";             ITEM_DST[cava]="${CONFIG}/cava"
 ITEM_SRC[hypr]="${DOTFILES}/config/hypr";             ITEM_DST[hypr]="${CONFIG}/hypr"
@@ -28,9 +29,9 @@ ITEM_SRC[tmux]="${DOTFILES}/config/tmux";             ITEM_DST[tmux]="${CONFIG}/
 ITEM_SRC[vim]="${DOTFILES}/config/vim";               ITEM_DST[vim]="${CONFIG}/vim"
 ITEM_SRC[waybar]="${DOTFILES}/config/waybar";         ITEM_DST[waybar]="${CONFIG}/waybar"
 
-ALL_ITEMS=(aliases alacritty bashrc cava hypr locales profile quickshell ranger rofi tmux vim waybar)
+ALL_ITEMS=(aliases alacritty bashrc btop cava hypr locales profile quickshell ranger rofi tmux vim waybar)
 
-# --links: symlinks only, skip post-activate hooks, ~/tools and /etc/hosts
+# --links: symlinks only, skip post-activate hooks, ~/utils and /etc/hosts
 LINKS_ONLY=0
 
 init_state_file() {
@@ -169,7 +170,7 @@ deactivate() {
 }
 
 setup_tools() {
-    local tools_dir="${HOME}/tools"
+    local tools_dir="${HOME}/utils"
     if [ -d "${tools_dir}/.git" ]; then
         echo "  [=] tools: already cloned at ${tools_dir}"
     elif [ -d "${tools_dir}" ]; then
@@ -222,8 +223,8 @@ apply_state_file() {
 
 usage() {
     echo "Usage:"
-    echo "  dotfiles.sh              apply current state from $STATE_FILE, then ~/tools and /etc/hosts"
-    echo "  dotfiles.sh --links      apply state links only (no ~/tools, /etc/hosts or plugin installs)"
+    echo "  dotfiles.sh              apply current state from $STATE_FILE, then ~/utils and /etc/hosts"
+    echo "  dotfiles.sh --links      apply state links only (no ~/utils, /etc/hosts or plugin installs)"
     echo "  dotfiles.sh [item ...]   activate specific items"
     echo ""
     echo "Available items: ${ALL_ITEMS[*]} tools"

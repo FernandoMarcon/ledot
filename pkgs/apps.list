@@ -1,0 +1,11 @@
+# apps.list — office, remote desktop, file manager
+
+libreoffice
+remmina
+remmina-plugin-rdp
+remmina-plugin-vnc
+thunar
+thunar-archive-plugin
+gvfs
+tumbler
+# FUTO Notes: setup/apps.sh (FUTO apt repo)

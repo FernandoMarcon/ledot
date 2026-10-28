@@ -12,6 +12,8 @@ local config   = os.getenv("HOME") .. "/.config"
 
 hl.on("hyprland.start", function ()
     hl.exec_cmd(config .. "/waybar/scripts/launch.sh")
+    -- Night light schedule: hypr/hyprsunset.conf
+    hl.exec_cmd("hyprsunset")
     -- hl.exec_cmd("quickshell")
     -- Bluetooth tray applet only on machines with an adapter
     hl.exec_cmd(dotfiles .. "/bin/get_bluetooth.sh && blueman-applet")

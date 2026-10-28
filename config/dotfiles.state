@@ -11,3 +11,4 @@ aliases      yes
 cava         yes
 quickshell   yes
 waybar       yes
+btop         yes

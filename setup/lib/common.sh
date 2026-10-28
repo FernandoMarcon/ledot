@@ -44,3 +44,20 @@ pipx_install() {
     pipx install "$tool"
     info "$tool installed"
 }
+
+# flatpak-install every app ID in pkgs/<name>.flatpak from Flathub (blank and '#' lines skipped)
+install_flatpaks() {
+    local list="${PKGS}/$1.flatpak"
+    local apps=()
+    [ -f "$list" ] || die "$list not found"
+    while IFS= read -r line; do
+        [[ -z "$line" || "$line" == \#* ]] && continue
+        apps+=("$line")
+    done < "$list"
+    [ ${#apps[@]} -eq 0 ] && return
+    command -v flatpak &>/dev/null || sudo apt-get install -y flatpak
+    sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    info "Installing $1.flatpak (${#apps[@]} apps)..."
+    sudo flatpak install -y --noninteractive flathub "${apps[@]}"
+    info "$1.flatpak done"
+}

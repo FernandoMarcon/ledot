@@ -1,0 +1,6 @@
+# apps.flatpak — Flathub app IDs (X11-only apps need xwayland, see desktop.list)
+
+com.protonvpn.www
+me.proton.Mail
+org.localsend.localsend_app
+org.freecad.FreeCAD
