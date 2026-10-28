@@ -1,0 +1,16 @@
+#!/bin/bash
+# Download a video's subtitles as .srt (no video): srt <lang> [url]
+# url defaults to the clipboard
+
+[ $# -eq 0 ] && { echo "Usage: srt <lang> [url]   (e.g. srt en)" >&2; exit 1; }
+
+lang="$1"
+url="${2:-$(wl-paste)}"
+
+yt-dlp \
+	--skip-download \
+	--write-subs \
+	--write-auto-subs \
+	--sub-lang "$lang" \
+	--convert-subs srt \
+	"$url"

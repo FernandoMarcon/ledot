@@ -1,0 +1,44 @@
+#!/bin/bash
+# Stage, commit and push (or pull) the current git repo in one step
+# USAGE: gsync [-p|--push] <message> [files...]
+#        gsync -u|--pull
+
+action="push"
+args=()
+
+for arg in "$@"; do
+    case "$arg" in
+        -p|--push) action="push" ;;
+        -u|--pull) action="pull" ;;
+        *) args+=("$arg") ;;
+    esac
+done
+
+if [ "$action" = "pull" ]; then
+    git pull && echo "Synced"
+    exit
+fi
+
+msg="${args[0]}"
+
+if [ -z "$msg" ]; then
+    echo "Usage: gsync [-p|--push] <message> [files...]"
+    echo "       gsync -u|--pull"
+    exit 1
+fi
+
+if [ "${#args[@]}" -ge 2 ]; then
+    git add "${args[@]:1}"
+else
+    echo "Files to be added:"
+    git add --all --dry-run
+    echo ""
+    read -r -p "Continue? [y/N] " confirm
+    if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+        echo "Aborted."
+        exit 1
+    fi
+    git add --all
+fi
+
+git commit -m "$msg" && git push && echo "Synced"

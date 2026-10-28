@@ -1,0 +1,54 @@
+## docker-compose.yml — alternative to the launch.sh script.
+## Pick ONE of the two profiles below and comment out the other.
+##
+##   Xephyr mode:   docker compose --profile xephyr up
+##   VNC mode:      docker compose --profile vnc up
+
+services:
+
+  # ── Xephyr mode ─────────────────────────────────────────────────────────────
+  # Requires Xephyr to be running on the host on :10 before starting.
+  # Run first:  Xephyr :10 -screen 1280x800 -resizeable &
+  #             xhost +local:
+  i3-test-xephyr:
+    profiles: [xephyr]
+    build:
+      context: .
+      args:
+        UID: "${UID:-1000}"
+    image: ubuntu-i3-test
+    container_name: ubuntu-i3-test
+    hostname: ubuntu-i3-test
+    stdin_open: true
+    tty: true
+    shm_size: "256m"
+    network_mode: host
+    environment:
+      MODE: xephyr
+      DISPLAY: "${XEPHYR_DISPLAY:-:10}"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ..:/home/tester/distro
+
+  # ── VNC mode ────────────────────────────────────────────────────────────────
+  # Self-contained. Open http://localhost:6080/vnc.html in a browser.
+  i3-test-vnc:
+    profiles: [vnc]
+    build:
+      context: .
+      args:
+        UID: "${UID:-1000}"
+    image: ubuntu-i3-test
+    container_name: ubuntu-i3-test
+    hostname: ubuntu-i3-test
+    stdin_open: true
+    tty: true
+    shm_size: "256m"
+    network_mode: host
+    environment:
+      MODE: vnc
+      VNC_PORT: "5900"
+      NOVNC_PORT: "6080"
+      RESOLUTION: "1280x800"
+    volumes:
+      - ..:/home/tester/distro

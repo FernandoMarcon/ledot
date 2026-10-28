@@ -1,0 +1,52 @@
+#!/bin/bash
+# -----------------------------------------------------------------------------
+# Script (command) version
+# Copyright (C) Blau Araujo <blau@debxp.org>
+#
+# License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+# -----------------------------------------------------------------------------
+# Usage: % 
+# -----------------------------------------------------------------------------
+# Options {{{1
+
+
+
+# Strings {{{1
+
+version=''
+script_name=''
+script_command=''
+
+copy="
+$script_name ($script_command) $version
+Copyright (C) Blau Araujo <blau@debxp.org>
+
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+"
+
+usage="
+$script_name ($script_command) $version
+
+USAGE
+
+
+    Help:
+
+        $script_command -h
+"
+
+# Functions {{{1
+
+
+
+# Main {{{1
+
+
+
+# }}}
+
+

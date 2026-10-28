@@ -1,0 +1,5 @@
+#!/bin/bash
+# Disable all pointer devices for this Hyprland session (resets on reboot/login).
+hyprctl eval 'hl.device({ name = "synaptics-tm3289-002", enabled = false })'
+hyprctl eval 'hl.device({ name = "ps/2-generic-mouse", enabled = false })'
+hyprctl eval 'hl.device({ name = "yichip-wireless-device-mouse", enabled = false })'

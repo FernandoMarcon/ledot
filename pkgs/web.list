@@ -1,0 +1,8 @@
+# web.list — browsers, torrents
+# brave-browser sets up its own repo (setup/web.sh runs Brave's installer)
+
+firefox
+brave-browser
+w3m
+transmission-cli
+transmission-gtk

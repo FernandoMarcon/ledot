@@ -1,0 +1,9 @@
+#!/bin/bash
+# Quick calculator: calc <expression> [decimals]
+# source: debxp (Blau)
+# Example: calc "2/3" 4  # Output: 0.6667
+
+[ $# -eq 0 ] && { echo "Usage: calc <expression> [decimals]" >&2; exit 1; }
+[[ "${2:-0}" =~ ^[0-9]+$ ]] || { echo "decimals must be a number" >&2; exit 1; }
+
+awk "BEGIN { printf \"%.${2:-0}f\n\", $1 }"

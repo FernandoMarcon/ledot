@@ -1,0 +1,14 @@
+#!/usr/bin/env bash 
+
+TOOLS=$HOME/tools
+DOTFILES=$HOME/.dotfiles
+
+export PATH="$TOOLS:$PATH"
+export PATH="$TOOLS/bioinfo:$PATH"
+export PATH="$TOOLS/incor:$PATH"
+export PATH="$TOOLS/hpc:$PATH"
+export PATH="$DOTFILES/patterns:$PATH"
+export PATH="$HOME/.npm-global/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH" 
+export PATH="$HOME/.local/bin:$PATH"
+# export PATH="$PATH:$HOME/.local/bin/obsidian"

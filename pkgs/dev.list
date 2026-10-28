@@ -1,0 +1,8 @@
+# dev.list — languages and dev tooling
+# nodejs 24 needs the NodeSource repo (setup/dev.sh)
+# Docker: bin/docker_install.sh  ·  extras (conda, R libs, pipx tools, AI CLIs): setup/dev.sh
+
+nodejs
+r-base
+pipx
+ipython3

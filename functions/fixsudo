@@ -1,0 +1,6 @@
+#!/bin/bash
+# Print how to reset a sudo lockout after too many failed password attempts
+
+echo 'As root (e.g. su -, or from a TTY), run:'
+echo 'sudo -K'
+echo "faillock --user $USER --reset"

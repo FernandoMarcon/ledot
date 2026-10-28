@@ -1,0 +1,13 @@
+alacritty    yes
+bashrc       yes
+locales      yes
+rofi         yes
+ranger       yes
+tmux         yes
+vim          yes
+hypr         yes
+profile      yes
+aliases      yes
+cava         yes
+quickshell   yes
+waybar       yes

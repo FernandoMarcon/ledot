@@ -1,0 +1,5 @@
+#!/bin/bash
+# Pretty-print JSON with colors in a pager
+# USAGE: json [file]   (reads stdin when no file is given)
+
+jq --color-output . "${1:--}" | less -R

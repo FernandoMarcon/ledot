@@ -1,0 +1,9 @@
+#!/bin/bash
+# Print the shebang line for a language: shebang <python|r|bash>
+
+case "$1" in
+    python|py) echo "#!/usr/bin/env python3" ;;
+    r|R)       echo "#!/usr/bin/env Rscript" ;;
+    bash|sh)   echo "#!/usr/bin/env bash" ;;
+    *)         echo "Usage: shebang <python|r|bash>" >&2; exit 1 ;;
+esac

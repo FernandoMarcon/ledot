@@ -1,0 +1,29 @@
+# desktop.list — Hyprland session, launcher, terminals, fonts
+# hypr* packages need the Hyprland PPA
+
+# Hyprland
+hyprland
+hyprlock
+hyprshutdown
+hyprlauncher
+hyprpolkitagent
+xdg-desktop-portal-hyprland
+
+# Bar, launcher, notifications
+waybar
+rofi
+sway-notification-center
+libnotify-bin
+
+# Terminals
+alacritty
+kitty
+
+# Clipboard
+wl-clipboard
+xclip
+
+# Theming & fonts
+qt5ct
+fonts-jetbrains-mono
+# Nerd Fonts (JetBrainsMono, Symbols, Iosevka): setup/desktop.sh — fonts-iosevka-nerd isn't in apt

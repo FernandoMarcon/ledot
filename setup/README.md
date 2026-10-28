@@ -1,0 +1,53 @@
+# setup/ — machine setup (Ubuntu 26.04)
+
+One script per package list: `setup/<name>.sh` installs `pkgs/<name>.list` plus that theme's extra setup (apt repos, non-apt installs, config). Every script is idempotent and safe to re-run.
+
+## First steps (by hand, fresh install)
+
+```bash
+# 1. Update the system
+sudo apt update && sudo apt upgrade -y
+
+# 2. Install and authenticate the GitHub CLI (device flow, no browser needed here)
+sudo apt install gh -y
+gh auth login        # GitHub.com → HTTPS → Login with a web browser
+                     # open github.com/login/device on your phone, enter the code
+
+# 3. Clone .dotfiles
+gh repo clone FernandoMarcon/.dotfiles ~/.dotfiles
+# or: git clone https://github.com/FernandoMarcon/.dotfiles.git ~/.dotfiles
+```
+
+## Run
+
+```bash
+bash ~/.dotfiles/setup/install.sh            # full: bootstrap → CLI → [desktop] → dotfiles → second-brain → syncthing
+bash ~/.dotfiles/setup/install.sh server     # headless: bootstrap → CLI → dotfiles
+bash ~/.dotfiles/setup/install.sh dev web    # specific steps
+bash ~/.dotfiles/setup/install.sh --list     # all steps
+```
+
+## Steps
+
+| Step | Installs | Extras |
+|---|---|---|
+| `bootstrap` | | SSH key → GitHub, git identity |
+| **CLI** | | |
+| `minimal` | `minimal.list` | GitHub CLI repo, timezone |
+| `network` | `network.list` | Tailscale repo, vpn-slice, VPN password in pass |
+| `files` | `files.list` | |
+| `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Antigravity, Miniconda + `tools` env (`python.libs`), R packages (`r-build.list`, `r.libs`), radian, fabric, Singularity |
+| **Desktop** | | |
+| `desktop` | `desktop.list` | Hyprland PPA, Nerd Fonts, Zafiro + Qogir themes |
+| `display` | `display.list` | |
+| `audio` | `audio.list` | |
+| `bluetooth` | `bluetooth.list` | |
+| `media` | `media.list` | |
+| `web` | `web.list` | Brave repo, browser logins, Tor Browser, brotab |
+| `system` | `system.list` | |
+| **After packages** | | |
+| `dotfiles` | | symlinks from `config/dotfiles.state`, ~/tools repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
+| `second-brain` | | Obsidian, `second-brain/setup.sh` |
+| `syncthing` | syncthing | data partition mount, vault links, Syncthing repo + service |
+
+Shared helpers (colors, `confirm`, `install_list`, `pipx_install`) live in `lib/common.sh`.

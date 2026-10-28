@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# source: https://www.youtube.com/watch?v=4JWeU78A95c&list=PL97nvoRkKCvnMFOpWKah4rm91ASUSTNOU&index=1&pp=iAQB
+
+dir="${HOME}/Vaults/LGCM/Notes"
+
+newnote () {
+    # name="$(echo "" | dmenu -sb "#a3be8c" -nf "#d8dee9" -p "Filename: " <&-)" || exit 0
+    name="$(echo "" | rofi -dmenu -p "Filename: ")" || exit 0
+    : "${name:=$(date +%d-%m-%Y_%H%M%S)}"
+    setsid -f alacritty -e vim "${dir}/${name}.md" >/dev/null 2>&1
+    sleep 5
+}
+
+selected () {
+    default="$(date +%d-%m-%Y_%H%M%S).md"
+    # choice=$(echo -e "${default}\nNew\n$(command ls -t1 $dir)" | dmenu -l 5 -i -p "Choose note or create new: ")
+    choice=$(echo -e "${default}\nNew\n$(command ls -t1 $dir)" | rofi -dmenu -i -p "Choose note or create new: ")
+    notify-send "$choice"
+    case $choice in
+        New) newnote ;;
+        *.md) setsid -f alacritty -e vim "$dir/$choice" >/dev/null 2>&1 ;;
+        *) exit ;;
+    esac
+}
+
+selected

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# notify-send $(dmenu -p "calculate:" <&- | bc -l 2>/dev/null)
+notify-send $(rofi -dmenu -p "calculate:" | bc -l 2>/dev/null)

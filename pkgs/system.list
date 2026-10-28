@@ -1,0 +1,5 @@
+# system.list — disks, power (desktop)
+
+acpi
+gnome-disk-utility
+gparted

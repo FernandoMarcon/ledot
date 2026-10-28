@@ -1,0 +1,7 @@
+{
+  "remoteURL": "git@github.com:FernandoMarcon/LGCM",
+  "gitLocation": "",
+  "syncinterval": 5,
+  "isSyncOnLoad": true,
+  "checkStatusOnLoad": true
+}

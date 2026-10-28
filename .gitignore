@@ -1,0 +1,26 @@
+config/vim/bundle/
+config/tmux/plugins/
+*.log
+archive/distro-i3/archcraft-i3wm/
+**/__pycache__/
+**/*.pyc
+
+*.swp
+rofi_git/
+omarchy-4.0.6.iso
+resources/omarchy/
+omarchy/
+
+# Never commit secrets or machine/network-specific files
+**/.env
+!config/syncthing/.env
+*.gpg
+*.asc
+*.vv
+*.kdbx
+id_rsa*
+id_ed25519*
+accounts.conf
+config/ssh/
+config/etc/hosts
+config/aliases.*

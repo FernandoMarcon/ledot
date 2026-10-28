@@ -1,0 +1,12 @@
+#!/bin/bash
+# Custom search with w3m & duckduckgo
+# USAGE: search <query...>
+
+if [ $# -eq 0 ]; then
+    echo "What's your query?"
+    exit 1
+fi
+
+# Join all arguments into a single URL-encoded query
+query=$(jq -rn --arg q "$*" '$q|@uri')
+w3m "https://duckduckgo.com/?q=${query}"

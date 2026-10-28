@@ -1,0 +1,17 @@
+#!/bin/bash
+# Remove all docker containers and images, then prune volumes/system/images
+
+echo "removing all containers..."
+docker ps -aq | xargs -r docker rm -f
+
+echo "removing all images..."
+docker image ls -aq | xargs -r docker rmi -f
+
+echo "Pruning volumes..."
+docker volume prune
+
+echo "Pruning system..."
+docker system prune
+
+echo "Pruning images..."
+docker image prune

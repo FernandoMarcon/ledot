@@ -1,0 +1,19 @@
+# x11.list — legacy i3/X11 session (configs in archive/). Not installed by default.
+
+i3
+lightdm
+arandr
+dunst
+picom
+polybar
+sxhkd
+arc-theme
+feh
+lxappearance
+xsettingsd
+i3lock
+maim
+xautolock
+xdotool
+# nitrogen — removed from Ubuntu 26.04
+# pulseaudio — conflicts with pipewire-pulse (audio.list)

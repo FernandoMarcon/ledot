@@ -1,0 +1,33 @@
+# minimal.list — essentials for a working CLI system (servers + desktops)
+# Format (all *.list): one apt package per line; whole-line '#' comments only
+
+# Core tools
+git
+gh
+curl
+wget
+rsync
+unzip
+ca-certificates
+less
+man-db
+
+# Shell & editor
+bash-completion
+vim
+tmux
+
+# Files & monitoring
+ranger
+tree
+jq
+bat
+ncdu
+htop
+
+# Network
+network-manager
+openssh-client
+
+# apt repo signing keys (gpg --dearmor in setup scripts)
+gpg

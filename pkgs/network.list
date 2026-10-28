@@ -1,0 +1,11 @@
+# network.list — VPN, remote filesystems, mesh networking
+# tailscale needs its apt repo (setup/network.sh)
+
+openconnect
+sshfs
+tailscale
+tor
+net-tools
+
+# Tray applet (desktop only)
+network-manager-gnome

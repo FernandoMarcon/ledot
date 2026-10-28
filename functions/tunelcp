@@ -1,0 +1,16 @@
+#!/bin/bash
+# Copy a file from HPC to ~/tunel, hopping through mentat -> INCOR
+# USAGE: tunelcp <path on HPC>
+
+[ $# -eq 0 ] && { echo "Usage: tunelcp <path on HPC>" >&2; exit 1; }
+
+FPATH="$1"
+FNAME=$(basename "${FPATH}")
+OUT="${HOME}/tunel/${FNAME}"
+mkdir -p "${HOME}/tunel"
+
+# INCOR/HPC names are resolved by the remote hosts' own ssh configs
+ssh mentat ssh INCOR scp "HPC:${FPATH}" /home/fernando/tunel/ &&
+ssh mentat scp "INCOR:/home/fernando/tunel/${FNAME}" /home/fm/tunel/ &&
+scp "mentat:/home/fm/tunel/${FNAME}" "${HOME}/tunel/" &&
+ls -lh "${OUT}"

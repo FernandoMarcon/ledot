@@ -1,0 +1,9 @@
+# audio.list — PipeWire stack, mixers, visualizer
+
+pipewire-pulse
+wireplumber
+pulseaudio-utils
+alsa-utils
+pavucontrol
+pulsemixer
+cava

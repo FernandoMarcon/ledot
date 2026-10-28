@@ -1,0 +1,52 @@
+{
+  "recentFiles": [
+    {
+      "basename": "Scatter-gather  MarkDuplicates",
+      "path": "Scatter-gather  MarkDuplicates.md"
+    },
+    {
+      "basename": "XDG Variables",
+      "path": "2_Areas/Linux/XDG Variables.md"
+    },
+    {
+      "basename": "Proxmox VMs",
+      "path": "2_Areas/Homelab/Proxmox/Proxmox VMs.md"
+    },
+    {
+      "basename": "Proxmox Main CMDs",
+      "path": "Proxmox Main CMDs.md"
+    },
+    {
+      "basename": "Proxmox LXC",
+      "path": "Proxmox LXC.md"
+    },
+    {
+      "basename": "Linux Startup Sequence",
+      "path": "Linux Startup Sequence.md"
+    },
+    {
+      "basename": "Display Server",
+      "path": "2_Areas/Linux/Display Server.md"
+    },
+    {
+      "basename": "X11 and Wayland Compatibility",
+      "path": "X11 and Wayland Compatibility.md"
+    },
+    {
+      "basename": "Wayland",
+      "path": "Wayland.md"
+    },
+    {
+      "basename": "X11",
+      "path": "X11.md"
+    },
+    {
+      "basename": "BV9300 Pro",
+      "path": "2_Areas/Devices/BV9300 Pro.md"
+    }
+  ],
+  "omittedPaths": [],
+  "omittedTags": [],
+  "updateOn": "file-open",
+  "omitBookmarks": false
+}

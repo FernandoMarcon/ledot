@@ -1,0 +1,13 @@
+#!/bin/bash
+# Retrieve a Youtube playlist as markdown links (--tsv: title<TAB>url)
+# USAGE: playlist_to_md [--tsv] <playlist url>
+# OUTPUT: [LIST] "[video title](url)"
+
+format="[%(title)s](%(url)s)"
+if [ "$1" = "--tsv" ]; then
+    format=$'%(title)s\t%(url)s'
+    shift
+fi
+
+[ $# -eq 0 ] && { echo "Usage: playlist_to_md [--tsv] <playlist url>" >&2; exit 1; }
+yt-dlp --flat-playlist --print "$format" "$1"

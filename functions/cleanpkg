@@ -1,0 +1,35 @@
+#!/bin/bash
+# Remove a pacman package, its orphaned deps and (optionally) its user config
+
+# Verifica se o nome do pacote foi fornecido como parâmetro
+if [ -z "$1" ]; then
+    echo "Erro: Forneça o nome do pacote como argumento."
+    echo "Uso: $(basename "$0") <nome-do-pacote>"
+    exit 1
+fi
+
+PACOTE="$1"
+
+# Remove o pacote principal, dependências não usadas e arquivos de configuração
+sudo pacman -Rns "$PACOTE" --noconfirm || exit 1
+
+# Remove pacotes órfãos (dependências não mais necessárias); pacman pede confirmação
+mapfile -t ORFAOS < <(pacman -Qtdq)
+if [ ${#ORFAOS[@]} -gt 0 ]; then
+    echo "Removendo pacotes órfãos..."
+    sudo pacman -Rns "${ORFAOS[@]}"
+else
+    echo "Nenhum pacote órfão encontrado."
+fi
+
+# Remove arquivos de configuração do usuário (opcional)
+echo -e "\nDeseja remover arquivos de configuração do usuário? [s/N]"
+read -r RESPOSTA
+if [[ "$RESPOSTA" =~ ^[Ss]$ ]]; then
+    echo "Limpando arquivos residuais do usuário..."
+    rm -rfv ~/.config/"$PACOTE" ~/.local/share/"$PACOTE" ~/.cache/"$PACOTE"
+else
+    echo "Pulando limpeza de arquivos do usuário."
+fi
+
+echo -e "\nLimpeza completa do pacote $PACOTE concluída!"

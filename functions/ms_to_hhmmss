@@ -1,0 +1,13 @@
+#!/bin/bash
+# Convert milliseconds to HH:MM:SS
+# Example usage:
+# ms_to_hhmmss 3661500  # Output: 01:01:01
+
+[[ "$1" =~ ^[0-9]+$ ]] || { echo "Usage: ms_to_hhmmss <milliseconds>" >&2; exit 1; }
+
+ms=$1
+secs=$((ms / 1000))
+hh=$((secs / 3600))
+mm=$(((secs % 3600) / 60))
+ss=$((secs % 60))
+printf "%02d:%02d:%02d\n" "$hh" "$mm" "$ss"

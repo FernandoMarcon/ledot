@@ -1,0 +1,16 @@
+#!/bin/bash
+# Open today's daily note in vim, creating it if it doesn't exist
+# File: $HOME/Vaults/wiki/0_Inbox/Daily_Notes/DD-MM-YYYY.md
+
+TAGS="#daily"
+NOTESDIR="${HOME}/Vaults/wiki/0_Inbox/Daily_Notes"
+DATE=$(date +%d-%m-%Y)
+FPATH="${NOTESDIR}/${DATE}.md"
+
+mkdir -p "$NOTESDIR"
+
+if [ ! -e "$FPATH" ]; then
+    printf '# %s\n%s\n\n' "$DATE" "$TAGS" > "$FPATH"
+fi
+
+vim '+normal Go' "$FPATH"

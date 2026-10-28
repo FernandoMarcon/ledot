@@ -1,0 +1,5 @@
+#!/bin/bash
+# Re-enable all pointer devices disabled by disablemouse.
+hyprctl eval 'hl.device({ name = "synaptics-tm3289-002", enabled = true })'
+hyprctl eval 'hl.device({ name = "ps/2-generic-mouse", enabled = true })'
+hyprctl eval 'hl.device({ name = "yichip-wireless-device-mouse", enabled = true })'

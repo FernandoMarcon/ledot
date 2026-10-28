@@ -1,0 +1,12 @@
+#!/bin/bash
+# Ask gemini a one-shot question
+# USAGE: search_llm <query...>
+
+if [ $# -eq 0 ]; then
+    echo "What's your query?"
+    exit 1
+fi
+
+# gemini --prompt-interactive "$*"
+# gemini --sandbox --prompt "$*"
+gemini --prompt "$*"

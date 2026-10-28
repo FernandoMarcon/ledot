@@ -1,0 +1,16 @@
+# files.list — ranger previews, archives, file utilities
+
+# Ranger previews
+highlight
+libimage-exiftool-perl
+mediainfo
+odt2txt
+ffmpegthumbnailer
+ueberzug
+
+# Archives
+atool
+unrar
+
+# Duplicates / cleanup
+rmlint

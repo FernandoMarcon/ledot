@@ -1,0 +1,5 @@
+#!/bin/bash
+
+read -r
+echo "$REPLY ${1:-{{{1}"
+

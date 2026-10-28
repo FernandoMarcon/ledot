@@ -1,0 +1,66 @@
+" Vundle setup requires this
+set nocompatible
+filetype off
+
+" Set the runtime path to include Vundle in its new location and initialize
+set rtp+=~/.config/vim/bundle/Vundle.vim
+call vundle#begin()
+
+" Let Vundle manage Vundle
+Plugin 'VundleVim/Vundle.vim'
+
+" Add other plugins here
+Plugin 'nextflow-io/vim-language-nextflow'
+Plugin 'vim-python/python-syntax'
+Plugin 'tpope/vim-commentary'
+
+" All of your plugins must be added before this line
+call vundle#end()
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Functions
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+source $HOME/.config/vim/functions.vim
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" General
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set hidden              " Allows to change buffer without saving
+set number    		" Show current line number
+set relativenumber 	" Show relative line numbers
+set noerrorbells        " Don't make noise
+set novisualbell        " Dont blink
+set t_Co=256            " Enable 256 color mode
+"set exrc                "Scan working dir for .vimrc
+set splitbelow
+set splitright
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" File settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set encoding=utf-8              " Let Vim use utf-8 internally
+set fileencoding=utf-8          " Default for new files
+set termencoding=utf-8          " Terminal encoding
+set fileformats=unix,dos,mac    " support all three, in this order
+set fileformat=unix             " default file format
+
+" Enable filetype detection by extension and content. This sets the filetype
+" option (check with ':set ft?') and triggers the FileType event (see autocmd
+" below). The below command enables:
+"  - plugin:    load ft specific plugin (e.g. ~rtp/plugin/php.vim)
+"  - indent:    load ft specific indent file (e.g. ~rtp/indent/php.vim)
+filetype plugin indent on
+
+" Enable syntax highlighting (based on detected filetype)
+syntax on
+
+" MAPPINGS
+" nnoremap <F5> :splitbelow terminal \| python3 %<CR>
+" nnoremap <F5> :belowright split \| terminal python3 %<CR>
+" nnoremap <F5> :terminal python3 %<CR>
+nnoremap <F5> :call RunScript()<CR>
+
+" Commenting [NOT WORKING]
+" nmap <C-/> gcc
+" vmap <C-/> gc

@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+alias sudo='sudo '
+
+# --- ls
+alias ls='ls --color=auto'
+# alias l='ls -CF'
+alias l='ls -1 --color=auto'
+alias ll='ls -alFh --color=auto'
+# alias la='ls -A'
+# alias lm='ls -m'
+# alias lr='ls -R'
+# alias lg='ls -l --group-directories-first'
+alias lt='tree -I ".git" -L 2'
+
+# alias ld='find . -maxdepth 1 -type d'
+# alias lf='find . -maxdepth 1 -type f'
+# alias lls='find . -maxdepth 1 -type l -ls'
+
+alias cc='xclip -sel copy'
+alias pp='xclip -sel clip -o'
+alias qq=exit
+
+#alias dir='dir --color=auto'
+#alias vdir='vdir --color=auto'
+
+alias grep='grep --color=auto'
+#alias fgrep='fgrep --color=auto'
+#alias egrep='egrep --color=auto'
+
+# --- CONFIG
+alias reload-bash="source ~/.bashrc"
+#alias conf-alias="vim ${HOME}/.dotfiles/aliases"
+#alias conf-bash="vim ~/.bashrc"
+#alias conf-keymaps="vim ${HOME}/.dotfiles/sxhkd/sxhkdrc"
+#alias reload-zsh="exec zsh"
+#alias conf-zsh="vim ~/.zshrc"
+
+# --- PYTHON
+#alias py="ipython3"
+alias startconda="source ${HOME}/miniconda3/etc/profile.d/conda.sh"
+
+# --- GIT
+alias gadd="git add --all"
+alias gaddn="git add --all -n"
+alias gcommit="git commit -m "
+alias gpush="git push"
+alias gpull="git pull"
+alias gstatus="git status"
+alias guntrack="git rm --cached "
+# alias loadkeys="eval '$(ssh-agent -s)'"
+alias loadkeys='pkill -u $(id -u) ssh-agent 2>/dev/null; eval $(ssh-agent -s)'
+
+# --- WEB
+alias web="w3m duckduckgo.com"
+
+#--- NETWORK
+alias hosts='cat /etc/hosts'
+alias list-ports="netstat -lntu"
+alias filetransfer="rsync -rtvzP"
+alias pingo="ping google.com"
+
+# --- AUDIO
+alias audio="pulsemixer"
+alias vol="pavucontrol"
+alias volume="alsamixer"
+
+# --- ROFI/DMENU
+alias dmenu='rofi -dmenu'
+
+# --- PROGRAMS
+alias cat="batcat"
+alias r="radian"
+alias files="nautilus &"
+alias f="ranger"
+alias rmd="rm -rf"
+alias DU="ncdu"
+alias monitor="kernelview --live"
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# --- AI
+alias summarize="bash ~/tools/llm-tools/fabric-summarize "
+alias gemini="npx gemini"

@@ -1,0 +1,9 @@
+# Workspace-to-output mapping (checked at i3 start/reload)
+# i3 picks the first available output in each list.
+#
+# carbon:   HDMI-1 (external) preferred; eDP-1 (laptop) as fallback
+# lgcm: ws1 → VGA-1, ws2-3 → HDMI-1
+
+workspace 1 output VGA-1 HDMI-1 eDP-1
+workspace 2 output HDMI-1 eDP-1 VGA-1
+workspace 3 output HDMI-1 eDP-1 VGA-1

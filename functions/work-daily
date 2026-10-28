@@ -1,0 +1,15 @@
+#!/bin/bash
+# Open today's work daily note, creating it from template if it doesn't exist.
+# File: $HOME/Vaults/brain/raw/daily/DD-MM-YYYY.md
+
+NOTESDIR="${HOME}/Vaults/brain/raw/daily"
+DATE=$(date +%d-%m-%Y)
+FPATH="${NOTESDIR}/${DATE}.md"
+
+mkdir -p "$NOTESDIR"
+
+if [ ! -e "$FPATH" ]; then
+    printf '**%s**\n#logbook\n\n- \n' "$DATE" > "$FPATH"
+fi
+
+vim '+normal Go' "$FPATH"

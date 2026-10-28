@@ -1,0 +1,22 @@
+# Obsidian per-device state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/*.bak
+.obsidian/plugins.bak/
+.obsidian/themes.bak/
+.obsidian/snippets.bak/
+
+# Plugin caches (frequent writes, not meaningful to track)
+.obsidian/plugins/recent-files-obsidian/
+obsidian-configs/plugins/recent-files-obsidian/
+
+# Trash
+.trash/
+
+# Syncthing
+.stfolder*
+*.sync-conflict-*
+
+# OS
+.DS_Store
+Thumbs.db
