@@ -62,10 +62,15 @@ hl.window_rule({
 
 -- Drop-down terminal (SUPER + '): spawn on first toggle, float across top of screen
 hl.workspace_rule({
-    workspace        = "special:dropterm",
-    on_created_empty = "alacritty --class dropterm",
-    gaps_out         = 0,
+    workspace = "special:dropterm",
+    gaps_out  = 0,
 })
+
+hl.on("workspace.created", function (ws)
+    if ws.name == "special:dropterm" and ws.is_empty then
+        hl.exec_cmd("alacritty --class dropterm")
+    end
+end)
 
 hl.window_rule({
     name  = "dropterm",
