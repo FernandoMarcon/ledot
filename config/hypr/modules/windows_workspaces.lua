@@ -55,8 +55,8 @@ hl.window_rule({
     match = { class = "^org\\.quickshell$", title = "^Translate$" },
 
     float = true,
-    size  = "520 260",
-    move  = "20 20",
+    size  = "620 120",
+    -- move  = "20 20",
 })
 
 hl.layer_rule({
