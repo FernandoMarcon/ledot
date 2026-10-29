@@ -1,7 +1,6 @@
 // Translate.qml — popup translator over bin/translate.sh
 // Standalone: qs -p ~/ledot/config/quickshell/Translate.qml
-// Enter/Go: translate, copy to clipboard (wl-copy), close · Esc/mod+q: close
-// On failure the popup stays open showing the error
+// Enter/Go: translate, show result, copy to clipboard (wl-copy) · Esc/mod+q: close
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -137,10 +136,8 @@ ShellRoot {
             onStreamFinished: {
                 proc.out = this.text.trim();
                 proc.show();
-                if (!proc.out)
-                    return;  // failed: stay open to show the error
-                Quickshell.execDetached(["wl-copy", proc.out]);
-                Qt.quit();
+                if (proc.out)
+                    Quickshell.execDetached(["wl-copy", proc.out]);
             }
         }
         stderr: StdioCollector {
