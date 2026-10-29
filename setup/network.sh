@@ -1,5 +1,5 @@
 #!/bin/bash
-# network.sh — pkgs/network.list: VPN, remote filesystems, mesh networking
+# network.sh → pkgs/network.list: VPN, remote filesystems, mesh networking
 # Also: Tailscale repo, vpn-slice
 # Usage: bash ~/ledot/setup/network.sh
 

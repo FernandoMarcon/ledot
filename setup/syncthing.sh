@@ -1,5 +1,5 @@
 #!/bin/bash
-# syncthing.sh — mount data partition, link ~/<dir> → /data/drive/<dir>, install and configure Syncthing
+# syncthing.sh → mount data partition, link ~/<dir> → /data/drive/<dir>, install and configure Syncthing
 # Usage: bash ~/ledot/setup/syncthing.sh
 
 set -euo pipefail

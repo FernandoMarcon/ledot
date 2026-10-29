@@ -1,5 +1,5 @@
 #!/bin/bash
-# dotfiles.sh — manage dotfile symlinks via state file
+# dotfiles.sh → manage dotfile symlinks via state file
 # Run after: the package scripts (packages must exist for post-activate hooks)
 # Usage:
 #   dotfiles.sh              — apply current state from dotfiles.state, then ~/utils and /etc/hosts

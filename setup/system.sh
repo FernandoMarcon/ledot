@@ -1,5 +1,5 @@
 #!/bin/bash
-# system.sh — pkgs/system.list: disks, power, monitoring (desktop)
+# system.sh → pkgs/system.list: disks, power, monitoring (desktop)
 # Usage: bash ~/ledot/setup/system.sh
 
 set -euo pipefail

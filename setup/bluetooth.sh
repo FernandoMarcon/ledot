@@ -1,5 +1,5 @@
 #!/bin/bash
-# bluetooth.sh — pkgs/bluetooth.list: bluetooth
+# bluetooth.sh → pkgs/bluetooth.list: bluetooth
 # Usage: bash ~/ledot/setup/bluetooth.sh
 
 set -euo pipefail

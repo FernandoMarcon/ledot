@@ -1,5 +1,5 @@
 #!/bin/bash
-# apps.sh — pkgs/apps.list + apps.flatpak: office, remote desktop, file manager, Proton, LocalSend, FreeCAD
+# apps.sh → pkgs/apps.list + apps.flatpak: office, remote desktop, file manager, Proton, LocalSend, FreeCAD
 # Also: FUTO Notes repo, Thunar as default folder handler
 # Usage: bash ~/ledot/setup/apps.sh
 

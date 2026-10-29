@@ -1,5 +1,5 @@
 #!/bin/bash
-# files.sh — pkgs/files.list: ranger previews, archives, file utilities
+# files.sh → pkgs/files.list: ranger previews, archives, file utilities
 # Usage: bash ~/ledot/setup/files.sh
 
 set -euo pipefail

@@ -1,5 +1,5 @@
 #!/bin/bash
-# audio.sh — pkgs/audio.list: PipeWire stack, mixers, visualizer
+# audio.sh → pkgs/audio.list: PipeWire stack, mixers, visualizer
 # Usage: bash ~/ledot/setup/audio.sh
 
 set -euo pipefail

@@ -37,6 +37,7 @@ bash ~/ledot/install.sh --list     # all steps
 | `network` | `network.list` | Tailscale repo, vpn-slice, VPN password in pass |
 | `files` | `files.list` | |
 | `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Antigravity, Miniconda + `tools` env (`python.libs`), R packages (`r-build.list`, `r.libs`), radian, fabric, Singularity |
+| `tools` | `tools.list` | |
 | **Desktop** | | |
 | `desktop` | `desktop.list` | Hyprland PPA (incl. hyprsunset night light), Nerd Fonts, Zafiro + Qogir themes |
 | `display` | `display.list` | |

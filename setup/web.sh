@@ -1,5 +1,5 @@
 #!/bin/bash
-# web.sh — pkgs/web.list: browsers, torrents
+# web.sh → pkgs/web.list: browsers, torrents
 # Also: Brave + Mozilla repos, browser account logins, Tor Browser, brotab
 # Usage: bash ~/ledot/setup/web.sh
 

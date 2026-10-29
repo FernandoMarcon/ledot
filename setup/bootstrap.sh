@@ -1,5 +1,5 @@
 #!/bin/bash
-# bootstrap.sh — SSH key, GitHub access, git identity
+# bootstrap.sh → SSH key, GitHub access, git identity
 # Run after: the manual first steps in setup/README.md (update, install gh, auth, clone)
 # Usage: bash ~/ledot/setup/bootstrap.sh
 

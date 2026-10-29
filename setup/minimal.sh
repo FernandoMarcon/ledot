@@ -1,5 +1,5 @@
 #!/bin/bash
-# minimal.sh — pkgs/minimal.list: essentials for a working CLI system
+# minimal.sh → pkgs/minimal.list: essentials for a working CLI system
 # Also: GitHub CLI repo (newer gh), timezone
 # Usage: bash ~/ledot/setup/minimal.sh
 

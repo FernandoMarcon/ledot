@@ -1,5 +1,5 @@
 #!/bin/bash
-# install.sh — run setup steps in order (each step is setup/<step>.sh)
+# install.sh → run setup steps in order (each step is setup/<step>.sh)
 # Usage:
 #   install.sh                 full setup: bootstrap → CLI lists → [desktop lists] → dotfiles → second-brain → syncthing
 #   install.sh server          headless:   bootstrap → CLI lists → dotfiles
@@ -11,7 +11,7 @@ set -euo pipefail
 DISTRO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/setup"
 source "${DISTRO}/lib/common.sh"
 
-CLI_STEPS=(minimal network files dev)
+CLI_STEPS=(minimal network files dev tools)
 GUI_STEPS=(desktop display audio bluetooth media web system apps)
 
 run() {

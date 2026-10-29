@@ -1,5 +1,5 @@
 #!/bin/bash
-# dev.sh — pkgs/dev.list: languages and dev tooling
+# dev.sh → pkgs/dev.list: languages and dev tooling
 # Also: NodeSource repo, Docker, AI CLIs (Claude Code, Gemini, Antigravity), Miniconda + 'tools' env,
 #       R packages (r-build.list + r.libs), radian, fabric, Singularity
 # Usage: bash ~/ledot/setup/dev.sh

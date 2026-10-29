@@ -1,5 +1,5 @@
 #!/bin/bash
-# display.sh — pkgs/display.list: brightness, screenshots
+# display.sh → pkgs/display.list: brightness, screenshots
 # Usage: bash ~/ledot/setup/display.sh
 
 set -euo pipefail

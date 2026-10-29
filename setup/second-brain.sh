@@ -1,5 +1,5 @@
 #!/bin/bash
-# second-brain.sh — Obsidian + Second Brain workspace (second-brain/setup.sh)
+# second-brain.sh → Obsidian + Second Brain workspace (second-brain/setup.sh)
 # Usage: bash ~/ledot/setup/second-brain.sh
 
 set -euo pipefail

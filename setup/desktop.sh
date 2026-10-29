@@ -1,5 +1,5 @@
 #!/bin/bash
-# desktop.sh — pkgs/desktop.list: Hyprland session, launcher, terminals, fonts
+# desktop.sh → pkgs/desktop.list: Hyprland session, launcher, terminals, fonts
 # Also: Hyprland PPA, Nerd Fonts, Zafiro + Qogir icon/cursor themes
 # Usage: bash ~/ledot/setup/desktop.sh
 
