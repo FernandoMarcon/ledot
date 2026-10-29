@@ -57,6 +57,7 @@ hl.window_rule({
     float = true,
     size  = "620 120",
     -- move  = "20 20",
+    move  = "20 monitor_h*0.85",
 })
 
 -- Drop-down terminal (SUPER + '): spawn on first toggle, float across top of screen

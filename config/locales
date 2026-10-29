@@ -3,13 +3,17 @@
 TOOLS=$HOME/utils
 DOTFILES=$HOME/ledot
 
+export PATH="$HOME/.local/share:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+
 export PATH="$TOOLS:$PATH"
 export PATH="$TOOLS/bioinfo:$PATH"
 export PATH="$TOOLS/incor:$PATH"
 export PATH="$TOOLS/hpc:$PATH"
+
 export PATH="$DOTFILES/patterns:$PATH"
 export PATH="$DOTFILES/functions:$PATH"
+
 export PATH="$HOME/.npm-global/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH" 
-export PATH="$HOME/.local/bin:$PATH"
 # export PATH="$PATH:$HOME/.local/bin/obsidian"
