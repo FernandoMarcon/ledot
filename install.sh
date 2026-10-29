@@ -13,7 +13,7 @@ DISTRO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/setup"
 source "${DISTRO}/lib/common.sh"
 
 CLI_STEPS=(minimal network files dev tools)
-GUI_STEPS=(desktop greeter display audio bluetooth media web system apps)
+GUI_STEPS=(desktop greeter display audio bluetooth media web system apps firewall)
 
 is_carbon() { grep -q "X1 Carbon" /sys/class/dmi/id/product_version 2>/dev/null; }
 

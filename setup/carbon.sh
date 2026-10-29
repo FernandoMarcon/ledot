@@ -1,5 +1,5 @@
 #!/bin/bash
-# carbon.sh → pkgs/carbon.list: ThinkPad X1 Carbon 5th gen quirks (thermals, SD card reader, WWAN modem)
+# carbon.sh → pkgs/carbon.list: ThinkPad X1 Carbon 5th gen quirks (thermals, uncore perf, SD card reader, WWAN modem)
 # Usage: bash ~/ledot/setup/carbon.sh
 
 set -euo pipefail
@@ -19,7 +19,21 @@ MODULES_CONF="/etc/modules-load.d/carbon.conf"
 printf 'coretemp\nintel_rapl_msr\n' | sudo tee "$MODULES_CONF" >/dev/null
 info "Early-load modules: $MODULES_CONF (coretemp, intel_rapl_msr)"
 
-# ── 2. SD card reader (Realtek RTS525A) ──────────────────────────────────────
+# ── 2. Uncore perf counters: their IMC init maps past the firmware's PNP0C02 reservation ──
+# ("resource sanity check: requesting [mem 0xfed10000-0xfed15fff] ... snb_uncore_imc_init_box").
+# intel_uncore is built in, so skip its initcall; only perf's uncore_* PMUs are lost
+GRUB_CFG="/etc/default/grub.d/carbon.cfg"
+# shellcheck disable=SC2016  # expanded by grub, not here
+GRUB_LINE='GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT initcall_blacklist=intel_uncore_init"'
+if [ "$(cat "$GRUB_CFG" 2>/dev/null)" = "$GRUB_LINE" ]; then
+    info "intel_uncore already skipped at boot ($GRUB_CFG)"
+else
+    echo "$GRUB_LINE" | sudo tee "$GRUB_CFG" >/dev/null
+    sudo update-grub
+    info "intel_uncore skipped at boot ($GRUB_CFG) — reboot to apply"
+fi
+
+# ── 3. SD card reader (Realtek RTS525A) ──────────────────────────────────────
 # Fails with "mmc0: Card stuck being busy" / "error -110" at every boot; blacklisting the driver silences it
 SDCARD_CONF="/etc/modprobe.d/carbon-sdcard.conf"
 if [ -f "$SDCARD_CONF" ]; then
@@ -30,7 +44,7 @@ elif confirm "Disable the SD card reader (rtsx_pci_sdmmc)?"; then
     info "SD card reader disabled (re-enable: sudo rm $SDCARD_CONF && sudo update-initramfs -u)"
 fi
 
-# ── 3. WWAN modem (Sierra EM7455) without a SIM ──────────────────────────────
+# ── 4. WWAN modem (Sierra EM7455) without a SIM ──────────────────────────────
 # ModemManager retries it every boot ("SIM not inserted") and NetworkManager warns on cdc-wdm0
 if ! systemctl is-enabled ModemManager &>/dev/null; then
     info "ModemManager already disabled"

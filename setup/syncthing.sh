@@ -126,16 +126,7 @@ start_container() {
     info "Syncthing container running (restart: unless-stopped)"
 }
 
-# ── 5. Firewall: sync (22000 tcp/udp) + LAN discovery (21027 udp) ─────────────
-open_firewall() {
-    command -v ufw &>/dev/null || { warn "ufw not installed — skipping firewall rules"; return; }
-    sudo ufw allow 22000/tcp comment syncthing >/dev/null
-    sudo ufw allow 22000/udp comment syncthing >/dev/null
-    sudo ufw allow 21027/udp comment syncthing >/dev/null
-    info "ufw: allowed 22000/tcp, 22000/udp, 21027/udp"
-}
-
-# ── 6. Show status ────────────────────────────────────────────────────────────
+# ── 5. Show status ────────────────────────────────────────────────────────────
 show_info() {
     local device_id
     device_id=$(docker exec syncthing syncthing device-id 2>/dev/null || echo "unavailable (container still starting?)")
@@ -158,5 +149,4 @@ setup_data_mount
 setup_drive_links
 remove_native
 start_container
-open_firewall
 show_info

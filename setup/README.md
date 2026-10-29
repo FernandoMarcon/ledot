@@ -51,12 +51,13 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `web` | `web.list` | Brave + Mozilla repos, browser logins, Tor Browser |
 | `system` | `system.list` | upower enabled at boot |
 | `apps` | `apps.list`, `apps.flatpak` | FUTO Notes repo, Thunar as default folder handler |
+| `firewall` | ufw | resets ufw to deny-all-incoming + allowlist: ssh on tailscale0 only, tailscale 41641/udp, mDNS, Syncthing 22000 + 21027/udp; silent IGMP drop |
 | **Device** | | |
-| `carbon` | `carbon.list` | ThinkPad X1 Carbon 5th gen only (auto-detected from DMI): coretemp/RAPL early load for thermald, optional SD reader blacklist, optional ModemManager off (no SIM) |
+| `carbon` | `carbon.list` | ThinkPad X1 Carbon 5th gen only (auto-detected from DMI): coretemp/RAPL early load for thermald, `initcall_blacklist=intel_uncore_init` (resource sanity warning), optional SD reader blacklist, optional ModemManager off (no SIM) |
 | **After packages** | | |
 | `dotfiles` | | symlinks from `config/dotfiles.state`, ~/utils repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
 | `second-brain` | | Obsidian, `second-brain/setup.sh` |
-| `syncthing` | — | data partition mount (fstab by UUID), `~/<dir> → /data/drive/<dir>` links, Syncthing in Docker (`config/syncthing/compose.yml`), ufw ports; removes the apt package/user service |
+| `syncthing` | — | data partition mount (fstab by UUID), `~/<dir> → /data/drive/<dir>` links, Syncthing in Docker (`config/syncthing/compose.yml`; ports opened by `firewall`); removes the apt package/user service |
 | `r` | `r-build.list`, `r.libs` | R packages; runs last and asks first (default **no**) — slow to build |
 
 Shared helpers (colors, `confirm`, `install_list`, `install_flatpaks`, `confirm_no`, `pipx_install`, `track_install`, `track_detected`) live in `lib/common.sh`.
