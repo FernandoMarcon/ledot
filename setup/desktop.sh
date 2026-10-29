@@ -1,5 +1,5 @@
 #!/bin/bash
-# desktop.sh → pkgs/desktop.list: Hyprland session, launcher, terminals, fonts
+# Also: Hyprland PPA, Nerd Fonts, Zafiro + Qogir icon/cursor themes, dark mode (GTK + Qt)
 # Also: Hyprland PPA, Nerd Fonts, Zafiro + Qogir icon/cursor themes
 # Usage: bash ~/ledot/setup/desktop.sh
 
@@ -63,3 +63,33 @@ else
     rm -rf /tmp/Qogir-icon-theme
 fi
 info "Desktop themes ready"
+
+# ── Dark mode ────────────────────────────────────────────────────────────────
+# color-scheme reaches GTK4/libadwaita, browsers and Electron via xdg-desktop-portal-gtk
+if command -v gsettings &>/dev/null; then
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+fi
+
+# GTK3/4 apps that read settings.ini instead of gsettings
+for v in 3.0 4.0; do
+    ini="${HOME}/.config/gtk-${v}/settings.ini"
+    if [ -f "$ini" ]; then
+        note "${ini} exists — leaving it alone"
+        continue
+    fi
+    mkdir -p "$(dirname "$ini")"
+    printf '[Settings]\ngtk-application-prefer-dark-theme=1\ngtk-theme-name=Adwaita-dark\n' > "$ini"
+done
+
+# Qt: QT_QPA_PLATFORMTHEME=qt5ct (config/hypr/modules/env.lua) — qt6ct also answers to "qt5ct"
+for ct in qt5ct qt6ct; do
+    conf="${HOME}/.config/${ct}/${ct}.conf"
+    if [ -f "$conf" ]; then
+        note "${conf} exists — leaving it alone"
+        continue
+    fi
+    mkdir -p "$(dirname "$conf")"
+    printf '[Appearance]\ncolor_scheme_path=/usr/share/%s/colors/darker.conf\ncustom_palette=true\nstyle=Fusion\nicon_theme=Zafiro-Icons-Dark\n' "$ct" > "$conf"
+done
+info "Dark mode set (GTK + Qt)"

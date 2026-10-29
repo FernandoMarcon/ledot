@@ -27,5 +27,8 @@ xclip
 
 # Theming & fonts
 qt5ct
+qt6ct
+gnome-themes-extra
+xdg-desktop-portal-gtk
 fonts-jetbrains-mono
 # Nerd Fonts (JetBrainsMono, Symbols, Iosevka): setup/desktop.sh — fonts-iosevka-nerd isn't in apt
