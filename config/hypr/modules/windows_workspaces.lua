@@ -59,6 +59,22 @@ hl.window_rule({
     -- move  = "20 20",
 })
 
+-- Drop-down terminal (SUPER + '): spawn on first toggle, float across top of screen
+hl.workspace_rule({
+    workspace        = "special:dropterm",
+    on_created_empty = "alacritty --class dropterm",
+    gaps_out         = 0,
+})
+
+hl.window_rule({
+    name  = "dropterm",
+    match = { class = "^dropterm$" },
+
+    float = true,
+    size  = "monitor_w*0.6 monitor_h*0.45",
+    move  = "monitor_w*0.2 10",
+})
+
 hl.layer_rule({
     name = "rofi-popup",
     match = { namespace = "rofi" },

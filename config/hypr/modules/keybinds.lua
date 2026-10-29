@@ -116,6 +116,10 @@ end
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
+-- Drop-down terminal (quake style): special workspace, terminal spawned on first open
+-- code:49 = physical key left of 1 (apostrophe on br, grave on us) so bind works in both layouts
+hl.bind(mainMod .. " + code:49", hl.dsp.workspace.toggle_special("dropterm"))
+
 -- Scroll through existing workspaces with mainMod + scroll
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
