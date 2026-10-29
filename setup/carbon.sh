@@ -38,7 +38,7 @@ fi
 SDCARD_CONF="/etc/modprobe.d/carbon-sdcard.conf"
 if [ -f "$SDCARD_CONF" ]; then
     info "SD card reader already disabled ($SDCARD_CONF)"
-elif confirm "Disable the SD card reader (rtsx_pci_sdmmc)?"; then
+elif confirm_no "Disable the SD card reader (rtsx_pci_sdmmc)?"; then
     echo "blacklist rtsx_pci_sdmmc" | sudo tee "$SDCARD_CONF" >/dev/null
     sudo update-initramfs -u
     info "SD card reader disabled (re-enable: sudo rm $SDCARD_CONF && sudo update-initramfs -u)"
@@ -48,7 +48,7 @@ fi
 # ModemManager retries it every boot ("SIM not inserted") and NetworkManager warns on cdc-wdm0
 if ! systemctl is-enabled ModemManager &>/dev/null; then
     info "ModemManager already disabled"
-elif confirm "Disable ModemManager (no SIM in the WWAN modem)?"; then
+elif confirm_no "Disable ModemManager (no SIM in the WWAN modem)?"; then
     sudo systemctl disable --now ModemManager
     info "ModemManager disabled (re-enable: sudo systemctl enable --now ModemManager)"
 fi
