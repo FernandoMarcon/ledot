@@ -57,6 +57,7 @@ Data Science:
 
 AI / Automation:
 - [x] fabric                            → 04.manual-setup (pipx)
+- [ ] setup /wayfinder skills to claude (https://github.com/mattpocock/skills)
 
 CLI Utilities:
 - [x] batcat (bat)                      → pkgs-cli.list
