@@ -1,11 +1,11 @@
 #!/bin/bash
-# syncthing.sh → mount data partition, link ~/<dir> → /data/drive/<dir>, install and configure Syncthing
+# syncthing.sh → mount data partition, link ~/<dir> → /data/drive/<dir>, run Syncthing in Docker (config/syncthing/compose.yml)
 # Usage: bash ~/ledot/setup/syncthing.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
-CONFIG_DIR="${HOME}/.config/syncthing"
+COMPOSE_DIR="${DOTFILES}/config/syncthing"   # compose.yml + .env (PUID, PGID, SYNCTHING_STATE)
 KEYRING="/usr/share/keyrings/syncthing-archive-keyring.gpg"
 SOURCES="/etc/apt/sources.list.d/syncthing.list"
 DATA_DEV="/dev/nvme0n1p3"
@@ -14,6 +14,7 @@ DRIVE_DIR="/data/drive"   # synced as one Syncthing folder ("Drive")
 
 command -v curl &>/dev/null || die "curl not found — run setup/minimal.sh first"
 command -v systemctl &>/dev/null || die "systemd not found"
+command -v docker &>/dev/null || die "docker not found — run setup/dev.sh first"
 
 # ── 1. Mount data partition ───────────────────────────────────────────────────
 setup_data_mount() {
@@ -32,15 +33,23 @@ setup_data_mount() {
         info "Mounted $DATA_DEV → $DATA_MNT"
     fi
 
-    # Persist in /etc/fstab if not already present
-    if grep -q "^${DATA_DEV}" /etc/fstab; then
-        info "fstab entry already exists for $DATA_DEV"
+    # Drop a bare-device duplicate of an existing /data entry (older runs of this script added one)
+    if [ "$(findmnt --fstab -n -o TARGET "$DATA_MNT" | wc -l)" -gt 1 ] && grep -q "^${DATA_DEV}[[:space:]]" /etc/fstab; then
+        sudo sed -i "\\|^${DATA_DEV}[[:space:]]|d" /etc/fstab
+        warn "Removed duplicate fstab entry for $DATA_DEV"
+    fi
+
+    # Persist in /etc/fstab (by UUID) if not already present
+    if findmnt --fstab -n "$DATA_MNT" &>/dev/null; then
+        info "fstab entry already exists for $DATA_MNT"
     else
-        local fstype
-        fstype=$(blkid -o value -s TYPE "$DATA_DEV" 2>/dev/null || echo "auto")
-        echo "${DATA_DEV}  ${DATA_MNT}  ${fstype}  defaults  0  2" \
+        local uuid fstype
+        uuid=$(sudo blkid -o value -s UUID "$DATA_DEV")
+        fstype=$(sudo blkid -o value -s TYPE "$DATA_DEV")
+        [ -n "$uuid" ] && [ -n "$fstype" ] || die "Could not read UUID/filesystem of $DATA_DEV"
+        echo "UUID=${uuid}  ${DATA_MNT}  ${fstype}  defaults,nofail  0  2" \
             | sudo tee -a /etc/fstab >/dev/null
-        info "Added fstab entry (${fstype}): $DATA_DEV → $DATA_MNT"
+        info "Added fstab entry (${fstype}): UUID=${uuid} → $DATA_MNT"
     fi
 
     # Create drive dir (after mount so it lands on the right fs)
@@ -88,123 +97,66 @@ setup_drive_links() {
     mkdir -p "${DRIVE_DIR}/Projects/homelab"
 }
 
-# ── 3. Add Syncthing apt repo ────────────────────────────────────────────────
-setup_repo() {
+# ── 3. Retire the native (apt + user service) Syncthing — it fights the container for the config lock ──
+remove_native() {
+    if systemctl --user is-enabled syncthing &>/dev/null || systemctl --user is-active syncthing &>/dev/null; then
+        systemctl --user disable --now syncthing || true
+        info "Native Syncthing user service disabled"
+    fi
+    systemctl --user reset-failed syncthing 2>/dev/null || true
+
+    if dpkg -s syncthing &>/dev/null; then
+        info "Removing apt syncthing package..."
+        sudo apt-get remove -y syncthing
+    fi
     if [ -f "$SOURCES" ]; then
-        info "Syncthing apt repo already configured"
-        return
-    fi
-
-    info "Adding Syncthing apt repo..."
-    sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://syncthing.net/release-key.gpg \
-        | gpg --dearmor \
-        | sudo tee "$KEYRING" >/dev/null
-
-    echo "deb [signed-by=${KEYRING}] https://apt.syncthing.net/ syncthing stable" \
-        | sudo tee "$SOURCES" >/dev/null
-
-    sudo apt-get update -qq
-    info "Syncthing repo added"
-}
-
-# ── 4. Install Syncthing ──────────────────────────────────────────────────────
-install_syncthing() {
-    if command -v syncthing &>/dev/null; then
-        info "Syncthing already installed ($(syncthing --version | head -1))"
-        return
-    fi
-
-    info "Installing Syncthing..."
-    sudo apt-get install -y syncthing
-    info "Syncthing installed ($(syncthing --version | head -1))"
-}
-
-# ── 5. Enable user service ────────────────────────────────────────────────────
-enable_service() {
-    if systemctl --user is-enabled syncthing &>/dev/null; then
-        info "Syncthing user service already enabled"
-    else
-        info "Enabling Syncthing user service..."
-        systemctl --user enable syncthing
-        info "Service enabled"
-    fi
-
-    if systemctl --user is-active syncthing &>/dev/null; then
-        info "Syncthing already running"
-    else
-        info "Starting Syncthing..."
-        systemctl --user start syncthing
-
-        # Wait for config to be generated (up to 10s)
-        local i=0
-        while [ ! -f "${CONFIG_DIR}/config.xml" ] && [ "$i" -lt 10 ]; do
-            sleep 1
-            (( i++ ))
-        done
-
-        if [ -f "${CONFIG_DIR}/config.xml" ]; then
-            info "Syncthing started and config generated"
-        else
-            warn "Config not yet generated — it will appear after the service fully starts"
-        fi
+        sudo rm -f "$SOURCES" "$KEYRING"
+        info "Syncthing apt repo removed"
     fi
 }
 
-# ── 6. Configure ─────────────────────────────────────────────────────────────
-configure() {
-    local config="${CONFIG_DIR}/config.xml"
+# ── 4. Run the container ──────────────────────────────────────────────────────
+start_container() {
+    local state
+    state=$(sed -n 's/^SYNCTHING_STATE=//p' "${COMPOSE_DIR}/.env")
+    mkdir -p "$state"
 
-    [ -f "$config" ] || { warn "Config not found yet — skipping configuration step"; return; }
-
-    # Set device name to hostname if still the default
-    local hostname
-    hostname=$(hostname)
-    if grep -q '<device name="'"${hostname}"'"' "$config" 2>/dev/null; then
-        info "Device name already set to '${hostname}'"
-    else
-        # Replace existing name attribute on the local device element
-        sed -i "s|<device name=\"[^\"]*\" id=\"$(syncthing --device-id 2>/dev/null)\"|<device name=\"${hostname}\" id=\"$(syncthing --device-id 2>/dev/null)\"|" "$config" 2>/dev/null || true
-        info "Device name set to '${hostname}'"
-    fi
-
-    # Ensure GUI listens on localhost only (default, but make it explicit)
-    if grep -q '<address>127.0.0.1:8384</address>' "$config"; then
-        info "GUI already bound to localhost:8384"
-    fi
+    info "Starting Syncthing container..."
+    docker compose --project-directory "$COMPOSE_DIR" up -d
+    info "Syncthing container running (restart: unless-stopped)"
 }
 
-# ── 7. Show status ────────────────────────────────────────────────────────────
+# ── 5. Firewall: sync (22000 tcp/udp) + LAN discovery (21027 udp) ─────────────
+open_firewall() {
+    command -v ufw &>/dev/null || { warn "ufw not installed — skipping firewall rules"; return; }
+    sudo ufw allow 22000/tcp comment syncthing >/dev/null
+    sudo ufw allow 22000/udp comment syncthing >/dev/null
+    sudo ufw allow 21027/udp comment syncthing >/dev/null
+    info "ufw: allowed 22000/tcp, 22000/udp, 21027/udp"
+}
+
+# ── 6. Show status ────────────────────────────────────────────────────────────
 show_info() {
-    local device_id=""
-    if command -v syncthing &>/dev/null; then
-        device_id=$(syncthing --device-id 2>/dev/null || echo "unavailable")
-    fi
+    local device_id
+    device_id=$(docker exec syncthing syncthing device-id 2>/dev/null || echo "unavailable (container still starting?)")
 
     echo ""
     info "Syncthing setup complete!"
     echo ""
     echo -e "  Web UI:      ${GREEN}http://localhost:8384${RESET}"
     echo -e "  Device ID:   ${YELLOW}${device_id}${RESET}"
-    echo -e "  Config:      ${CONFIG_DIR}/config.xml"
-    echo -e "  Data:        ${HOME}/Sync  (default folder)"
+    echo -e "  Compose:     ${COMPOSE_DIR}/compose.yml"
     echo ""
-    warn "Next steps:"
-    warn "  1. Open http://localhost:8384 and set a GUI password (Actions > Settings > GUI)"
-    warn "  2. Add remote devices using their Device ID"
-    warn "  3. Share folders with those devices"
-    echo ""
-    info "To manage the service:"
-    echo "     systemctl --user status syncthing"
-    echo "     systemctl --user restart syncthing"
-    echo "     journalctl --user -u syncthing -f"
+    info "To manage the container:"
+    echo "     docker compose --project-directory ${COMPOSE_DIR} ps"
+    echo "     docker restart syncthing"
+    echo "     docker logs -f syncthing"
 }
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 setup_data_mount
 setup_drive_links
-setup_repo
-install_syncthing
-enable_service
-configure
+remove_native
+start_container
+open_firewall
 show_info

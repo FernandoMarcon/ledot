@@ -21,7 +21,7 @@ gh repo clone FernandoMarcon/ledot ~/ledot
 ## Run
 
 ```bash
-bash ~/ledot/install.sh            # full: bootstrap → CLI → [desktop] → dotfiles → second-brain → syncthing → [R packages]
+bash ~/ledot/install.sh            # full: bootstrap → CLI → [desktop] → [carbon] → dotfiles → second-brain → syncthing → [R packages]
 bash ~/ledot/install.sh server     # headless: bootstrap → CLI → dotfiles → [R packages]
 bash ~/ledot/install.sh dev web    # specific steps
 bash ~/ledot/install.sh --list     # all steps
@@ -46,15 +46,17 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `greeter` | — | greetd + tuigreet on tty1; quiet boot/kernel console so nothing prints over the login |
 | `display` | `display.list` | |
 | `audio` | `audio.list` | |
-| `bluetooth` | `bluetooth.list` | |
+| `bluetooth` | `bluetooth.list` | `/etc/bluetooth` mode 555 |
 | `media` | `media.list`, `media.flatpak` | |
 | `web` | `web.list` | Brave + Mozilla repos, browser logins, Tor Browser |
-| `system` | `system.list` | |
+| `system` | `system.list` | upower enabled at boot |
 | `apps` | `apps.list`, `apps.flatpak` | FUTO Notes repo, Thunar as default folder handler |
+| **Device** | | |
+| `carbon` | `carbon.list` | ThinkPad X1 Carbon 5th gen only (auto-detected from DMI): coretemp/RAPL early load for thermald, optional SD reader blacklist, optional ModemManager off (no SIM) |
 | **After packages** | | |
 | `dotfiles` | | symlinks from `config/dotfiles.state`, ~/utils repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
 | `second-brain` | | Obsidian, `second-brain/setup.sh` |
-| `syncthing` | syncthing | data partition mount, `~/<dir> → /data/drive/<dir>` links, Syncthing repo + service |
+| `syncthing` | — | data partition mount (fstab by UUID), `~/<dir> → /data/drive/<dir>` links, Syncthing in Docker (`config/syncthing/compose.yml`), ufw ports; removes the apt package/user service |
 | `r` | `r-build.list`, `r.libs` | R packages; runs last and asks first (default **no**) — slow to build |
 
 Shared helpers (colors, `confirm`, `install_list`, `install_flatpaks`, `confirm_no`, `pipx_install`, `track_install`, `track_detected`) live in `lib/common.sh`.

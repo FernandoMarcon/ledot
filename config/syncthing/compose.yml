@@ -1,0 +1,16 @@
+# compose.yml — Syncthing in Docker (setup/syncthing.sh brings it up)
+# Config/keys live on the host in ${SYNCTHING_STATE}; synced folders under /data/drive
+
+services:
+  syncthing:
+    image: syncthing/syncthing:latest
+    container_name: syncthing
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - STGUIADDRESS=   # use the GUI address from config.xml (127.0.0.1:8384)
+    volumes:
+      - ${SYNCTHING_STATE}:/var/syncthing/config
+      - /data:/data
+    network_mode: host  # LAN discovery (21027/udp) + sync (22000)
+    restart: unless-stopped

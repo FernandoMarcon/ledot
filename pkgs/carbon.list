@@ -1,0 +1,4 @@
+# carbon.list — ThinkPad X1 Carbon 5th gen (Kaby Lake) specifics
+
+# Intel thermal daemon (needs coretemp + RAPL loaded early — setup/carbon.sh)
+thermald

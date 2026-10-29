@@ -12,5 +12,8 @@ chafa
 atool
 unrar
 
+# Phones / MTP devices (udev mtp-probe)
+libmtp-runtime
+
 # Duplicates / cleanup
 rmlint

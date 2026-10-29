@@ -1,7 +1,8 @@
-# audio.list — PipeWire stack, mixers, visualizer
+# audio.list — PipeWire stack (+ rtkit for realtime scheduling), mixers, visualizer
 
 pipewire-pulse
 wireplumber
+rtkit
 pulseaudio-utils
 alsa-utils
 pavucontrol
