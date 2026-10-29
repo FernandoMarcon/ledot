@@ -18,7 +18,8 @@
         "cpu",
         "memory",
         "backlight",
-        "tray"
+        "bluetooth"
+        // "tray"
     ],
     "custom/power": {
         "format" : "⏻ ",
@@ -149,13 +150,21 @@
         "format": "| {percent}% {icon} | ",
         "format-icons": ["", ""]
     },
-    "tray": {
-        "icon-size": 21,
-        "spacing": 10,
-        "icons": {
-            "blueman": "bluetooth", // applet only started when bin/get_bluetooth.sh finds an adapter
-            "Grayjay": "app.grayjay.Grayjay"
-        },
-        "tooltip": false
-    }
+    "bluetooth": {
+        // "format-alt": "bluetooth: {status}",
+        "format": "󰂯",
+        "format-on": "",
+        "format-off": "󰂯",
+        "on-click": "blueman-manager",
+        // "tooltip-format": "{status}"
+      },
+    // "tray": {
+    //     "icon-size": 21,
+    //     "spacing": 10,
+    //     "icons": {
+    //         "blueman": "bluetooth", // applet only started when bin/get_bluetooth.sh finds an adapter
+    //         "Grayjay": "app.grayjay.Grayjay"
+    //     },
+    //     "tooltip": true
+    // },
 }

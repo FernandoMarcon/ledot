@@ -20,6 +20,7 @@ libnotify-bin
 # Terminals
 alacritty
 kitty
+foot
 
 # Clipboard
 wl-clipboard
