@@ -79,28 +79,6 @@ ShellRoot {
                 }
 
                 Rectangle {
-                    implicitWidth: 64
-                    implicitHeight: 32
-                    radius: 4
-                    color: root.field
-
-                    TextInput {
-                        id: target
-                        anchors.fill: parent
-                        anchors.margins: 8
-                        verticalAlignment: TextInput.AlignVCenter
-                        horizontalAlignment: TextInput.AlignHCenter
-                        text: "pt-BR"
-                        color: root.fg
-                        font.family: "monospace"
-                        clip: true
-                        Keys.onReturnPressed: root.go()
-                        Keys.onEnterPressed: root.go()
-                        Keys.onEscapePressed: Qt.quit()
-                    }
-                }
-
-                Rectangle {
                     implicitWidth: 72
                     implicitHeight: 32
                     radius: 4
@@ -154,7 +132,7 @@ ShellRoot {
             output.text = out || err.replace(/\x1b\[[0-9;]*m/g, "") || "Translating…";
         }
 
-        environment: ({ TO: target.text.trim() || "pt-BR" })
+        // Target language: translate.sh default (pt-BR), or TO from the environment
         stdout: StdioCollector {
             onStreamFinished: {
                 proc.out = this.text.trim();
