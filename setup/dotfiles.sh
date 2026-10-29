@@ -19,6 +19,7 @@ ITEM_SRC[alacritty]="${DOTFILES}/config/alacritty";   ITEM_DST[alacritty]="${CON
 ITEM_SRC[btop]="${DOTFILES}/config/btop";             ITEM_DST[btop]="${CONFIG}/btop"
 ITEM_SRC[bashrc]="${DOTFILES}/config/bashrc";         ITEM_DST[bashrc]="${HOME}/.bashrc"
 ITEM_SRC[cava]="${DOTFILES}/config/cava";             ITEM_DST[cava]="${CONFIG}/cava"
+ITEM_SRC[kitty]="${DOTFILES}/config/kitty";           ITEM_DST[kitty]="${CONFIG}/kitty"
 ITEM_SRC[hypr]="${DOTFILES}/config/hypr";             ITEM_DST[hypr]="${CONFIG}/hypr"
 ITEM_SRC[kitty]="${DOTFILES}/config/kitty";           ITEM_DST[kitty]="${CONFIG}/kitty"
 ITEM_SRC[locales]="${DOTFILES}/config/locales";       ITEM_DST[locales]="${HOME}/.locales"

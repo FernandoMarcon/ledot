@@ -1,0 +1,27 @@
+#!/bin/bash
+# Unlock+mount or unmount+lock a LUKS partition
+# Usage: mountencrypt --mount|--umount [partition]  (default: /dev/nvme0n1p5)
+
+PART="${2:-/dev/nvme0n1p5}"
+NAME="crypt_$(basename "$PART")"
+MAPPER="/dev/mapper/$NAME"
+MNT="/mnt/$NAME"
+
+case "$1" in
+    --mount)
+        sudo cryptsetup isLuks "$PART" || { echo "$PART is not a LUKS partition" >&2; exit 1; }
+        [ -e "$MAPPER" ] || sudo cryptsetup open "$PART" "$NAME" || exit 1
+        sudo mkdir -p "$MNT"
+        mountpoint -q "$MNT" || sudo mount "$MAPPER" "$MNT" || exit 1
+        echo "$PART mounted at $MNT"
+        ;;
+    --umount)
+        mountpoint -q "$MNT" && { sudo umount "$MNT" || exit 1; }
+        [ -e "$MAPPER" ] && { sudo cryptsetup close "$NAME" || exit 1; }
+        echo "$PART unmounted and locked"
+        ;;
+    *)
+        echo "Usage: $(basename "$0") --mount|--umount [partition]" >&2
+        exit 1
+        ;;
+esac

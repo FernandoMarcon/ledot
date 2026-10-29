@@ -40,6 +40,7 @@ bash ~/ledot/install.sh --list     # all steps
 | `tools` | `tools.list` | |
 | **Desktop** | | |
 | `desktop` | `desktop.list` | Hyprland PPA (incl. hyprsunset night light), Nerd Fonts, Zafiro + Qogir themes |
+| `greeter` | — | greetd + tuigreet on tty1; quiet boot/kernel console so nothing prints over the login |
 | `display` | `display.list` | |
 | `audio` | `audio.list` | |
 | `bluetooth` | `bluetooth.list` | |

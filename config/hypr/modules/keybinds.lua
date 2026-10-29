@@ -8,7 +8,7 @@ local config      = home .. "/.config"
 
 -- Set programs that you use
 local terminal    = "kitty"
-local terminal    = "alacritty"
+-- local terminal    = "alacritty"
 -- local fileManager = "dolphin"
 local fileManager = "kitty -e ranger" -- TUI; kitty for image previews
 -- local menu        = "hyprlauncher"
