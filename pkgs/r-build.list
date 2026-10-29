@@ -1,5 +1,5 @@
 # r-build.list — system libraries needed to build packages in r.libs (tidyverse, ragg, httr, ...)
-# Installed by setup/dev.sh before r.libs
+# Installed by setup/r.sh before r.libs
 
 r-base-dev
 libcurl4-openssl-dev

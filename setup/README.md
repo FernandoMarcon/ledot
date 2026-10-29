@@ -21,11 +21,14 @@ gh repo clone FernandoMarcon/ledot ~/ledot
 ## Run
 
 ```bash
-bash ~/ledot/install.sh            # full: bootstrap → CLI → [desktop] → dotfiles → second-brain → syncthing
-bash ~/ledot/install.sh server     # headless: bootstrap → CLI → dotfiles
+bash ~/ledot/install.sh            # full: bootstrap → CLI → [desktop] → dotfiles → second-brain → syncthing → [R packages]
+bash ~/ledot/install.sh server     # headless: bootstrap → CLI → dotfiles → [R packages]
 bash ~/ledot/install.sh dev web    # specific steps
 bash ~/ledot/install.sh --list     # all steps
+bash ~/ledot/install.sh --state    # what was installed outside apt/flatpak, from where, which version
 ```
+
+Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, conda, git clones, fonts) are logged to `$XDG_STATE_HOME/ledot/installs.tsv` (`name  source  version  date`). Tools a step finds already installed are logged as `detected`, so re-running a step on an existing machine fills in the log.
 
 ## Steps
 
@@ -36,7 +39,7 @@ bash ~/ledot/install.sh --list     # all steps
 | `minimal` | `minimal.list` | GitHub CLI repo, timezone |
 | `network` | `network.list` | Tailscale repo, vpn-slice, VPN password in pass |
 | `files` | `files.list` | |
-| `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Antigravity, Miniconda + `tools` env (`python.libs`), R packages (`r-build.list`, `r.libs`), radian, fabric, Singularity |
+| `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Antigravity, Miniconda + `tools` env (`python.libs`), radian, fabric, Singularity |
 | `tools` | `tools.list` | |
 | **Desktop** | | |
 | `desktop` | `desktop.list` | Hyprland PPA (incl. hyprsunset night light), Nerd Fonts, Zafiro + Qogir themes |
@@ -52,5 +55,6 @@ bash ~/ledot/install.sh --list     # all steps
 | `dotfiles` | | symlinks from `config/dotfiles.state`, ~/utils repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
 | `second-brain` | | Obsidian, `second-brain/setup.sh` |
 | `syncthing` | syncthing | data partition mount, `~/<dir> → /data/drive/<dir>` links, Syncthing repo + service |
+| `r` | `r-build.list`, `r.libs` | R packages; runs last and asks first (default **no**) — slow to build |
 
-Shared helpers (colors, `confirm`, `install_list`, `install_flatpaks`, `pipx_install`) live in `lib/common.sh`.
+Shared helpers (colors, `confirm`, `install_list`, `install_flatpaks`, `confirm_no`, `pipx_install`, `track_install`, `track_detected`) live in `lib/common.sh`.

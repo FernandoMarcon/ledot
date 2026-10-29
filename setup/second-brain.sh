@@ -12,6 +12,7 @@ SECOND_BRAIN_SETUP="${DOTFILES}/second-brain/setup.sh"
 # ── Obsidian (latest .deb from GitHub releases) ──────────────────────────────
 if dpkg -s obsidian &>/dev/null; then
     info "Obsidian already installed — skipping"
+    track_detected obsidian "$(dpkg-query -W -f='${Version}' obsidian)"
 elif confirm "Install Obsidian?"; then
     OBSIDIAN_VERSION=$(curl -s https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest \
         | grep '"tag_name"' | cut -d'"' -f4 | tr -d 'v')
@@ -20,6 +21,7 @@ elif confirm "Install Obsidian?"; then
         -O /tmp/obsidian.deb
     sudo apt-get install -y /tmp/obsidian.deb
     rm /tmp/obsidian.deb
+    track_install obsidian "github:obsidianmd/obsidian-releases (.deb)" "${OBSIDIAN_VERSION}"
     info "Obsidian v${OBSIDIAN_VERSION} installed"
 fi
 

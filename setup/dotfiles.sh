@@ -12,6 +12,8 @@ DOTFILES="${HOME}/ledot"
 CONFIG="${HOME}/.config"
 STATE_FILE="${DOTFILES}/config/dotfiles.state"
 
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
+
 declare -A ITEM_SRC ITEM_DST
 
 ITEM_SRC[aliases]="${DOTFILES}/config/aliases";       ITEM_DST[aliases]="${HOME}/.aliases"
@@ -108,9 +110,12 @@ activate() {
 }
 
 post_activate_bashrc() {
-    if ! command -v starship &>/dev/null; then
+    if command -v starship &>/dev/null; then
+        track_detected starship "$(starship --version | awk 'NR == 1 { print $2 }')"
+    else
         echo "  [>] bashrc: installing starship..."
         curl -sS https://starship.rs/install.sh | sh -s -- --yes
+        track_install starship "curl:starship.rs/install.sh" "$(starship --version | awk 'NR == 1 { print $2 }')"
         echo "  [>] bashrc: starship installed"
     fi
 }
@@ -120,7 +125,10 @@ post_activate_tmux() {
     if [ ! -d "$tpm" ]; then
         echo "  [>] tmux: installing TPM..."
         git clone --quiet https://github.com/tmux-plugins/tpm "$tpm"
+        track_install tmux-tpm "git:tmux-plugins/tpm" "$(git -C "$tpm" rev-parse --short HEAD)"
         echo "  [>] tmux: TPM installed — press <prefix>+I in a tmux session to install plugins"
+    else
+        track_detected tmux-tpm
     fi
 }
 
@@ -137,8 +145,11 @@ post_activate_vim() {
     if [ ! -d "$bundle" ]; then
         echo "  [>] vim: installing Vundle..."
         git clone --quiet https://github.com/VundleVim/Vundle.vim.git "$bundle"
+        track_install vim-vundle "git:VundleVim/Vundle.vim" "$(git -C "$bundle" rev-parse --short HEAD)"
         vim +PluginInstall +qall
         echo "  [>] vim: plugins installed"
+    else
+        track_detected vim-vundle
     fi
 
     local ansiesc="${HOME}/.vim_runtime/sources_non_forked/vim-plugin-AnsiEsc"
@@ -146,7 +157,10 @@ post_activate_vim() {
         echo "  [>] vim: installing vim-plugin-AnsiEsc..."
         mkdir -p "$(dirname "$ansiesc")"
         git clone --quiet https://github.com/powerman/vim-plugin-AnsiEsc.git "$ansiesc"
+        track_install vim-ansiesc "git:powerman/vim-plugin-AnsiEsc" "$(git -C "$ansiesc" rev-parse --short HEAD)"
         echo "  [>] vim: vim-plugin-AnsiEsc installed"
+    else
+        track_detected vim-ansiesc
     fi
 }
 

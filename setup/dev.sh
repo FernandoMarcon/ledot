@@ -1,7 +1,7 @@
 #!/bin/bash
 # dev.sh → pkgs/dev.list: languages and dev tooling
 # Also: NodeSource repo, Docker, AI CLIs (Claude Code, Gemini, Antigravity), Miniconda + 'tools' env,
-#       R packages (r-build.list + r.libs), radian, fabric, Singularity
+#       radian, fabric, Singularity (R packages: setup/r.sh)
 # Usage: bash ~/ledot/setup/dev.sh
 
 set -euo pipefail
@@ -34,8 +34,10 @@ fi
 header "Claude Code"
 if command -v claude &>/dev/null; then
     info "Claude Code already installed — skipping"
+    track_detected claude-code "$(claude --version 2>/dev/null | awk '{ print $1 }')"
 elif confirm "Install Claude Code?"; then
     curl -fsSL https://claude.ai/install.sh | bash
+    track_install claude-code "curl:claude.ai/install.sh" "$("$HOME/.local/bin/claude" --version 2>/dev/null | awk '{ print $1 }')"
     grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' ~/.bashrc \
         || echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
     info "Claude Code installed. Reload shell: source ~/.bashrc"
@@ -51,9 +53,16 @@ SKILLS=(
 note "Claude Code skills: ${SKILLS[*]}"
 if confirm "Install all Claude Code skills?"; then
     command -v npx &>/dev/null || die "npx not found — nodejs (dev.list) failed to install"
+    installed_skills=$(npx -y skills list -g --json 2>/dev/null || true)
     for skill in "${SKILLS[@]}"; do
+        if grep -qF "\"source\": \"${skill}\"" <<< "${installed_skills}"; then
+            info "${skill} already installed — skipping"
+            track_detected "skill:${skill}"
+            continue
+        fi
         echo "  Installing ${skill}..."
         npx -y skills add "${skill}" -g -a claude-code -y \
+            && track_install "skill:${skill}" "npx:skills" \
             && info "${skill} installed" \
             || warn "${skill} failed — retry: npx skills add ${skill} -g -a claude-code"
     done
@@ -63,9 +72,11 @@ fi
 header "Gemini CLI"
 if command -v gemini &>/dev/null; then
     info "Gemini CLI already installed — skipping"
+    track_detected gemini-cli "$(gemini --version 2>/dev/null)"
 elif confirm "Install Gemini CLI (npm global)?"; then
     command -v npm &>/dev/null || die "npm not found — nodejs (dev.list) failed to install"
     sudo npm install -g @google/gemini-cli
+    track_install gemini-cli "npm:@google/gemini-cli" "$(gemini --version 2>/dev/null)"
     info "Gemini CLI installed"
 fi
 
@@ -88,10 +99,12 @@ fi
 header "Python (Miniconda)"
 if [ -d "$HOME/miniconda3" ]; then
     info "Miniconda already installed at ~/miniconda3 — skipping"
+    track_detected miniconda "$("$HOME/miniconda3/bin/conda" --version 2>/dev/null | awk '{ print $2 }')"
 elif confirm "Install Miniconda?"; then
     wget -q "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" -O /tmp/miniconda.sh
     bash /tmp/miniconda.sh -b -p "$HOME/miniconda3"
     rm /tmp/miniconda.sh
+    track_install miniconda "curl:Miniconda3-latest" "$("$HOME/miniconda3/bin/conda" --version | awk '{ print $2 }')"
 
     # 'conda init bash' injects a shell function with an empty if-body when
     # the activate line is commented out, causing a bash syntax error on startup.
@@ -114,31 +127,14 @@ if ! [ -x "$CONDA" ]; then
     warn "conda not found — skipping 'tools' env"
 elif ${CONDA_RUN} env list 2>/dev/null | grep -q "^tools "; then
     info "conda env 'tools' already exists — skipping"
+    track_detected conda-env:tools
 elif confirm "Create conda env 'tools' (pkgs/python.libs)?"; then
     # conda-forge only: Anaconda's default channels require accepting their ToS
     # (non-interactive runs abort) and a paid license for large organizations
     ${CONDA_RUN} create -y -n tools -c conda-forge --override-channels python
     ${CONDA_RUN} run -n tools pip install -r "${PKGS}/python.libs"
+    track_install conda-env:tools "conda-forge + pkgs/python.libs"
     info "conda env 'tools' created"
-fi
-
-# ── R packages (pkgs/r-build.list + pkgs/r.libs) ─────────────────────────────
-header "R"
-if ! command -v Rscript &>/dev/null; then
-    warn "Rscript not found — r-base (dev.list) failed to install"
-elif confirm "Install R packages from r.libs?"; then
-    # tidyverse and its deps (ragg, httr, rvest, reprex, etc.) require system libs
-    install_list r-build
-    Rscript -e "
-        userlib <- Sys.getenv('R_LIBS_USER', unset = path.expand('~/R/library'))
-        dir.create(userlib, recursive = TRUE, showWarnings = FALSE)
-        .libPaths(c(userlib, .libPaths()))
-        pkgs <- readLines('${PKGS}/r.libs')
-        pkgs <- pkgs[nzchar(pkgs) & !startsWith(pkgs, '#')]
-        new  <- pkgs[!pkgs %in% installed.packages()[, 'Package']]
-        if (length(new)) install.packages(new, repos='https://cloud.r-project.org', lib = userlib, dependencies = TRUE) else message('all packages already installed')
-    "
-    info "R packages installed"
 fi
 
 # radian: modern R console (drop a stale shim first, or pipx refuses to install)

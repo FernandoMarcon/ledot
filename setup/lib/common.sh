@@ -17,6 +17,14 @@ confirm() {
     [[ "${ans,,}" != "n" ]]
 }
 
+# confirm_no — like confirm, but Enter means no
+confirm_no() {
+    local prompt="${1:-Continue?}"
+    local ans
+    read -rp "$(echo -e "${YELLOW}[?]${RESET} ${prompt} [y/N] ")" ans
+    [[ "${ans,,}" == "y" ]]
+}
+
 # apt-install every package in pkgs/<name>.list (blank and '#' lines skipped)
 install_list() {
     local list="${PKGS}/$1.list"
@@ -37,12 +45,18 @@ pipx_install() {
     local tool="$1"
     if command -v "$tool" &>/dev/null; then
         info "$tool already installed — skipping"
+        track_detected "$tool" "$(pipx_version "$tool")"
         return 0
     fi
     confirm "Install $tool (pipx)?" || return 0
     command -v pipx &>/dev/null || sudo apt-get install -y pipx
     pipx install "$tool"
+    track_install "$tool" pipx "$(pipx_version "$tool")"
     info "$tool installed"
+}
+
+pipx_version() {
+    pipx list --short 2>/dev/null | awk -v t="$1" '$1 == t { print $2 }'
 }
 
 # flatpak-install every app ID in pkgs/<name>.flatpak from Flathub (blank and '#' lines skipped)
@@ -60,4 +74,24 @@ install_flatpaks() {
     info "Installing $1.flatpak (${#apps[@]} apps)..."
     sudo flatpak install -y --noninteractive flathub "${apps[@]}"
     info "$1.flatpak done"
+}
+
+# ── Install state ────────────────────────────────────────────────────────────
+# Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, conda, git clones)
+# are logged in $XDG_STATE_HOME/ledot/installs.tsv: name, source, version, date (one line per name)
+INSTALL_STATE="${XDG_STATE_HOME:-${HOME}/.local/state}/ledot/installs.tsv"
+
+# track_install <name> <source> [version] — add or replace <name>'s line
+track_install() {
+    local tmp
+    mkdir -p "$(dirname "$INSTALL_STATE")"
+    tmp=$(mktemp)
+    [ -f "$INSTALL_STATE" ] && awk -F'\t' -v n="$1" '$1 != n' "$INSTALL_STATE" > "$tmp"
+    printf '%s\t%s\t%s\t%s\n' "$1" "$2" "${3:--}" "$(date +%F)" >> "$tmp"
+    mv "$tmp" "$INSTALL_STATE"
+}
+
+# track_detected <name> [version] — log something found already installed, unless it's already logged
+track_detected() {
+    grep -q "^$1	" "$INSTALL_STATE" 2>/dev/null || track_install "$1" detected "${2:-}"
 }

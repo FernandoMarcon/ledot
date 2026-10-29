@@ -22,6 +22,7 @@ nf_base="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1"
 for font in JetBrainsMono NerdFontsSymbolsOnly Iosevka; do
     if [ -d "${fonts_dir}/${font}" ]; then
         info "Nerd Font ${font} already installed"
+        track_detected "nerd-font:${font}"
         continue
     fi
     info "Installing Nerd Font ${font}..."
@@ -29,6 +30,7 @@ for font in JetBrainsMono NerdFontsSymbolsOnly Iosevka; do
     wget -q "${nf_base}/${font}.zip" -O "/tmp/${font}.zip"
     unzip -q -o "/tmp/${font}.zip" -d "${fonts_dir}/${font}/"
     rm -f "/tmp/${font}.zip"
+    track_install "nerd-font:${font}" "github:ryanoasis/nerd-fonts" "${nf_base##*/}"
     fonts_changed=1
 done
 [ -n "${fonts_changed:-}" ] && fc-cache -f
@@ -37,21 +39,27 @@ done
 icons="${HOME}/.local/share/icons"
 mkdir -p "$icons"
 
-if [ ! -d "${icons}/Zafiro-Icons-Dark" ]; then
+if [ -d "${icons}/Zafiro-Icons-Dark" ]; then
+    track_detected zafiro-icons
+else
     info "Installing Zafiro icon theme..."
     rm -rf /tmp/Zafiro-icons
     git clone -q https://github.com/zayronxio/Zafiro-icons.git /tmp/Zafiro-icons
     cp -r /tmp/Zafiro-icons/Dark  "${icons}/Zafiro-Icons-Dark"
     cp -r /tmp/Zafiro-icons/Light "${icons}/Zafiro-Icons-Light"
+    track_install zafiro-icons "git:zayronxio/Zafiro-icons" "$(git -C /tmp/Zafiro-icons rev-parse --short HEAD)"
     rm -rf /tmp/Zafiro-icons
 fi
 
 # Qogir cursors live inside Qogir-icon-theme
-if [ ! -d "${icons}/Qogir" ]; then
+if [ -d "${icons}/Qogir" ]; then
+    track_detected qogir-icons
+else
     info "Installing Qogir icon + cursor theme..."
     rm -rf /tmp/Qogir-icon-theme
     git clone -q https://github.com/vinceliuice/Qogir-icon-theme.git /tmp/Qogir-icon-theme
     bash /tmp/Qogir-icon-theme/install.sh
+    track_install qogir-icons "git:vinceliuice/Qogir-icon-theme" "$(git -C /tmp/Qogir-icon-theme rev-parse --short HEAD)"
     rm -rf /tmp/Qogir-icon-theme
 fi
 info "Desktop themes ready"
