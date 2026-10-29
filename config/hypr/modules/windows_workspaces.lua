@@ -49,7 +49,17 @@ hl.window_rule({
 --     float = true,
 -- })
 
-hl.layer_rule({ 
+-- Translate popup (config/quickshell/Translate.qml): float in the top-left corner
+hl.window_rule({
+    name  = "translate-popup",
+    match = { class = "^org\\.quickshell$", title = "^Translate$" },
+
+    float = true,
+    size  = "520 260",
+    move  = "20 20",
+})
+
+hl.layer_rule({
     name = "rofi-popup",
     match = { namespace = "rofi" },
     animation = "slide bottom",
