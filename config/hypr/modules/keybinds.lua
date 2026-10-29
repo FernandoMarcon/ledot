@@ -40,7 +40,7 @@ local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
 
 -- Color picker: click copies hex to clipboard
-hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd('c=$(hyprpicker -a -b -f hex -r) && notify-send -t 2000 "Color copied" "$c"'))
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(dotfiles .. "/bin/color_picker.sh"))
 
 
 -- [ Layout ] ------------------------------------------------------------------------------------------
