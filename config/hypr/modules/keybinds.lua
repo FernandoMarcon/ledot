@@ -147,3 +147,6 @@ local translate = dotfiles .. "/config/quickshell/Translate.qml"
 --- Translate
 local launch_translate = "qs -p " .. translate
 hl.bind(mainMod .. " + ALT + T", hl.dsp.exec_cmd(launch_translate))
+
+--- Reload hyprland, waybar, swaync, hyprsunset, kitty, tmux configs
+hl.bind(mainMod .. " + ALT + R", hl.dsp.exec_cmd(dotfiles .. "/bin/reload_configs.sh"))
