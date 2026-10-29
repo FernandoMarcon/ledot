@@ -1,6 +1,7 @@
 // Translate.qml — popup translator over bin/translate.sh
 // Standalone: qs -p ~/ledot/config/quickshell/Translate.qml
-// Enter: translate · Esc: close · target language editable on the right
+// Enter: translate + copy · Submit: translate + copy + close · Esc/mod+q: close
+// Translation is copied to the clipboard (wl-copy) as soon as it arrives
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -15,19 +16,40 @@ ShellRoot {
     readonly property color field: "#282828"
     readonly property color dim: "#808080"
 
+    // Close after the pending translation lands (Submit button)
+    property bool quitWhenDone: false
+    // Input/target of the last successful translation, to skip re-running it on Submit
+    property string lastKey
+
+    function key() {
+        return input.text.trim() + "\u0000" + (target.text.trim() || "pt-BR");
+    }
+
     function translate() {
         const text = input.text.trim();
         if (!text || proc.running)
             return;
         output.text = "Translating…";
+        proc.key = root.key();
         proc.out = "";
         proc.err = "";
         proc.command = [root.script, text];
         proc.running = true;
     }
 
+    function submit() {
+        if (!input.text.trim() || root.lastKey === root.key()) {
+            Qt.quit();
+            return;
+        }
+        root.quitWhenDone = true;
+        root.translate();
+    }
+
     FloatingWindow {
         title: "Translate"
+        // Closed by the compositor (mod+q): end the process too, not just the window
+        onClosed: Qt.quit()
         implicitWidth: 520
         implicitHeight: 260
         color: root.bg
@@ -92,6 +114,28 @@ ShellRoot {
                         Keys.onEscapePressed: Qt.quit()
                     }
                 }
+
+                Rectangle {
+                    implicitWidth: 72
+                    implicitHeight: 32
+                    radius: 4
+                    color: submitArea.containsMouse ? Qt.lighter(root.field, 1.4) : root.field
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Submit"
+                        color: root.fg
+                        font.family: "monospace"
+                    }
+
+                    MouseArea {
+                        id: submitArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.submit()
+                    }
+                }
             }
 
             Rectangle {
@@ -120,6 +164,7 @@ ShellRoot {
         // stdout wins; stderr (trans notices/errors, ANSI-colored) only shows when there is no result
         property string out
         property string err
+        property string key
 
         function show() {
             output.text = out || err.replace(/\x1b\[[0-9;]*m/g, "") || "Translating…";
@@ -127,7 +172,18 @@ ShellRoot {
 
         environment: ({ TO: target.text.trim() || "pt-BR" })
         stdout: StdioCollector {
-            onStreamFinished: { proc.out = this.text.trim(); proc.show(); }
+            onStreamFinished: {
+                proc.out = this.text.trim();
+                proc.show();
+                if (!proc.out) {
+                    root.quitWhenDone = false;  // failed: stay open to show the error
+                    return;
+                }
+                Quickshell.execDetached(["wl-copy", proc.out]);
+                root.lastKey = proc.key;
+                if (root.quitWhenDone)
+                    Qt.quit();
+            }
         }
         stderr: StdioCollector {
             onStreamFinished: { proc.err = this.text.trim(); proc.show(); }
