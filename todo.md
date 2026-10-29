@@ -43,7 +43,7 @@ i3wm / ricing:
 Privacy / Networking:
 - [x] tailscale                         → pkgs-cli.list + 02.setup-distro repo
 - [x] tor                               → pkgs-cli.list
-- [x] brotab (browser tab control from CLI) → 04.manual-setup (pip)
+- [ ] brotab (browser tab control from CLI): set up later (pipx install + browser extension)
 
 Containers / HPC:
 - [x] docker + docker compose           → pkgs-cli.list + 02.setup-distro repo

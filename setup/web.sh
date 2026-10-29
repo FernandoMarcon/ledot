@@ -1,6 +1,6 @@
 #!/bin/bash
 # web.sh → pkgs/web.list: browsers, torrents
-# Also: Brave + Mozilla repos, browser account logins, Tor Browser, brotab
+# Also: Brave + Mozilla repos, browser account logins, Tor Browser
 # Usage: bash ~/ledot/setup/web.sh
 
 set -euo pipefail
@@ -54,10 +54,3 @@ elif confirm "Install Tor Browser?"; then
     sudo apt-get install -y torbrowser-launcher
     note "Run torbrowser-launcher once to finish the download."
 fi
-
-# ── brotab (browser tab CLI) ─────────────────────────────────────────────────
-# pipx keeps it isolated from conda dependency conflicts
-pipx_install brotab
-note "brotab needs its browser extension:"
-note "  Chrome/Brave: https://chrome.google.com/webstore/detail/brotab/mhpeahbikehnfkfnmopaigggliclhmnc"
-note "  Firefox:      https://addons.mozilla.org/en-US/firefox/addon/brotab/"

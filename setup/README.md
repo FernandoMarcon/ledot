@@ -45,7 +45,7 @@ bash ~/ledot/install.sh --list     # all steps
 | `audio` | `audio.list` | |
 | `bluetooth` | `bluetooth.list` | |
 | `media` | `media.list`, `media.flatpak` | |
-| `web` | `web.list` | Brave + Mozilla repos, browser logins, Tor Browser, brotab |
+| `web` | `web.list` | Brave + Mozilla repos, browser logins, Tor Browser |
 | `system` | `system.list` | |
 | `apps` | `apps.list`, `apps.flatpak` | FUTO Notes repo, Thunar as default folder handler |
 | **After packages** | | |
