@@ -32,6 +32,8 @@ hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(waybar_launcher))
+hl.bind(mainMod .. " + ALT + H", hl.dsp.exec_cmd(terminal .. " -e btop"))
+hl.bind(mainMod .. " + ALT + V", hl.dsp.exec_cmd(terminal .. " -e nvim"))
 
 local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
