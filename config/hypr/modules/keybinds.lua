@@ -39,6 +39,9 @@ local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 -- Screenshot
 hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
 
+-- Color picker: click copies hex to clipboard
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd('c=$(hyprpicker -a -b -f hex -r) && notify-send -t 2000 "Color copied" "$c"'))
+
 
 -- [ Layout ] ------------------------------------------------------------------------------------------
 hl.bind(mainMod .. " + ALT + J", hl.dsp.layout("togglesplit"))    -- dwindle only

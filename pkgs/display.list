@@ -1,5 +1,6 @@
-# display.list — brightness, screenshots
+# display.list — brightness, screenshots, color picker
 
 brightnessctl
 grim
 slurp
+hyprpicker
