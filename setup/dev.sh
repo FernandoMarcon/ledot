@@ -53,9 +53,9 @@ if confirm "Install all Claude Code skills?"; then
     command -v npx &>/dev/null || die "npx not found — nodejs (dev.list) failed to install"
     for skill in "${SKILLS[@]}"; do
         echo "  Installing ${skill}..."
-        npx skills add "${skill}" \
+        npx -y skills add "${skill}" -g -a claude-code -y \
             && info "${skill} installed" \
-            || warn "${skill} failed — retry: npx skills add ${skill}"
+            || warn "${skill} failed — retry: npx skills add ${skill} -g -a claude-code"
     done
 fi
 
@@ -115,7 +115,9 @@ if ! [ -x "$CONDA" ]; then
 elif ${CONDA_RUN} env list 2>/dev/null | grep -q "^tools "; then
     info "conda env 'tools' already exists — skipping"
 elif confirm "Create conda env 'tools' (pkgs/python.libs)?"; then
-    ${CONDA_RUN} create -y -n tools python
+    # conda-forge only: Anaconda's default channels require accepting their ToS
+    # (non-interactive runs abort) and a paid license for large organizations
+    ${CONDA_RUN} create -y -n tools -c conda-forge --override-channels python
     ${CONDA_RUN} run -n tools pip install -r "${PKGS}/python.libs"
     info "conda env 'tools' created"
 fi
