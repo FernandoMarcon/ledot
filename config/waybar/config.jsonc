@@ -155,7 +155,9 @@
         "format": "󰂯",
         "format-on": "",
         "format-off": "󰂯",
+        "format-connected": "󰥰",
         "on-click": "blueman-manager",
+        "format-icons": ["󰥇","󰤾","󰤿","󰥀","󰥁","󰥂","󰥃","󰥄","󰥅","󰥆","󰥉"]
         // "tooltip-format": "{status}"
       },
     // "tray": {
