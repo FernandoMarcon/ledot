@@ -20,6 +20,7 @@ ITEM_SRC[btop]="${DOTFILES}/config/btop";             ITEM_DST[btop]="${CONFIG}/
 ITEM_SRC[bashrc]="${DOTFILES}/config/bashrc";         ITEM_DST[bashrc]="${HOME}/.bashrc"
 ITEM_SRC[cava]="${DOTFILES}/config/cava";             ITEM_DST[cava]="${CONFIG}/cava"
 ITEM_SRC[hypr]="${DOTFILES}/config/hypr";             ITEM_DST[hypr]="${CONFIG}/hypr"
+ITEM_SRC[kitty]="${DOTFILES}/config/kitty";           ITEM_DST[kitty]="${CONFIG}/kitty"
 ITEM_SRC[locales]="${DOTFILES}/config/locales";       ITEM_DST[locales]="${HOME}/.locales"
 ITEM_SRC[profile]="${DOTFILES}/config/profile";       ITEM_DST[profile]="${HOME}/.profile"
 ITEM_SRC[quickshell]="${DOTFILES}/config/quickshell"; ITEM_DST[quickshell]="${CONFIG}/quickshell"
@@ -29,7 +30,7 @@ ITEM_SRC[tmux]="${DOTFILES}/config/tmux";             ITEM_DST[tmux]="${CONFIG}/
 ITEM_SRC[vim]="${DOTFILES}/config/vim";               ITEM_DST[vim]="${CONFIG}/vim"
 ITEM_SRC[waybar]="${DOTFILES}/config/waybar";         ITEM_DST[waybar]="${CONFIG}/waybar"
 
-ALL_ITEMS=(aliases alacritty bashrc btop cava hypr locales profile quickshell ranger rofi tmux vim waybar)
+ALL_ITEMS=(aliases alacritty bashrc btop cava hypr kitty locales profile quickshell ranger rofi tmux vim waybar)
 
 # --links: symlinks only, skip post-activate hooks, ~/utils and /etc/hosts
 LINKS_ONLY=0
