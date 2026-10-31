@@ -23,6 +23,11 @@ sudo ufw allow 5353/udp comment 'mdns' >/dev/null
 sudo ufw allow 22000/tcp comment 'syncthing' >/dev/null
 sudo ufw allow 22000/udp comment 'syncthing' >/dev/null
 sudo ufw allow 21027/udp comment 'syncthing discovery' >/dev/null
+sudo ufw allow 12315/tcp comment 'grayjay sync' >/dev/null
+# Grayjay serves cast media on a random ephemeral port the TV pulls from; LAN only
+for lan in 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16; do
+    sudo ufw allow proto tcp from "$lan" to any port 32768:60999 comment 'grayjay cast (lan)' >/dev/null
+done
 
 # ── Drop IGMP (multicast group chatter from the router/LAN) without logging ──
 # Must sit before the ufw-not-local / logging rules in before.rules
