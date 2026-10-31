@@ -50,6 +50,7 @@ alias gstatus="git status"
 alias guntrack="git rm --cached "
 # alias loadkeys="eval '$(ssh-agent -s)'"
 alias loadkeys='pkill -u $(id -u) ssh-agent 2>/dev/null; eval $(ssh-agent -s)'
+alias gclone='git clone --depth 1 '
 
 # --- WEB
 alias web="w3m duckduckgo.com"
