@@ -21,8 +21,8 @@ gh repo clone FernandoMarcon/ledot ~/ledot
 ## Run
 
 ```bash
-bash ~/ledot/install.sh            # full: bootstrap → CLI → [desktop] → [carbon] → dotfiles → second-brain → syncthing → [R packages]
-bash ~/ledot/install.sh server     # headless: bootstrap → CLI → dotfiles → [R packages]
+bash ~/ledot/install.sh            # full: bootstrap → CLI → [desktop] → [carbon] → dotfiles → functions → second-brain → syncthing → [R packages]
+bash ~/ledot/install.sh server     # headless: bootstrap → CLI → dotfiles → functions → [R packages]
 bash ~/ledot/install.sh dev web    # specific steps
 bash ~/ledot/install.sh --list     # all steps
 bash ~/ledot/install.sh --state    # what was installed outside apt/flatpak, from where, which version
@@ -56,6 +56,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `carbon` | `carbon.list` | ThinkPad X1 Carbon 5th gen only (auto-detected from DMI): coretemp/RAPL early load for thermald, `initcall_blacklist=intel_uncore_init` (resource sanity warning), optional SD reader blacklist, optional ModemManager off (no SIM) |
 | **After packages** | | |
 | `dotfiles` | | symlinks from `config/dotfiles.state`, ~/utils repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
+| `functions` | `functions.list` | `functions/*` executable and on PATH (`~/.locales`), `~/.history/query` for `query` (prompt: `patterns/query.md`), `~/tunel`; warns about each function's missing commands |
 | `second-brain` | | Obsidian, `second-brain/setup.sh` |
 | `syncthing` | — | data partition mount (fstab by UUID), `~/<dir> → /data/drive/<dir>` links, Syncthing in Docker (`config/syncthing/compose.yml`; ports opened by `firewall`); removes the apt package/user service |
 | `r` | `r-build.list`, `r.libs` | R packages; runs last and asks first (default **no**) — slow to build |

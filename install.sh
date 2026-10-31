@@ -1,8 +1,8 @@
 #!/bin/bash
 # install.sh → run setup steps in order (each step is setup/<step>.sh)
 # Usage:
-#   install.sh                 full setup: bootstrap → CLI lists → [desktop lists] → [carbon] → dotfiles → second-brain → syncthing → [R packages]
-#   install.sh server          headless:   bootstrap → CLI lists → dotfiles → [R packages]
+#   install.sh                 full setup: bootstrap → CLI lists → [desktop lists] → [carbon] → dotfiles → functions → second-brain → syncthing → [R packages]
+#   install.sh server          headless:   bootstrap → CLI lists → dotfiles → functions → [R packages]
 #   install.sh <step> [...]    run specific steps, e.g. install.sh dev web
 #   install.sh --list          show available steps
 #   install.sh --state         show tools installed outside apt/flatpak ($XDG_STATE_HOME/ledot/installs.tsv)
@@ -35,10 +35,10 @@ case "${1:-}" in
             run "${GUI_STEPS[@]}"
         fi
         is_carbon && run carbon
-        run dotfiles second-brain syncthing r
+        run dotfiles functions second-brain syncthing r
         ;;
     server)
-        run bootstrap "${CLI_STEPS[@]}" dotfiles r
+        run bootstrap "${CLI_STEPS[@]}" dotfiles functions r
         ;;
     -l|--list)
         echo "Steps (setup/<step>.sh):"

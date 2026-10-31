@@ -1,0 +1,13 @@
+# functions.list — apt packages the scripts in functions/ call
+# Format (all *.list): one apt package per line; whole-line '#' comments only
+# Not apt: claude (query), gemini (search_llm) → dev step; docker (clean_docker) → dev step
+
+gawk
+jq
+less
+vim
+w3m
+yt-dlp
+wl-clipboard
+cryptsetup
+openssh-client
