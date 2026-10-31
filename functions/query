@@ -1,0 +1,32 @@
+#!/bin/bash
+# Ask Claude a quick question; short answer, web search allowed.
+# Logs query+answer to ~/.history/query/<timestamp>.md
+# USAGE: query <question...>
+
+if [ $# -eq 0 ]; then
+    echo "What's your query?"
+    exit 1
+fi
+
+QUERY="$*"
+HISTDIR="${HOME}/.history/query"
+PROMPT_FILE="${HOME}/ledot/patterns/query.md"
+LOG="${HISTDIR}/$(date +%Y-%m-%d_%H%M%S).md"
+
+mkdir -p "$HISTDIR"
+
+# Run from the history dir so no project CLAUDE.md is picked up.
+ANSWER=$(cd "$HISTDIR" && claude -p "$QUERY" \
+    --model haiku \
+    --system-prompt-file "$PROMPT_FILE" \
+    --tools "WebSearch,Read,Grep,Glob" \
+    --allowedTools "WebSearch" "Read(${HISTDIR}/**)" "Grep(${HISTDIR}/**)" "Glob(${HISTDIR}/**)" \
+    --setting-sources "" \
+    --strict-mcp-config \
+    --no-session-persistence)
+STATUS=$?
+
+echo "$ANSWER"
+
+[ $STATUS -eq 0 ] && printf '# %s\n\n%s\n' "$QUERY" "$ANSWER" > "$LOG"
+exit $STATUS
