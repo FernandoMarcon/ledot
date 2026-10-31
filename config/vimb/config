@@ -1,10 +1,10 @@
 # Homepage that vimb opens if started without a URI.
-set home-page=about:blank
+set home-page="https://fanglingsu.github.io/vimb/man.html"
 
 # Path to the default download directory. If no download directory is set,
 # download will be written into current directory. The following pattern will
 # be expanded if the download is started '~/', '~user', '$VAR' and '${VAR}'.
-set download-path=~/tmp/
+set download-path=~/Downloads/
 
 # Command with placeholder '%s' called if form field is opened with $EDITOR to
 # spawn the editor-like `x-terminal-emulator -e vim %s'. To use Gvim as the

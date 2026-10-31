@@ -86,3 +86,4 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # --- AI
 alias summarize="bash ~/utils/llm-tools/fabric-summarize "
 alias gemini="npx gemini"
+alias ?="query "
