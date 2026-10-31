@@ -1,14 +1,16 @@
 #!/bin/bash
 # Ask Claude a quick question; short answer, web search allowed.
 # Logs query+answer to ~/.history/query/<timestamp>.md
-# USAGE: query <question...>
+# USAGE: query <question...>   (no args in a terminal: prompts for it)
 
-if [ $# -eq 0 ]; then
+QUERY="$*"
+if [ -z "$QUERY" ] && [ -t 0 ]; then
+    read -rep "query> " QUERY
+fi
+if [ -z "$QUERY" ]; then
     echo "What's your query?"
     exit 1
 fi
-
-QUERY="$*"
 HISTDIR="${HOME}/.history/query"
 PROMPT_FILE="${HOME}/ledot/patterns/query.md"
 LOG="${HISTDIR}/$(date +%Y-%m-%d_%H%M%S).md"

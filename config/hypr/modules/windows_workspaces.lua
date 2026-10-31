@@ -87,3 +87,13 @@ hl.layer_rule({
     animation = "slide bottom",
     dim_around = true
 })
+
+-- query popup (keybinds.lua: SUPER+ALT+Q → foot --app-id=query): small floating dialog, centered
+hl.window_rule({
+    name  = "query-popup",
+    match = { class = "^query$" },
+
+    float  = true,
+    size   = "monitor_w*0.4 monitor_h*0.3",
+    center = true,
+})

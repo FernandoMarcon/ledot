@@ -155,3 +155,9 @@ hl.bind(mainMod .. " + ALT + T", hl.dsp.exec_cmd(launch_translate))
 
 --- Reload hyprland, waybar, swaync, hyprsunset, kitty, tmux configs
 hl.bind(mainMod .. " + ALT + R", hl.dsp.exec_cmd(dotfiles .. "/bin/reload_configs.sh"))
+
+
+--- [ FUNCTIONS ] ---------------------------------------
+--- Query
+-- hl.bind(mainMod .. " + SHIFT + slash", hl.dsp.exec_cmd("foot --app-id=query --hold " .. dotfiles .. "/functions/query"))
+hl.bind(mainMod .. " + ALT + Q", hl.dsp.exec_cmd("foot --app-id=query --hold " .. dotfiles .. "/functions/query"))
