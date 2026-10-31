@@ -97,3 +97,13 @@ hl.window_rule({
     size   = "monitor_w*0.4 monitor_h*0.3",
     center = true,
 })
+
+-- bwpick popup (keybinds.lua: SUPER+ALT+P → foot --app-id=bwpick): floating fzf picker, centered
+hl.window_rule({
+    name  = "bwpick-popup",
+    match = { class = "^bwpick$" },
+
+    float  = true,
+    size   = "monitor_w*0.45 monitor_h*0.4",
+    center = true,
+})

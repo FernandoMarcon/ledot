@@ -161,3 +161,6 @@ hl.bind(mainMod .. " + ALT + R", hl.dsp.exec_cmd(dotfiles .. "/bin/reload_config
 --- Query
 -- hl.bind(mainMod .. " + SHIFT + slash", hl.dsp.exec_cmd("foot --app-id=query --hold " .. dotfiles .. "/functions/query"))
 hl.bind(mainMod .. " + ALT + Q", hl.dsp.exec_cmd("foot --app-id=query --hold " .. dotfiles .. "/functions/query"))
+
+--- Bitwarden (bw + fzf → clipboard)
+hl.bind(mainMod .. " + ALT + P", hl.dsp.exec_cmd("foot --app-id=bwpick " .. dotfiles .. "/functions/bwpick"))

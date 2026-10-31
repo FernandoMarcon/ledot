@@ -11,6 +11,7 @@ PATTERNS="${DOTFILES}/patterns"
 
 # Commands each function needs beyond coreutils (checked at the end)
 declare -A DEPS=(
+    [bwpick]="bw jq fzf wl-copy wl-paste"
     [calc]="awk"
     [clean_docker]="docker"
     [cleanpkg]="pacman"
@@ -70,4 +71,4 @@ for f in "${FUNCS}"/*; do
 done
 
 [ "$missing" -eq 0 ] && info "All function dependencies found" \
-    || note "claude/gemini/docker → install.sh dev; hyprctl → desktop; pacman (cleanpkg) is Arch-only"
+    || note "claude/gemini/docker → install.sh dev; bw → tools; hyprctl → desktop; pacman (cleanpkg) is Arch-only"

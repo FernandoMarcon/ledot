@@ -1,0 +1,103 @@
+#!/bin/bash
+# Pick a Bitwarden login with fzf and copy a field to the clipboard (cleared after 30s).
+# Session key cached in $XDG_RUNTIME_DIR/bw-session (tmpfs, mode 600, gone at logout).
+# Vault syncs in the background when the last sync is older than 1 day; Ctrl-S syncs now.
+# Keys: Enter = password · Ctrl-U = username · Ctrl-T = TOTP · Ctrl-L = URL · Ctrl-S = sync now
+# USAGE: bwpick          (hyprland: SUPER+ALT+P → foot --app-id=bwpick)
+#        bwpick --lock   forget the session and lock the vault
+#
+# bw (node) is slow (~1-3s per call) and resets the tty mode on exit, so every bw call
+# runs with stdin from /dev/null and finishes before fzf starts; normally only one
+# bw call (list items) runs — fields come from that JSON, only TOTP needs another.
+
+set -uo pipefail
+
+RUNDIR="${XDG_RUNTIME_DIR:-/tmp}"
+SESSION_FILE="${RUNDIR}/bw-session"
+SYNC_STAMP="${RUNDIR}/bw-lastsync"
+CLEAR_AFTER=30
+
+bwq() { bw --nointeraction "$@" </dev/null 2>/dev/null; }
+notify() { command -v notify-send &>/dev/null && notify-send -a bwpick -t 3000 "Bitwarden" "$*"; echo "$*"; }
+
+if [ "${1:-}" = "--lock" ]; then
+    rm -f "$SESSION_FILE"
+    bwq lock >/dev/null
+    notify "Vault locked"
+    exit 0
+fi
+
+[ -f "$SESSION_FILE" ] && export BW_SESSION="$(<"$SESSION_FILE")"
+
+# Fast path: cached session still valid → one bw call
+items=$(bwq list items)
+if [ -z "$items" ]; then
+    case "$(bwq status | jq -r .status)" in
+        unauthenticated) bw login || exit 1 ;;
+        unlocked|locked) ;;
+        *) echo "bw status failed (is bw installed? install.sh tools)"; exit 1 ;;
+    esac
+    BW_SESSION=$(bw unlock --raw) || exit 1
+    [ -n "$BW_SESSION" ] || exit 1
+    export BW_SESSION
+    (umask 077; printf '%s' "$BW_SESSION" > "$SESSION_FILE")
+    items=$(bwq list items)
+fi
+
+# Background sync when older than 1 day (picked up on the next launch)
+if [ -z "$(find "$SYNC_STAMP" -mmin -1440 2>/dev/null)" ]; then
+    touch "$SYNC_STAMP"
+    setsid -f bash -c 'bw --nointeraction sync </dev/null &>/dev/null' &>/dev/null
+fi
+
+HEADER="enter: password · ^U: user · ^T: totp · ^L: url · ^S: sync"
+query="" status=""
+while true; do
+    # id <TAB> name <TAB> username <TAB> first URI   (logins only)
+    # Output: query line, key line, selected line
+    out=$(jq -r '.[] | select(.type == 1)
+                 | [.id, .name, (.login.username // ""), (.login.uris[0].uri // "")] | @tsv' <<< "$items" \
+        | fzf --delimiter='\t' --with-nth=2,3,4 --nth=1,2,3 \
+              --prompt="bw> " --reverse --no-multi --no-mouse \
+              --query="$query" --print-query \
+              --header="${HEADER}${status}" \
+              --expect=ctrl-u,ctrl-t,ctrl-l,ctrl-s)
+    [ $? -eq 130 ] && exit 0   # Esc / Ctrl-C
+
+    query=$(sed -n 1p <<< "$out")
+    key=$(sed -n 2p <<< "$out")
+    if [ "$key" = "ctrl-s" ]; then
+        clear; echo "Syncing vault..."
+        if bwq sync >/dev/null; then
+            touch "$SYNC_STAMP"
+            items=$(bwq list items)
+            status=$'\n'"synced $(date +%H:%M)"
+        else
+            status=$'\n'"sync failed"
+        fi
+        continue
+    fi
+    line=$(sed -n 3p <<< "$out")
+    [ -n "$line" ] || exit 0
+    break
+done
+
+IFS=$'\t' read -r id name _ <<< "$line"
+case "$key" in
+    ctrl-u) field=username; value=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .login.username // empty' <<< "$items") ;;
+    ctrl-l) field=url;      value=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .login.uris[0].uri // empty' <<< "$items") ;;
+    ctrl-t) field=totp;     value=$(bwq get totp "$id") ;;
+    *)      field=password; value=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .login.password // empty' <<< "$items") ;;
+esac
+unset items
+
+if [ -z "$value" ]; then
+    notify "$name: no $field"
+    sleep 1
+    exit 1
+fi
+
+printf '%s' "$value" | wl-copy
+# Clear only if the clipboard still holds our value; detached so closing the popup doesn't kill it
+setsid -f bash -c "sleep $CLEAR_AFTER; [ \"\$(wl-paste -n 2>/dev/null)\" = \"\$1\" ] && wl-copy --clear" _ "$value" &>/dev/null
+notify "$name: $field copied (clears in ${CLEAR_AFTER}s)"
