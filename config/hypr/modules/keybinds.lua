@@ -15,6 +15,7 @@ local fileManager = "kitty -e ranger" -- TUI; kitty for image previews
 -- local menu        = "rofi -show drun"
 local menu        = config .. "/rofi/type-2/launcher.sh"
 local browser     = "firefox"
+local minbrowser     = "vimb"
 
 local waybar_launcher = config .. "/waybar/scripts/launch.sh"
 
@@ -29,7 +30,8 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
 -- [ Launch Programs ] ---------------------------------------------------------------------------------
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(browser))
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(minbrowser))
+hl.bind(mainMod .. " + ALT + W", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(waybar_launcher))
 hl.bind(mainMod .. " + ALT + H", hl.dsp.exec_cmd(terminal .. " -e btop"))

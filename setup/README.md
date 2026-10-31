@@ -51,7 +51,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `web` | `web.list` | Brave + Mozilla repos, browser logins, Tor Browser |
 | `system` | `system.list` | upower enabled at boot |
 | `apps` | `apps.list`, `apps.flatpak` | FUTO Notes repo, Thunar as default folder handler |
-| `firewall` | ufw | resets ufw to deny-all-incoming + allowlist: ssh on tailscale0 only, tailscale 41641/udp, mDNS, Syncthing 22000 + 21027/udp; silent IGMP drop |
+| `firewall` | ufw | resets ufw to deny-all-incoming + allowlist: ssh on tailscale0 only, tailscale 41641/udp, mDNS, Syncthing 22000 + 21027/udp, Grayjay sync 12315/tcp + cast (ephemeral tcp ports, private LANs only); silent IGMP drop |
 | **Device** | | |
 | `carbon` | `carbon.list` | ThinkPad X1 Carbon 5th gen only (auto-detected from DMI): coretemp/RAPL early load for thermald, `initcall_blacklist=intel_uncore_init` (resource sanity warning), optional SD reader blacklist, optional ModemManager off (no SIM) |
 | **After packages** | | |

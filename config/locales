@@ -5,6 +5,7 @@ DOTFILES=$HOME/ledot
 
 export PATH="$HOME/.local/share:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/apps:$PATH"
 
 export PATH="$TOOLS:$PATH"
 export PATH="$TOOLS/bioinfo:$PATH"

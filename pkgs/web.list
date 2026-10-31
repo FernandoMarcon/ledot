@@ -1,8 +1,10 @@
 # web.list — browsers, torrents
+# vimb: minimal WebKitGTK browser (vim keys), low CPU/RAM — lighter than Min (Electron)
 # brave-browser sets up its own repo (setup/web.sh runs Brave's installer)
 
 firefox
 brave-browser
+vimb
 w3m
 transmission-cli
 transmission-gtk

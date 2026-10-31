@@ -123,8 +123,8 @@ esac
 
 # Add to PATH
 LOCALES="${HOME}/.locales"
-if [ -f ${LOCALES} ]; then
-    . ${LOCALES}
+if [ -f "${LOCALES}" ]; then
+    . "${LOCALES}"
 fi
 
 export VISUAL=vim;
