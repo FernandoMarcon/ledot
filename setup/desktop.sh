@@ -1,6 +1,6 @@
 #!/bin/bash
+# desktop.sh → pkgs/desktop.list: Hyprland desktop
 # Also: Hyprland PPA, Nerd Fonts, Zafiro + Qogir icon/cursor themes, dark mode (GTK + Qt)
-# Also: Hyprland PPA, Nerd Fonts, Zafiro + Qogir icon/cursor themes
 # Usage: bash ~/ledot/setup/desktop.sh
 
 set -euo pipefail

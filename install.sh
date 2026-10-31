@@ -44,7 +44,7 @@ case "${1:-}" in
         echo "Steps (setup/<step>.sh):"
         for f in "${DISTRO}"/*.sh; do
             step="$(basename "$f" .sh)"
-            printf "  %-14s %s\n" "$step" "$(sed -n '2s/^# [^ ]* — //p' "$f")"
+            printf "  %-14s %s\n" "$step" "$(sed -En '2s/^# [^ ]* (→|—) //p' "$f")"
         done
         exit 0
         ;;
