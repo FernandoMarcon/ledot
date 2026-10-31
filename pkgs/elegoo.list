@@ -1,0 +1,4 @@
+# ElegooSlicer AppImage runtime (setup/elegoo.sh)
+libfuse2t64
+libwebkit2gtk-4.1-0
+gstreamer1.0-plugins-good
