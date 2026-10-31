@@ -36,7 +36,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 |---|---|---|
 | `bootstrap` | | SSH key → GitHub, git identity |
 | **CLI** | | |
-| `minimal` | `minimal.list` | GitHub CLI repo, timezone |
+| `minimal` | `minimal.list` | GitHub CLI repo, timezone, `en_US.UTF-8` locale |
 | `network` | `network.list` | Tailscale repo, vpn-slice, VPN password in pass |
 | `files` | `files.list` | |
 | `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Antigravity, Miniconda + `tools` env (`python.libs`), radian, fabric, Singularity |
