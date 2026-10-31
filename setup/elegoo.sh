@@ -24,6 +24,12 @@ esac
 
 install_list elegoo
 
+# The app switches its UI to en_US and fails ("Switching language failed") if that locale isn't generated
+if ! locale -a | grep -qi '^en_US\.utf-\?8$'; then
+    sudo locale-gen en_US.UTF-8
+    info "en_US.UTF-8 locale generated"
+fi
+
 TAG=$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p')
 [ -n "$TAG" ] || die "Could not get the latest ${REPO} release"
 VERSION="${TAG#v}"
@@ -73,7 +79,8 @@ else
     info "Installing build dependencies..."
     sudo ./build_linux.sh -u
     info "Building ElegooSlicer ${VERSION} (deps + app + AppImage; this takes hours)..."
-    ./build_linux.sh -dsi   # not as root: a sudo build leaves root-owned files in the tree
+    # -j2: 4 parallel GUI compiles can exhaust 14G RAM; not as root: a sudo build leaves root-owned files in the tree
+    ./build_linux.sh -j2 -dsi
 
     BUILT=$(find build -maxdepth 2 -name "ElegooSlicer_Linux_V*.AppImage" | head -1)
     [ -n "$BUILT" ] || die "Build finished but no AppImage found under ${SRC_DIR}/build"
