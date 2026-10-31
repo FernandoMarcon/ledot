@@ -1,5 +1,5 @@
 #!/bin/bash
-# apps.sh → pkgs/apps.list + apps.flatpak: office, remote desktop, file manager, Proton, LocalSend, FreeCAD
+# apps.sh → pkgs/apps.list + apps.flatpak: office, remote desktop, file manager, Proton (+ GNOME tray extension), LocalSend, FreeCAD
 # Also: FUTO Notes repo, Thunar as default folder handler
 # Usage: bash ~/ledot/setup/apps.sh
 
@@ -19,6 +19,13 @@ sudo apt-get update -qq
 install_list apps
 sudo apt-get install -y futo-notes
 install_flatpaks apps
+
+# ── Proton VPN system tray (GNOME: AppIndicator extension) ───────────────────
+if command -v gnome-extensions &>/dev/null; then
+    gnome-extensions enable ubuntu-appindicators@ubuntu.com 2>/dev/null \
+        && info "AppIndicator extension enabled (Proton VPN tray icon)" \
+        || note "Enable AppIndicator in Extensions (gnome-extensions-app) from a GNOME session"
+fi
 
 # ── Thunar opens folders (mod+E stays ranger) ────────────────────────────────
 xdg-mime default thunar.desktop inode/directory

@@ -8,4 +8,7 @@ thunar
 thunar-archive-plugin
 gvfs
 tumbler
+# Proton VPN tray icon (GNOME session; Proton VPN itself is in apps.flatpak)
+gnome-shell-extension-appindicator
+gnome-shell-extension-prefs
 # FUTO Notes: setup/apps.sh (FUTO apt repo)
