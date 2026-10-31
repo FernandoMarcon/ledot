@@ -37,13 +37,13 @@ echo "  5. Bitwarden extension (Chrome Web Store)"
 echo ""
 if [ -z "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]; then
     warn "No graphical session — do these logins later"
-elif confirm "Open Brave with each URL now?"; then
+elif confirm_no "Open Brave with each URL now?"; then
     brave-browser https://proton.me &
     sleep 2; brave-browser https://vault.bitwarden.com &
     sleep 2; brave-browser https://mail.google.com &
     sleep 2; brave-browser "https://chromewebstore.google.com/detail/bitwarden-password-manage/nngceckbapebfimnlniiiahkandclblb?browser=brave" &
     note "Brave windows opened. Complete all logins, then return here."
-    confirm "Done with browser logins?" || warn "Finish them later"
+    confirm_no "Done with browser logins?" || warn "Finish them later"
 fi
 
 # ── Tor Browser ──────────────────────────────────────────────────────────────
