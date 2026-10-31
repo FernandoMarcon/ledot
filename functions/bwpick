@@ -1,10 +1,13 @@
 #!/bin/bash
 # Pick a Bitwarden login with fzf and copy a field to the clipboard (cleared after 30s).
 # Session key cached in $XDG_RUNTIME_DIR/bw-session (tmpfs, mode 600, gone at logout).
+# Auto-lock: vault locks after 5 min without using bwpick (timer started on each exit,
+# plus a check on launch in case the timer was missed, e.g. across suspend).
 # Vault syncs in the background when the last sync is older than 1 day; Ctrl-S syncs now.
 # Keys: Enter = password · Ctrl-U = username · Ctrl-T = TOTP · Ctrl-L = URL · Ctrl-S = sync now
 # USAGE: bwpick          (hyprland: SUPER+ALT+P → foot --app-id=bwpick)
 #        bwpick --lock   forget the session and lock the vault
+#        bwpick --autolock   lock only if idle ≥ 5 min (used by the timer)
 #
 # bw (node) is slow (~1-3s per call) and resets the tty mode on exit, so every bw call
 # runs with stdin from /dev/null and finishes before fzf starts; normally only one
@@ -16,17 +19,27 @@ RUNDIR="${XDG_RUNTIME_DIR:-/tmp}"
 SESSION_FILE="${RUNDIR}/bw-session"
 SYNC_STAMP="${RUNDIR}/bw-lastsync"
 CLEAR_AFTER=30
+LOCK_AFTER=300   # seconds idle before auto-lock
+SELF=$(readlink -f "${BASH_SOURCE[0]}")
 
 bwq() { bw --nointeraction "$@" </dev/null 2>/dev/null; }
 notify() { command -v notify-send &>/dev/null && notify-send -a bwpick -t 3000 "Bitwarden" "$*"; echo "$*"; }
 
-if [ "${1:-}" = "--lock" ]; then
-    rm -f "$SESSION_FILE"
-    bwq lock >/dev/null
-    notify "Vault locked"
-    exit 0
-fi
+idle_secs() { echo $(( $(date +%s) - $(stat -c %Y "$SESSION_FILE") )); }
+lock_vault() { rm -f "$SESSION_FILE"; bwq lock >/dev/null; }
 
+case "${1:-}" in
+    --lock)
+        lock_vault
+        notify "Vault locked"
+        exit 0 ;;
+    --autolock)
+        [ -f "$SESSION_FILE" ] && [ "$(idle_secs)" -ge "$LOCK_AFTER" ] && lock_vault
+        exit 0 ;;
+esac
+
+# Idle too long (timer missed, e.g. suspend) → lock before using the session
+[ -f "$SESSION_FILE" ] && [ "$(idle_secs)" -ge "$LOCK_AFTER" ] && lock_vault
 [ -f "$SESSION_FILE" ] && export BW_SESSION="$(<"$SESSION_FILE")"
 
 # Fast path: cached session still valid → one bw call
@@ -43,6 +56,16 @@ if [ -z "$items" ]; then
     (umask 077; printf '%s' "$BW_SESSION" > "$SESSION_FILE")
     items=$(bwq list items)
 fi
+
+# Mark use now (so older timers don't lock while the picker is open) and on exit;
+# each exit starts a timer that locks if nothing used the vault in the meantime
+touch "$SESSION_FILE"
+on_exit() {
+    [ -f "$SESSION_FILE" ] || return
+    touch "$SESSION_FILE"
+    setsid -f bash -c 'sleep "$1"; "$2" --autolock' _ "$((LOCK_AFTER + 1))" "$SELF" &>/dev/null
+}
+trap on_exit EXIT
 
 # Background sync when older than 1 day (picked up on the next launch)
 if [ -z "$(find "$SYNC_STAMP" -mmin -1440 2>/dev/null)" ]; then
