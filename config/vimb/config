@@ -9,7 +9,7 @@ set download-path=~/tmp/
 # Command with placeholder '%s' called if form field is opened with $EDITOR to
 # spawn the editor-like `x-terminal-emulator -e vim %s'. To use Gvim as the
 # editor, it's necessary to call it with `-f' to run it in the foreground.
-set editor-command=termite -e "nvim %s"
+set editor-command=kitty -e nvim %s
 
 # If enabled the inputbox will be hidden whenever it contains no text.
 set input-autohide=true
@@ -19,7 +19,7 @@ set spell-checking=true
 
 # Set comma separated list of spell checking languages to be used for
 # spell checking.
-set spell-checking-languages=en,de
+set spell-checking-languages=en,pt_BR
 
 # Enable or disable support for WebGL on pages.
 set webgl=true
@@ -32,7 +32,7 @@ set incsearch=true
 set default-font=DejaVu Sans
 
 # The font family used as the default for content using monospace font.
-set monospace-font=DejaVu Sans Mono
+set monospace-font=Iosevka Nerd Font Mono
 
 # The font family used as the default for content using sans-serif font.
 set sans-serif-font=DejaVu Sans
@@ -68,13 +68,12 @@ nmap - zO
 nmap = zz
 
 # GUI color settings
-# Color scheme: Base16 Eighties (https://github.com/chriskempson/base16)
-set completion-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
-set completion-hover-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
-set completion-selected-css=color:#d3d0c8;background-color:#515151;font:12pt DejaVu Sans Mono;
-set input-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
-set input-error-css=color:#f2777a;background-color:#393939;font:12pt DejaVu Sans Mono;
-set status-css=color:#ffcc66;background-color:#393939;font:12pt DejaVu Sans Mono;
-set status-ssl-css=color:#99cc99;background-color:#393939;font:12pt DejaVu Sans Mono;
-set status-ssl-invalid-css=color:#f2777a;background-color:#393939;font:12pt DejaVu Sans Mono;
-
+# Color scheme: Gruvbox Material (matches waybar/rofi: config/waybar/colors/gruvbox-material.css)
+set completion-css=color:#d4be98;background-color:#1d2021;font:500 11pt Iosevka Nerd Font Propo;
+set completion-hover-css=color:#d4be98;background-color:#282828;font:500 11pt Iosevka Nerd Font Propo;
+set completion-selected-css=color:#1d2021;background-color:#7daea3;font:500 11pt Iosevka Nerd Font Propo;
+set input-css=color:#d4be98;background-color:#1d2021;font:500 11pt Iosevka Nerd Font Propo;
+set input-error-css=color:#ea6962;background-color:#1d2021;font:500 11pt Iosevka Nerd Font Propo;
+set status-css=color:#d8a657;background-color:#282828;font:500 11pt Iosevka Nerd Font Propo;
+set status-ssl-css=color:#a9b665;background-color:#282828;font:500 11pt Iosevka Nerd Font Propo;
+set status-ssl-invalid-css=color:#ea6962;background-color:#282828;font:500 11pt Iosevka Nerd Font Propo;

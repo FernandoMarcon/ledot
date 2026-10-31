@@ -31,9 +31,10 @@ ITEM_SRC[ranger]="${DOTFILES}/config/ranger";         ITEM_DST[ranger]="${CONFIG
 ITEM_SRC[rofi]="${DOTFILES}/config/rofi";             ITEM_DST[rofi]="${CONFIG}/rofi"
 ITEM_SRC[tmux]="${DOTFILES}/config/tmux";             ITEM_DST[tmux]="${CONFIG}/tmux"
 ITEM_SRC[vim]="${DOTFILES}/config/vim";               ITEM_DST[vim]="${CONFIG}/vim"
+ITEM_SRC[vimb]="${DOTFILES}/config/vimb";             ITEM_DST[vimb]="${CONFIG}/vimb"
 ITEM_SRC[waybar]="${DOTFILES}/config/waybar";         ITEM_DST[waybar]="${CONFIG}/waybar"
 
-ALL_ITEMS=(aliases alacritty bashrc btop cava hypr kitty locales profile quickshell ranger rofi tmux vim waybar)
+ALL_ITEMS=(aliases alacritty bashrc btop cava hypr kitty locales profile quickshell ranger rofi tmux vim vimb waybar)
 
 # --links: symlinks only, skip post-activate hooks, ~/utils and /etc/hosts
 LINKS_ONLY=0
