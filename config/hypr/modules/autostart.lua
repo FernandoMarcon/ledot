@@ -17,6 +17,8 @@ hl.on("hyprland.start", function ()
     -- hl.exec_cmd("quickshell")
     -- Bluetooth tray applet only on machines with an adapter
     hl.exec_cmd(dotfiles .. "/bin/get_bluetooth.sh && blueman-applet")
+    -- Proton VPN tray icon (flatpak), no window at login
+    hl.exec_cmd("flatpak run com.protonvpn.www --start-minimized")
     -- h1.exec_cmd("swaync")
 --     hl.exec_cmd(terminal)
 --     hl.exec_cmd("nm-applet")
