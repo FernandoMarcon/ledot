@@ -6,4 +6,5 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
 install_list media
+install_ytdlp
 install_flatpaks media

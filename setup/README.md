@@ -47,7 +47,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `display` | `display.list` | |
 | `audio` | `audio.list` | |
 | `bluetooth` | `bluetooth.list` | `/etc/bluetooth` mode 555 |
-| `media` | `media.list`, `media.flatpak` | |
+| `media` | `media.list`, `media.flatpak` | yt-dlp via pipx with `curl_cffi` (`--impersonate`) |
 | `web` | `web.list` | Brave + Mozilla repos, browser logins, Tor Browser |
 | `system` | `system.list` | upower enabled at boot |
 | `apps` | `apps.list`, `apps.flatpak` | FUTO Notes repo, AppIndicator GNOME extension (Proton VPN tray icon), Thunar as default folder handler |
@@ -56,7 +56,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `carbon` | `carbon.list` | ThinkPad X1 Carbon 5th gen only (auto-detected from DMI): coretemp/RAPL early load for thermald, `initcall_blacklist=intel_uncore_init` (resource sanity warning), optional SD reader blacklist, optional ModemManager off (no SIM) |
 | **After packages** | | |
 | `dotfiles` | | symlinks from `config/dotfiles.state`, ~/utils repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
-| `functions` | `functions.list` | `functions/*` executable and on PATH (`~/.locales`), `~/.history/query` for `query` (prompt: `patterns/query.md`), `~/tunel`; warns about each function's missing commands |
+| `functions` | `functions.list` | yt-dlp via pipx with `curl_cffi`, `functions/*` executable and on PATH (`~/.locales`), `~/.history/query` for `query` (prompt: `patterns/query.md`), `~/tunel`; warns about each function's missing commands |
 | `second-brain` | | Obsidian, `second-brain/setup.sh` |
 | `syncthing` | — | data partition mount (fstab by UUID), `~/<dir> → /data/drive/<dir>` links, Syncthing in Docker (`config/syncthing/compose.yml`; ports opened by `firewall`); removes the apt package/user service |
 | `r` | `r-build.list`, `r.libs` | R packages; runs last and asks first (default **no**) — slow to build |

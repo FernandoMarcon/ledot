@@ -59,6 +59,23 @@ pipx_version() {
     pipx list --short 2>/dev/null | awk -v t="$1" '$1 == t { print $2 }'
 }
 
+# install_ytdlp — yt-dlp via pipx with curl_cffi (browser impersonation, --impersonate);
+# Ubuntu has no python3-curl-cffi, so the apt yt-dlp can't use it. Idempotent.
+install_ytdlp() {
+    command -v pipx &>/dev/null || sudo apt-get install -y pipx
+    if pipx list --short 2>/dev/null | awk '$1 == "yt-dlp" { f=1 } END { exit !f }'; then
+        pipx inject -q yt-dlp curl_cffi
+        info "yt-dlp (pipx) present — curl_cffi ensured"
+    else
+        pipx install "yt-dlp[default,curl-cffi]"
+        track_install yt-dlp pipx "$(pipx_version yt-dlp)"
+        info "yt-dlp installed (pipx, with curl_cffi)"
+    fi
+    dpkg -s yt-dlp &>/dev/null \
+        && note "apt yt-dlp also installed (shadowed by ~/.local/bin): sudo apt remove yt-dlp"
+    return 0
+}
+
 # flatpak-install every app ID in pkgs/<name>.flatpak from Flathub (blank and '#' lines skipped)
 install_flatpaks() {
     local list="${PKGS}/$1.flatpak"

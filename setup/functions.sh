@@ -34,6 +34,7 @@ declare -A DEPS=(
 )
 
 install_list functions
+install_ytdlp
 
 # ── Executable bits ──────────────────────────────────────────────────────────
 chmod +x "${FUNCS}"/*

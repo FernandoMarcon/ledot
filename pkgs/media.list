@@ -1,7 +1,6 @@
-# media.list — players, downloaders, image tools
+# media.list — players, downloaders, image tools (yt-dlp: pipx + curl_cffi, see setup/media.sh)
 
 mpv
-yt-dlp
 playerctl
 imagemagick
 vlc
