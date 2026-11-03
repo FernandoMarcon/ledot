@@ -42,7 +42,7 @@ local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
 
 -- Screenshot
-hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
+hl.bind("Print", hl.dsp.exec_cmd(dotfiles .. "/bin/screenshot.sh"))
 
 -- Color picker: click copies hex to clipboard
 hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(dotfiles .. "/bin/color_picker.sh"))
