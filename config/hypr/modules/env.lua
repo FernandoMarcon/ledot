@@ -28,6 +28,12 @@ hl.env("XDG_DATA_HOME",   home .. "/.local/share")
 hl.env("XDG_CACHE_HOME",  home .. "/.cache")
 hl.env("XDG_STATE_HOME",  home .. "/.local/state")
 
+-- User bin on PATH (claude, nvim, bw...) so keybind-launched scripts find them
+local path = os.getenv("PATH") or ""
+if not (":" .. path .. ":"):find(":" .. home .. "/.local/bin:", 1, true) then
+    hl.env("PATH", home .. "/.local/bin:" .. path)
+end
+
 -- XDG Specifications
 hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 hl.env("XDG_SESSION_TYPE", "wayland")
