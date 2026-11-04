@@ -58,15 +58,15 @@ Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quick
 | 6 | `tools` | everyday handy tools, Bitwarden CLI |
 | **Desktop** (skip on servers) | | |
 | 7 | `desktop` | Hyprland desktop, fonts, themes |
-| 8 | `greeter` | greetd + tuigreet login on tty1 |
-| 9 | `display` | brightness, screenshots |
-| 10 | `audio` | PipeWire stack, mixers, visualizer |
-| 11 | `bluetooth` | bluetooth |
-| 12 | `media` | players, downloaders, image tools |
-| 13 | `web` | browsers, torrents |
-| 14 | `system` | disks, power, monitoring |
-| 15 | `apps` | office, remote desktop, file manager, Proton, LocalSend, FreeCAD |
-| 16 | `firewall` | ufw deny-all-incoming + allowlist |
+| 8 | `display` | brightness, screenshots |
+| 9 | `audio` | PipeWire stack, mixers, visualizer |
+| 10 | `bluetooth` | bluetooth |
+| 11 | `media` | players, downloaders, image tools |
+| 12 | `web` | browsers, torrents |
+| 13 | `system` | disks, power, monitoring |
+| 14 | `apps` | office, remote desktop, file manager, Proton, LocalSend, FreeCAD |
+| 15 | `firewall` | ufw deny-all-incoming + allowlist |
+| 16 | `greeter` | greetd + tuigreet login on tty1, replacing gdm3 (asks, default no) |
 | **Device** | | |
 | 17 | `carbon` | ThinkPad X1 Carbon 5th gen quirks (auto-detected) |
 | **After packages** | | |

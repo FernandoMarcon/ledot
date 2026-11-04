@@ -5,6 +5,15 @@
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
+# Replaces the current display manager (e.g. gdm3), so it asks first; default no
+dm="$(basename "$(readlink /etc/systemd/system/display-manager.service 2>/dev/null || echo none)" .service)"
+if [ "$dm" = "greetd" ]; then
+    info "greetd is already the display manager"
+elif ! confirm_no "Replace display manager (${dm}) with greetd + tuigreet?"; then
+    info "Skipping greeter"
+    exit 0
+fi
+
 sudo apt-get install -y greetd tuigreet
 
 # ── greetd: tuigreet on tty1 ─────────────────────────────────────────────────
@@ -31,7 +40,8 @@ TTYVHangup=true
 TTYVTDisallocate=true
 CONF
 sudo systemctl daemon-reload
-sudo systemctl enable greetd
+# --force replaces the display-manager.service alias another DM (gdm3) holds
+sudo systemctl enable --force greetd
 info "greetd configured"
 
 # ── Kernel console: errors and below stay in the journal ─────────────────────

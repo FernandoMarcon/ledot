@@ -1,7 +1,7 @@
 #!/bin/bash
 # install.sh → run setup steps in order (each step is setup/<step>.sh)
 # Usage:
-#   install.sh                 full setup: bootstrap → CLI lists → [desktop lists] → [carbon] → dotfiles → functions → second-brain → syncthing → [R packages]
+#   install.sh                 full setup: bootstrap → CLI lists → [desktop lists → [greeter]] → [carbon] → dotfiles → functions → second-brain → syncthing → [R packages]
 #   install.sh server          headless:   bootstrap → CLI lists → dotfiles → functions → [R packages]
 #   install.sh <step> [...]    run specific steps, e.g. install.sh dev web
 #   install.sh --list          show available steps
@@ -13,7 +13,7 @@ DISTRO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/setup"
 source "${DISTRO}/lib/common.sh"
 
 CLI_STEPS=(minimal network files dev tools)
-GUI_STEPS=(desktop greeter display audio bluetooth media web system apps firewall)
+GUI_STEPS=(desktop display audio bluetooth media web system apps firewall)
 
 is_carbon() { grep -q "X1 Carbon" /sys/class/dmi/id/product_version 2>/dev/null; }
 
@@ -32,7 +32,7 @@ case "${1:-}" in
     "")
         run bootstrap "${CLI_STEPS[@]}"
         if confirm "Install desktop packages (${GUI_STEPS[*]})?"; then
-            run "${GUI_STEPS[@]}"
+            run "${GUI_STEPS[@]}" greeter
         fi
         is_carbon && run carbon
         run dotfiles functions second-brain syncthing r

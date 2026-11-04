@@ -43,7 +43,6 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `tools` | `tools.list` | Bitwarden CLI (`bw`, native binary → `~/.local/bin`) |
 | **Desktop** | | |
 | `desktop` | `desktop.list` | Hyprland PPA (incl. hyprsunset night light), Nerd Fonts, Zafiro + Qogir themes |
-| `greeter` | — | greetd + tuigreet on tty1; quiet boot/kernel console so nothing prints over the login |
 | `display` | `display.list` | |
 | `audio` | `audio.list` | |
 | `bluetooth` | `bluetooth.list` | `/etc/bluetooth` mode 555 |
@@ -52,6 +51,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `system` | `system.list` | upower enabled at boot |
 | `apps` | `apps.list`, `apps.flatpak` | FUTO Notes repo, AppIndicator GNOME extension (Proton VPN tray icon), Thunar as default folder handler |
 | `firewall` | ufw | resets ufw to deny-all-incoming + allowlist: ssh on tailscale0 only, tailscale 41641/udp, mDNS, Syncthing 22000 + 21027/udp, Grayjay sync 12315/tcp + cast (ephemeral tcp ports, private LANs only); silent IGMP drop |
+| `greeter` | — | asks first (default **no**): replaces the display manager (gdm3) with greetd + tuigreet on tty1; quiet boot/kernel console so nothing prints over the login |
 | **Device** | | |
 | `carbon` | `carbon.list` | ThinkPad X1 Carbon 5th gen only (auto-detected from DMI): coretemp/RAPL early load for thermald, `initcall_blacklist=intel_uncore_init` (resource sanity warning), optional SD reader blacklist, optional ModemManager off (no SIM) |
 | **After packages** | | |
