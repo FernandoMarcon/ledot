@@ -1,67 +1,83 @@
 # Dotfiles
 
-## Before `setup/bootstrap.sh` (full guide: [setup/README.md](setup/README.md))
-Use the **GitHub CLI device flow** — it gives you a one-time code you enter in any browser (including your phone).
+Ubuntu 26.04 machine setup + dotfiles. Full details: [setup/README.md](setup/README.md).
+
+## 1. Install / set up everything
+
+On a fresh machine, get the repo first. The GitHub CLI device flow works without a browser: open `github.com/login/device` on your phone and enter the code it prints.
 
 ```bash
-# Install gh CLI
-sudo apt update && sudo apt install gh -y
-
-# Authenticate — choose HTTPS, then "Login with a web browser"
-gh auth login
-```
-
-It will print something like:
-
-```
-! First copy your one-time code: ABCD-1234
-- Press Enter to open github.com in your browser...
-```
-
-Don't press Enter (no browser on a server). Instead, **open `github.com/login/device` on your phone**, enter the code, and approve. Back on the server, the auth completes automatically.
-
-Then clone:
-
-```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install gh -y
+gh auth login                                   # GitHub.com → HTTPS → Login with a web browser
 gh repo clone FernandoMarcon/ledot ~/ledot
-# or
-git clone https://github.com/FernandoMarcon/ledot.git ~/ledot
 ```
 
----
-
-## After cloning: set up a proper SSH key (`setup/bootstrap.sh` does this for you)
-
-Once you're in, generate a key and add it to GitHub so future pushes work normally:
+Then run the full setup (`bootstrap` creates the SSH key, adds it to GitHub and sets the git identity):
 
 ```bash
-ssh-keygen -t ed25519 -C "your@email.com"
-# Accept defaults, optionally set a passphrase
-
-# Print the public key
-cat ~/.ssh/id_ed25519.pub
+bash ~/ledot/install.sh           # desktop: asks before the desktop group, R packages last
+bash ~/ledot/install.sh server    # headless: CLI steps + dotfiles + functions + [R]
 ```
 
-Then add it to GitHub: **Settings → SSH and GPG keys → New SSH key**, paste it in. From then on you can switch your remote to SSH:
+Every step is idempotent, so re-running is safe.
+
+## 2. Install / set up a specific group
+
+Each group is one script, `setup/<group>.sh`, installing `pkgs/<group>.list` (+ `.flatpak`) and its extras:
 
 ```bash
-cd ~/ledot
-git remote set-url origin git@github.com:FernandoMarcon/ledot.git
+bash ~/ledot/install.sh web            # one group
+bash ~/ledot/install.sh dev web media  # several, in the given order
+bash ~/ledot/install.sh --list         # all groups
+bash ~/ledot/install.sh --state        # what was installed outside apt/flatpak
 ```
 
-## Main Programs
-- vim
-- i3
-- dmenu
-- ranger
-- tmux
-- vimwiki
+## 3. Set up dotfiles
 
-Run:
+Symlinks `config/<item>` into `~/.config` (or `~`), backing up anything already there. Which items are on lives in [config/dotfiles.state](config/dotfiles.state) (`<item> yes|no`).
+
 ```bash
-git clone git@github.com:FernandoMarcon/ledot.git ~/ledot
-bash ~/ledot/install.sh
+bash ~/ledot/setup/dotfiles.sh            # apply the state file (+ plugin installs, ~/utils, /etc/hosts)
+bash ~/ledot/setup/dotfiles.sh --links    # symlinks only
+bash ~/ledot/setup/dotfiles.sh nvim tmux  # activate specific items
 ```
+
+Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quickshell ranger rofi tmux vim vimb waybar` (+ `tools` for the ~/utils repo). Some install their plugin manager on activation: tmux → TPM, vim → Vundle, nvim → packer.nvim.
+
+## 4. Setup items (install order)
+
+| # | Group | What |
+|---|---|---|
+| 1 | `bootstrap` | SSH key, GitHub access, git identity |
+| **CLI** | | |
+| 2 | `minimal` | essentials for a working CLI system, timezone, locale |
+| 3 | `network` | VPN, remote filesystems, Tailscale |
+| 4 | `files` | ranger previews, archives, file utilities |
+| 5 | `dev` | languages and dev tooling, Docker, Claude Code, Miniconda |
+| 6 | `tools` | everyday handy tools, Bitwarden CLI |
+| **Desktop** (skip on servers) | | |
+| 7 | `desktop` | Hyprland desktop, fonts, themes |
+| 8 | `greeter` | greetd + tuigreet login on tty1 |
+| 9 | `display` | brightness, screenshots |
+| 10 | `audio` | PipeWire stack, mixers, visualizer |
+| 11 | `bluetooth` | bluetooth |
+| 12 | `media` | players, downloaders, image tools |
+| 13 | `web` | browsers, torrents |
+| 14 | `system` | disks, power, monitoring |
+| 15 | `apps` | office, remote desktop, file manager, Proton, LocalSend, FreeCAD |
+| 16 | `firewall` | ufw deny-all-incoming + allowlist |
+| **Device** | | |
+| 17 | `carbon` | ThinkPad X1 Carbon 5th gen quirks (auto-detected) |
+| **After packages** | | |
+| 18 | `dotfiles` | config symlinks, ~/utils, /etc/hosts |
+| 19 | `functions` | `functions/*` on PATH + their dependencies |
+| 20 | `second-brain` | Obsidian + Second Brain workspace |
+| 21 | `syncthing` | data partition, `~/<dir>` links, Syncthing in Docker |
+| 22 | `r` | R packages (slow; asks, default no) |
+| **Optional** (`install.sh <group>` only) | | |
+| — | `nvim` | Neovim from `progs/` tarball → GitHub release → apt |
+| — | `elegoo` | ElegooSlicer 3D printing slicer ([docs](docs/printers/elegoo-slicer.md)) |
 
 ## TO-DO
 ### NVIM/VIM
