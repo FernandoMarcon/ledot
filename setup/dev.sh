@@ -68,6 +68,15 @@ if confirm "Install all Claude Code skills?"; then
     done
 fi
 
+# Local skills: every patterns/<name>/SKILL.md → ~/.claude/skills/<name>
+for skill_dir in "${HOME}/ledot/patterns"/*/; do
+    [ -f "${skill_dir}SKILL.md" ] || continue
+    name="$(basename "${skill_dir}")"
+    mkdir -p "${HOME}/.claude/skills"
+    ln -sfn "${skill_dir%/}" "${HOME}/.claude/skills/${name}"
+    info "local skill ${name} linked"
+done
+
 # ── Gemini CLI ───────────────────────────────────────────────────────────────
 header "Gemini CLI"
 if command -v gemini &>/dev/null; then
