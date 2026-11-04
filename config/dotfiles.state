@@ -14,3 +14,4 @@ waybar       yes
 btop         yes
 kitty        yes
 vimb         yes
+nvim         yes

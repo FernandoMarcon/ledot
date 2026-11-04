@@ -24,6 +24,7 @@ ITEM_SRC[cava]="${DOTFILES}/config/cava";             ITEM_DST[cava]="${CONFIG}/
 ITEM_SRC[kitty]="${DOTFILES}/config/kitty";           ITEM_DST[kitty]="${CONFIG}/kitty"
 ITEM_SRC[hypr]="${DOTFILES}/config/hypr";             ITEM_DST[hypr]="${CONFIG}/hypr"
 ITEM_SRC[kitty]="${DOTFILES}/config/kitty";           ITEM_DST[kitty]="${CONFIG}/kitty"
+ITEM_SRC[nvim]="${DOTFILES}/config/nvim";             ITEM_DST[nvim]="${CONFIG}/nvim"
 ITEM_SRC[locales]="${DOTFILES}/config/locales";       ITEM_DST[locales]="${HOME}/.locales"
 ITEM_SRC[profile]="${DOTFILES}/config/profile";       ITEM_DST[profile]="${HOME}/.profile"
 ITEM_SRC[quickshell]="${DOTFILES}/config/quickshell"; ITEM_DST[quickshell]="${CONFIG}/quickshell"
@@ -34,7 +35,7 @@ ITEM_SRC[vim]="${DOTFILES}/config/vim";               ITEM_DST[vim]="${CONFIG}/v
 ITEM_SRC[vimb]="${DOTFILES}/config/vimb";             ITEM_DST[vimb]="${CONFIG}/vimb"
 ITEM_SRC[waybar]="${DOTFILES}/config/waybar";         ITEM_DST[waybar]="${CONFIG}/waybar"
 
-ALL_ITEMS=(aliases alacritty bashrc btop cava hypr kitty locales profile quickshell ranger rofi tmux vim vimb waybar)
+ALL_ITEMS=(aliases alacritty bashrc btop cava hypr kitty locales nvim profile quickshell ranger rofi tmux vim vimb waybar)
 
 # --links: symlinks only, skip post-activate hooks, ~/utils and /etc/hosts
 LINKS_ONLY=0
@@ -162,6 +163,23 @@ post_activate_vim() {
         echo "  [>] vim: vim-plugin-AnsiEsc installed"
     else
         track_detected vim-ansiesc
+    fi
+}
+
+post_activate_nvim() {
+    install_pkg_manager
+}
+
+# packer.nvim is archived — see docs/nvim/packer-to-lazy.md for the migration
+install_pkg_manager() {
+    local packer="${HOME}/.local/share/nvim/site/pack/packer/start/packer.nvim"
+    if [ ! -d "$packer" ]; then
+        echo "  [>] nvim: installing packer.nvim..."
+        git clone --quiet --depth 1 https://github.com/wbthomason/packer.nvim "$packer"
+        track_install nvim-packer "git:wbthomason/packer.nvim" "$(git -C "$packer" rev-parse --short HEAD)"
+        echo "  [>] nvim: packer.nvim installed"
+    else
+        track_detected nvim-packer
     fi
 }
 

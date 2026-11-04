@@ -61,6 +61,6 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `syncthing` | — | data partition mount (fstab by UUID), `~/<dir> → /data/drive/<dir>` links, Syncthing in Docker (`config/syncthing/compose.yml`; ports opened by `firewall`); removes the apt package/user service |
 | `r` | `r-build.list`, `r.libs` | R packages; runs last and asks first (default **no**) — slow to build |
 | **Optional** (not in the full run: `install.sh <step>`) | | |
-| `elegoo` | `elegoo.list` | ElegooSlicer release AppImage → `~/.local/bin/elegoo-slicer` + menu entry; `--source` builds it with Ubuntu 26.04 fixes ([docs/elegoo-slicer.md](../docs/elegoo-slicer.md)) |
+| `elegoo` | `elegoo.list` | ElegooSlicer release AppImage → `~/.local/bin/elegoo-slicer` + menu entry; `--source` builds it with Ubuntu 26.04 fixes ([docs/printers/elegoo-slicer.md](../docs/printers/elegoo-slicer.md)) |
 
 Shared helpers (colors, `confirm`, `install_list`, `install_flatpaks`, `confirm_no`, `pipx_install`, `track_install`, `track_detected`) live in `lib/common.sh`.

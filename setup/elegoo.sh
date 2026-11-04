@@ -3,7 +3,7 @@
 # Usage: bash ~/ledot/setup/elegoo.sh [--source [tarball]]
 #   default   latest release AppImage → ~/.local/share/elegoo-slicer, `elegoo-slicer` launcher + menu entry
 #   --source  build the AppImage from source (tarball arg, else ~/Downloads/ElegooSlicer-<ver>.tar.gz,
-#             else download it), patched for Ubuntu 26.04 — takes hours; see docs/elegoo-slicer.md
+#             else download it), patched for Ubuntu 26.04 — takes hours; see docs/printers/elegoo-slicer.md
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
