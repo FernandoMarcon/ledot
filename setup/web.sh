@@ -21,8 +21,15 @@ if [ ! -f /etc/apt/sources.list.d/mozilla.list ]; then
         | sudo tee /etc/apt/sources.list.d/mozilla.list > /dev/null
     printf 'Package: *\nPin: origin packages.mozilla.org\nPin-Priority: 1000\n' \
         | sudo tee /etc/apt/preferences.d/mozilla > /dev/null
-    sudo apt-get update -qq
+    apt_update
     info "Mozilla repo added"
+fi
+
+# Ubuntu's snap-wrapper deb has epoch 1:, so apt sees Mozilla's deb as a downgrade
+if dpkg-query -W -f='${Version}' firefox 2>/dev/null | grep -q snap; then
+    info "Replacing Ubuntu's firefox snap wrapper with Mozilla's deb..."
+    sudo apt-get install -y --allow-downgrades firefox
+    note "Old snap profile: ~/snap/firefox/common/.mozilla (remove snap: sudo snap remove firefox)"
 fi
 
 install_list web

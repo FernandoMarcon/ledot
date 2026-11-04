@@ -25,6 +25,16 @@ confirm_no() {
     [[ "${ans,,}" == "y" ]]
 }
 
+# apt_update — apt-get update with retries; a flaky repo (mirror mid-sync) warns instead of aborting
+apt_update() {
+    local i
+    for i in 1 2 3; do
+        sudo apt-get update -qq && return 0
+        [ "$i" -lt 3 ] && { warn "apt-get update failed (try $i/3), retrying in 10s..."; sleep 10; }
+    done
+    warn "apt-get update still failing — continuing with cached package lists"
+}
+
 # apt-install every package in pkgs/<name>.list (blank and '#' lines skipped)
 install_list() {
     local list="${PKGS}/$1.list"

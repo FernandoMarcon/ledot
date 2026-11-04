@@ -12,7 +12,7 @@ if ! grep -rq "pkgs.tailscale.com" /etc/apt/sources.list.d/ 2>/dev/null; then
         | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg > /dev/null
     echo "deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/ubuntu $(lsb_release -cs) main" \
         | sudo tee /etc/apt/sources.list.d/tailscale.list > /dev/null
-    sudo apt-get update -qq
+    apt_update
     info "Tailscale repo added"
 fi
 

@@ -17,7 +17,7 @@ if [ "$node_major" -lt 24 ] && [ ! -f /etc/apt/sources.list.d/nodesource.list ];
         | sudo gpg --dearmor --yes -o /etc/apt/keyrings/nodesource.gpg
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_24.x nodistro main" \
         | sudo tee /etc/apt/sources.list.d/nodesource.list > /dev/null
-    sudo apt-get update -qq
+    apt_update
 fi
 
 install_list dev
@@ -90,7 +90,7 @@ elif confirm "Install Antigravity?"; then
         | sudo gpg --dearmor --yes -o /etc/apt/keyrings/antigravity-repo-key.gpg
     echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" \
         | sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
-    sudo apt-get update -qq
+    apt_update
     sudo apt-get install -y antigravity
     info "Antigravity installed"
 fi

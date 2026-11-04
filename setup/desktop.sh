@@ -13,7 +13,7 @@ if ! grep -rq "ppa.launchpadcontent.net/cppiber/hyprland" /etc/apt/sources.list.
     info "Hyprland PPA added"
 fi
 
-sudo apt-get update -qq
+apt_update
 install_list desktop
 
 # ── Nerd Fonts ───────────────────────────────────────────────────────────────

@@ -39,5 +39,5 @@ if ! grep -rq "cli.github.com" /etc/apt/sources.list.d/ 2>/dev/null; then
     info "GitHub CLI repo added"
 fi
 
-sudo apt-get update -qq
+apt_update
 install_list minimal

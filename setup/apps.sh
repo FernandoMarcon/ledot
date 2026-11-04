@@ -15,7 +15,7 @@ if [ ! -f /etc/apt/sources.list.d/futo-notes.list ]; then
     info "FUTO Notes repo added"
 fi
 
-sudo apt-get update -qq
+apt_update
 install_list apps
 sudo apt-get install -y futo-notes
 install_flatpaks apps
