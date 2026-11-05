@@ -1,6 +1,7 @@
 # Remote Access to lgcm (work PC)
 
-`lgcm` (Ubuntu 26.04, HC/USP network) is reachable from my devices over **Tailscale SSH**.
+`lgcm` (Ubuntu 26.04, HC/USP network) is reachable from my devices over **Tailscale SSH**
+and over a **Cloudflare Tunnel** (`lgcm.marconp.com`, behind Cloudflare Access).
 The work network's Fortinet firewall blocks the usual paths, so all traffic leaves through
 **Proton VPN (OpenVPN TCP)**, running as a system service. IT approved this workaround (2026-11-05).
 
@@ -61,6 +62,44 @@ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.ta
 Must **not** connect on lgcm: two tunnels conflict. Its Hyprland autostart
 (`config/hypr/modules/autostart.lua`) skips hostname `lgcm`; keep its *Auto connect* setting `Off`.
 
+### 6. Cloudflare Tunnel (second path, works through the VPN)
+Fallback for devices without Tailscale. Port 7844 is reachable once traffic goes through Proton.
+
+1. Zero Trust → Networks → Tunnels → **Create tunnel** `lgcm` → copy only the token (`eyJ...`).
+2. **Access app first**: Access → Applications → Self-hosted, domain `lgcm.marconp.com`,
+   policy `ssh-mentat` (my email), **Browser rendering off** (on = `websocket: bad handshake`).
+3. Token + service (native `cloudflared`, `ExecStart=... tunnel run --token-file /etc/cloudflared/token`):
+   ```bash
+   sudo sh -c 'read -r t; printf %s "$t" > /etc/cloudflared/token' && sudo chmod 600 /etc/cloudflared/token
+   sudo install -d /etc/systemd/system/cloudflared.service.d
+   sudo tee /etc/systemd/system/cloudflared.service.d/after-proton.conf <<'EOF'
+   [Unit]
+   Wants=openvpn-client@proton.service
+   After=openvpn-client@proton.service
+   StartLimitIntervalSec=0
+
+   [Service]
+   TimeoutStartSec=60
+   Restart=always
+   RestartSec=10
+   EOF
+   sudo systemctl daemon-reload && sudo systemctl enable --now cloudflared
+   ```
+4. Tunnel → Public Hostname → Add: `lgcm` / `marconp.com` / **`ssh://localhost:22`**.
+5. sshd is key-only (`/etc/ssh/sshd_config.d/10-hardening.conf`: no password, no root).
+
+Client (`~/.ssh/config`, device's pubkey must be in lgcm's `~/.ssh/authorized_keys`):
+```
+Host lgcm-cf
+	Hostname lgcm.marconp.com
+	User fernando
+	IdentityFile ~/.ssh/id_ed25519
+	IdentitiesOnly yes
+	ProxyCommand cloudflared access ssh --hostname %h
+```
+First use: `cloudflared access login lgcm.marconp.com` (browser, email code).
+Host key: `ssh-ed25519 SHA256:aBFoMMnHbwJldtB43tSKI2M7dSuo5aeV7D/UkJIL1MU`.
+
 ## Check
 
 ```bash
@@ -70,6 +109,9 @@ curl -s https://cloudflare.com/cdn-cgi/trace | grep ip= # Proton IP, not 200.144
 resolvectl dns tun0                                     # 10.98.0.1
 tailscale status                                        # no "Health check" block
 tailscale ping bv9300-pro                               # pong ... via DERP(sao)
+systemctl is-active cloudflared                         # tunnel Healthy in dashboard
+dig +short @1.1.1.1 lgcm.marconp.com                    # must resolve (NXDOMAIN = route/DNS missing)
+curl -sI https://lgcm.marconp.com | head -1             # 302 → Access login
 ```
 
 Logs: `sudo journalctl -u openvpn-client@proton -n 30 --no-pager`
@@ -82,9 +124,10 @@ Logs: `sudo journalctl -u openvpn-client@proton -n 30 --no-pager`
 | `DEPRECATED OPTION: --persist-key` | harmless (Proton's config, OpenVPN 2.7) |
 | Tailscale health check mentions Fortinet / São Paulo relay | VPN down → `systemctl status openvpn-client@proton` |
 | Tailscale broken after VPN reconnects | `sudo systemctl restart tailscaled` |
-| `cloudflared.service` restarting forever | leftover from the failed tunnel attempt: `sudo systemctl disable --now cloudflared` |
+| `cloudflared` start timeout, port 7844 blocked | VPN down (cloudflared only works through Proton here) |
+| `websocket: bad handshake` | Access app has Browser rendering on → turn it off |
+| `530` / `error code: 1033` | DNS record points to another tunnel → delete record, re-add the public hostname |
+| `no such host` / NXDOMAIN | DNS record missing → delete and re-add the route; `sudo resolvectl flush-caches` |
 
-## Leftovers to clean
-- `sudo systemctl disable --now cloudflared`, `sudo rm -rf /etc/cludflared /etc/cloudflared/token`
-- Delete the `lgcm` tunnel in the Cloudflare Zero Trust dashboard, if created.
+## Notes
 - ufw allows `3000/tcp`, `7687/tcp`, `22/tcp` from **Anywhere** on the hospital network: restrict or remove if unused.
