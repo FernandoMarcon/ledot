@@ -88,21 +88,59 @@ handle_extension() {
     esac
 }
 
+# Show the image just written to IMAGE_CACHE_PATH: as a real image when ranger
+# draws images, else (e.g. inside tmux) as chafa text art
+show_cached_image() {
+    [[ -s "${IMAGE_CACHE_PATH}" ]] || return 1
+    [[ "${PV_IMAGE_ENABLED}" == 'True' ]] && exit 6
+    chafa --format=symbols --animate=off --size="${PV_WIDTH}x${PV_HEIGHT}" \
+        -- "${IMAGE_CACHE_PATH}" && exit 4
+    return 1
+}
+
+# Files that are previewed by rendering them to an image first
+handle_render() {
+    case "${FILE_EXTENSION_LOWER}" in
+        # 3MF (zip, detected as octet-stream): embedded slicer thumbnail
+        3mf)
+            local thumb
+            for thumb in Auxiliaries/.thumbnails/thumbnail_middle.png \
+                         Auxiliaries/.thumbnails/thumbnail_3mf.png \
+                         Metadata/plate_1.png Metadata/thumbnail.png; do
+                unzip -p -- "${FILE_PATH}" "${thumb}" >| "${IMAGE_CACHE_PATH}" 2>/dev/null \
+                    && show_cached_image
+            done
+            exit 1;;
+
+        # PDF: first page
+        pdf)
+            pdftoppm -f 1 -l 1 -scale-to-x 1920 -scale-to-y -1 -singlefile \
+                     -jpeg -- "${FILE_PATH}" "${IMAGE_CACHE_PATH%.*}" 2>/dev/null \
+                && show_cached_image
+            pdftotext -l 3 -layout -- "${FILE_PATH}" - 2>/dev/null && exit 5
+            exit 1;;
+
+        # CAD / meshes: render with f3d (OpenCascade build reads STEP)
+        step|stp|stl|obj)
+            if command -v f3d >/dev/null; then
+                # 3/4 view; OBJ is usually Y-up, STL/STEP Z-up
+                local png="${IMAGE_CACHE_PATH%.*}.png" up=+Z dir=-1,1,-0.8
+                [[ "${FILE_EXTENSION_LOWER}" == obj ]] && up=+Y dir=-1,-0.8,-1
+                timeout 15 f3d --no-config --output="${png}" --resolution=800,600 \
+                        --up="${up}" --camera-direction="${dir}" \
+                        --filename=false --grid=false -- "${FILE_PATH}" >/dev/null 2>&1 \
+                    && mv -f -- "${png}" "${IMAGE_CACHE_PATH}" && show_cached_image
+            fi
+            # STEP is plain text: show its header (file name, author, products)
+            if [[ "${FILE_EXTENSION_LOWER}" == st[ep]* ]]; then
+                grep -m 20 -E "FILE_NAME|FILE_DESCRIPTION|PRODUCT\(" -- "${FILE_PATH}" && exit 5
+            fi
+            return;;
+    esac
+}
+
 handle_image() {
     local mimetype="${1}"
-
-    # 3MF (zip, detected as octet-stream): show the embedded thumbnail, if any
-    if [[ "${FILE_EXTENSION_LOWER}" == 3mf ]]; then
-        local thumb
-        for thumb in Auxiliaries/.thumbnails/thumbnail_middle.png \
-                     Auxiliaries/.thumbnails/thumbnail_3mf.png \
-                     Metadata/plate_1.png Metadata/thumbnail.png; do
-            unzip -p -- "${FILE_PATH}" "${thumb}" >| "${IMAGE_CACHE_PATH}" 2>/dev/null \
-                && [[ -s "${IMAGE_CACHE_PATH}" ]] && exit 6
-        done
-        exit 1
-    fi
-
     case "${mimetype}" in
         # SVG
         image/svg+xml)
@@ -130,15 +168,6 @@ handle_image() {
              ffmpegthumbnailer -i "${FILE_PATH}" -o "${IMAGE_CACHE_PATH}" -s 0 && exit 6
              exit 1;;
         
-        # PDF
-        application/pdf)
-             pdftoppm -f 1 -l 1 \
-                      -scale-to-x 1920 \
-                      -scale-to-y -1 \
-                      -singlefile \
-                      -jpeg -tiffcompression jpeg \
-                      -- "${FILE_PATH}" "${IMAGE_CACHE_PATH%.*}" \
-                 && exit 6 || exit 1;;
     esac
 }
 
@@ -187,6 +216,7 @@ handle_fallback() {
 
 
 MIMETYPE="$( file --dereference --brief --mime-type -- "${FILE_PATH}" )"
+handle_render
 if [[ "${PV_IMAGE_ENABLED}" == 'True' ]]; then
     handle_image "${MIMETYPE}"
 fi
