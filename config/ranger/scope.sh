@@ -90,6 +90,19 @@ handle_extension() {
 
 handle_image() {
     local mimetype="${1}"
+
+    # 3MF (zip, detected as octet-stream): show the embedded thumbnail, if any
+    if [[ "${FILE_EXTENSION_LOWER}" == 3mf ]]; then
+        local thumb
+        for thumb in Auxiliaries/.thumbnails/thumbnail_middle.png \
+                     Auxiliaries/.thumbnails/thumbnail_3mf.png \
+                     Metadata/plate_1.png Metadata/thumbnail.png; do
+            unzip -p -- "${FILE_PATH}" "${thumb}" >| "${IMAGE_CACHE_PATH}" 2>/dev/null \
+                && [[ -s "${IMAGE_CACHE_PATH}" ]] && exit 6
+        done
+        exit 1
+    fi
+
     case "${mimetype}" in
         # SVG
         image/svg+xml)
