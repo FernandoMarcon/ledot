@@ -3,6 +3,8 @@
 Inputs: `mesh_report.py` JSON, the material, the part's purpose (inferred from the name
 or file, or asked), and the user's priority (speed / looks / strength).
 Change a setting only when a rule fires. Otherwise keep the default (see defaults.md).
+**Tiebreaker everywhere:** when two options both meet the purpose, pick the one that uses less
+filament, time and energy (see §7).
 
 ## 0. Fit and orientation (check first)
 - `fits_bed_256` false → stop. Suggest scaling, splitting, or rotating. Usable plate is about 256 × 256 mm. Leave about 5 mm margin for brim and purge.
@@ -24,8 +26,8 @@ Change a setting only when a rule fires. Otherwise keep the default (see default
 ## 2. Strength tab
 | Purpose | Walls | Top / bottom layers | Infill |
 |---|---|---|---|
-| Decorative, figurine, vase-like | 2 | default | 10–15 % Gyroid (Lightning only if speed matters and there are no large flat tops) |
-| General use, organizer, enclosure | 2–3 | default | 15 %, Grid/Gyroid |
+| Decorative, figurine, vase-like | 2 | default | 8–10 % **Lightning** if no large flat tops, else 10 % Gyroid |
+| General use, organizer, enclosure | 2 | default | 10–15 %, Grid/Gyroid (Adaptive Cubic on tall parts) |
 | Functional / load bearing, brackets, hooks, clips | **4** | 6 / 4 | 30–40 %, **Gyroid** or **Cubic** |
 | Maximum strength (tools, mounts under stress) | 5–6 | 7 / 5 | 50 %+, Cubic. More walls beat more infill |
 | Flexible (TPU) | 3 | 4 / 3 | 0–15 % Gyroid |
@@ -58,8 +60,8 @@ Threshold: keep 30°. Lower it to 20–25° for PLA with good cooling to save su
 | `height_to_base_ratio` > 3, or tall thin parts | Brim **Outer only** 5–8 mm |
 | Warping material (ABS/ASA/PA/PC) and footprint > 80 mm or sharp corners | Brim **Outer only** 5–8 mm (or Mouse ear at corners) |
 | Small bed contact (< 200 mm²) | Brim Outer only 3–5 mm |
-| Plenty of contact, PLA/PETG | Keep **Auto** (usually ends up with no brim) |
-| TPU or a new spool | Skirt loops 1–2 (primes flow) |
+| Plenty of contact, PLA/PETG | **No brim** (or keep Auto, which usually ends up with none). Textured Side A grips well |
+| TPU | Skirt loops 1 (primes flow). Otherwise keep 0 (waste) |
 | Several objects, each short, and the user wants each finished independently | Print sequence **By object**. Warn about gantry/hotend clearance height (check the slicer's printable height for sequential; keep objects short and spaced) |
 | Vase/cup/lampshade, single closed outer wall wanted | **Spiral vase on**. Forces 1 wall, 0 infill, no top. Bottom layers 3–5. Model must be one shell with no internal features |
 | Grip surfaces, handles, "rough texture" look | Fuzzy skin **Outside walls** |
@@ -68,3 +70,15 @@ Threshold: keep 30°. Lower it to 20–25° for PLA with good cooling to save su
 Rough guess: `printed mass ≈ 0.3–0.5 × solid_mass_g` at 2 walls / 15 %. On the CC
 standard profile, figure about 15–25 g/h for PLA. Treat it as a ballpark only; the slicer's
 estimate is the real number.
+
+## 7. Minimize filament, energy and time (always apply)
+Applies after the purpose is met; never trade away a stated strength/watertight/looks requirement.
+- **Orientation first:** pick the orientation that removes or shrinks supports before enabling them. Supports are pure waste.
+- **Supports:** Tree (auto) over Normal when either works (less material). On build plate only when possible. Raise the threshold angle as far as the part tolerates (35–40° for PLA functional parts).
+- **Walls/infill:** strength comes from walls; keep infill as low as the purpose allows. Lightning for decorative, Adaptive Cubic for tall/general, Gyroid/Cubic only when load bearing. Don't add top/bottom layers beyond the table.
+- **Layer height:** 0.24–0.28 when looks don't matter (fewer layers = less time = less energy). Use 0.12–0.16 only where detail is the point.
+- **Brim/skirt:** none unless a rule in §5 fires; use Mouse ear instead of a full brim when only corners lift.
+- **Bed and nozzle temps:** lowest value in the preset/recommended range that still sticks and bonds (filaments.md). Bed heating is the main power draw (~350 W peak, most of it the bed).
+- **Batch parts:** plate several parts in one job (one heat-up instead of several); By layer, not By object, unless needed.
+- **Enclosure:** closed for PETG and hotter materials (keeps heat in); open only for PLA/TPU.
+- **Report it:** the answer's *Savings* line names what was chosen to save material/energy and the est. grams.
