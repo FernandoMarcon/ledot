@@ -97,7 +97,18 @@ Host lgcm-cf
 	IdentitiesOnly yes
 	ProxyCommand cloudflared access ssh --hostname %h
 ```
-First use: `cloudflared access login lgcm.marconp.com` (browser, email code).
+Client setup (Ubuntu 26.04, tested on carbon 2026-11-05):
+```bash
+# Cloudflare's apt repo has no 'resolute' suite: use 'any'
+echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' \
+  | sudo tee /etc/apt/sources.list.d/cloudflared.list
+sudo apt update && sudo apt install -y cloudflared
+ssh-copy-id -i ~/.ssh/id_ed25519.pub fernando@lgcm   # over Tailscale, authorizes the key
+```
+(Keyring: `curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null`.)
+
+First use: `cloudflared access login lgcm.marconp.com` (browser, email code), then `ssh lgcm-cf`.
+To test this path for real, `sudo tailscale down` first.
 Host key: `ssh-ed25519 SHA256:aBFoMMnHbwJldtB43tSKI2M7dSuo5aeV7D/UkJIL1MU`.
 
 ## Check
