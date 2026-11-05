@@ -127,6 +127,7 @@ Logs: `sudo journalctl -u openvpn-client@proton -n 30 --no-pager`
 | `cloudflared` start timeout, port 7844 blocked | VPN down (cloudflared only works through Proton here) |
 | `websocket: bad handshake` | Access app has Browser rendering on → turn it off |
 | `530` / `error code: 1033` | DNS record points to another tunnel → delete record, re-add the public hostname |
+| `ssh HPC` / GitLab / INCOR hosts time out | VPN routes the hospital LAN (`172.16.0.0/12`) into the tunnel → config needs `route 172.16.0.0 255.240.0.0 net_gateway` (added by the script); check `ip route get 172.22.132.113` is **not** `dev tun0` |
 | `no such host` / NXDOMAIN | DNS record missing → delete and re-add the route; `sudo resolvectl flush-caches` |
 
 ## Notes

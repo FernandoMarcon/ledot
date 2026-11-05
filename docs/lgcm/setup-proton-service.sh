@@ -31,6 +31,8 @@ down /etc/openvpn/update-systemd-resolved
 down-pre
 dhcp-option DOMAIN-ROUTE .
 connect-retry 5 30
+# hospital LAN (HPC 172.22.x, GitLab, INCOR 172.21.x) stays off the tunnel
+route 172.16.0.0 255.240.0.0 net_gateway
 EOF
 
 # 3. Credentials = OpenVPN/IKEv2 username + password (NOT your Proton login)
