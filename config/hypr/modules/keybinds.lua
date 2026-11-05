@@ -50,7 +50,18 @@ hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(dotfiles .. "/bin/color_picker.sh
 
 -- [ Layout ] ------------------------------------------------------------------------------------------
 hl.bind(mainMod .. " + ALT + J", hl.dsp.layout("togglesplit"))    -- dwindle only
-hl.bind(mainMod .. " + O", hl.dsp.window.float({ action = "toggle" }))
+-- Float + pin (visible on all workspaces); pressing again unpins and re-tiles
+hl.bind(mainMod .. " + O", function()
+    local w = hl.get_active_window()
+    if not w then return end
+    if w.floating then
+        if w.pinned then hl.dispatch(hl.dsp.window.pin({ action = "toggle" })) end
+        hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+    else
+        hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+        hl.dispatch(hl.dsp.window.pin({ action = "toggle" }))
+    end
+end)
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ action = "toggle"  }))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
 
