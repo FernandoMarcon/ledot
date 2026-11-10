@@ -4,7 +4,9 @@
 
 set -euo pipefail
 
-dir="${HOME}/Images/Screenshots"
+[ -d "${HOME}/Images" ] && dir="${HOME}/Images"
+[ -d "${HOME}/Imagens" ] && dir="${HOME}/Imagens"
+# dir="${HOME}/Images/Screenshots"
 mkdir -p "${dir}"
 
 geometry="$(slurp)" || exit 0  # cancelled with Esc
