@@ -1,6 +1,6 @@
 #!/bin/bash
 # minimal.sh → pkgs/minimal.list: essentials for a working CLI system
-# Also: GitHub CLI repo (newer gh), timezone, en_US.UTF-8 locale
+# Also: GitHub CLI repo (newer gh), timezone, en_US.UTF-8 locale, sshd enabled
 # Usage: bash ~/ledot/setup/minimal.sh
 
 set -euo pipefail
@@ -41,3 +41,18 @@ fi
 
 apt_update
 install_list minimal
+
+# ── SSH server ───────────────────────────────────────────────────────────────
+# Ubuntu ≥24.04 socket-activates sshd (ssh.service stays inactive until a connection);
+# switch to the always-on service, per Ubuntu's documented recipe
+if systemctl is-enabled ssh.service &>/dev/null && systemctl is-active ssh.service &>/dev/null; then
+    info "SSH server already enabled and active"
+else
+    if systemctl list-unit-files ssh.socket &>/dev/null; then
+        sudo systemctl disable --now ssh.socket 2>/dev/null || true
+        sudo rm -f /etc/systemd/system/ssh.service.d/00-socket.conf /etc/systemd/system/ssh.socket.d/addresses.conf
+        sudo systemctl daemon-reload
+    fi
+    sudo systemctl enable --now ssh.service
+    info "SSH server: $(systemctl is-active ssh.service), $(systemctl is-enabled ssh.service)"
+fi

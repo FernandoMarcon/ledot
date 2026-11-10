@@ -32,15 +32,22 @@ fi
 
 # ── Claude Code ──────────────────────────────────────────────────────────────
 header "Claude Code"
-if command -v claude &>/dev/null; then
+CLAUDE_BIN="$HOME/.local/bin/claude"
+if command -v claude &>/dev/null || [ -x "$CLAUDE_BIN" ]; then
     info "Claude Code already installed — skipping"
-    track_detected claude-code "$(claude --version 2>/dev/null | awk '{ print $1 }')"
+    track_detected claude-code "$("$CLAUDE_BIN" --version 2>/dev/null | awk '{ print $1 }')"
 elif confirm "Install Claude Code?"; then
-    curl -fsSL https://claude.ai/install.sh | bash
-    track_install claude-code "curl:claude.ai/install.sh" "$("$HOME/.local/bin/claude" --version 2>/dev/null | awk '{ print $1 }')"
-    grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' ~/.bashrc \
-        || echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-    info "Claude Code installed. Reload shell: source ~/.bashrc"
+    # Download first: with 'curl | bash' a failed download (403, no network) aborts the whole setup via pipefail
+    installer="$(mktemp)"
+    if curl -fsSL https://claude.ai/install.sh -o "$installer" && bash "$installer" && [ -x "$CLAUDE_BIN" ]; then
+        track_install claude-code "curl:claude.ai/install.sh" "$("$CLAUDE_BIN" --version 2>/dev/null | awk '{ print $1 }')"
+        grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' ~/.bashrc \
+            || echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+        info "Claude Code installed. Reload shell: source ~/.bashrc"
+    else
+        warn "Claude Code install failed — retry: curl -fsSL https://claude.ai/install.sh | bash"
+    fi
+    rm -f "$installer"
 fi
 
 SKILLS=(

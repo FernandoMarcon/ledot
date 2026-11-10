@@ -28,6 +28,7 @@ htop
 # Network
 network-manager
 openssh-client
+openssh-server
 
 # apt repo signing keys (gpg --dearmor in setup scripts)
 gpg
