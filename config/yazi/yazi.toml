@@ -12,21 +12,35 @@ max_width  = 1200
 max_height = 1800
 
 [opener]
+# %s = selected files, %s1 = first one ("$@" is not expanded by yazi 26)
 pdf = [
-	{ run = 'zathura "$@"', orphan = true, desc = "zathura" },
-	{ run = 'okular "$@"',  orphan = true, desc = "okular (annotate/forms/sign)" },
+	{ run = "zathura %s", orphan = true, desc = "zathura" },
+	{ run = "okular %s",  orphan = true, desc = "okular (annotate/forms/sign)" },
+]
+vlc = [
+	{ run = "vlc %s", orphan = true, desc = "VLC" },
+]
+slicer = [
+	{ run = "elegoo-slicer %s", orphan = true, desc = "ElegooSlicer" },
+]
+cad = [
+	{ run = "flatpak run org.freecad.FreeCAD %s", orphan = true, desc = "FreeCAD" },
 ]
 
 [open]
 prepend_rules = [
-	{ mime = "application/pdf", use = [ "pdf", "open" ] },
+	{ mime = "application/pdf",        use = [ "pdf", "open", "reveal" ] },
+	{ mime = "{audio,video}/*",        use = [ "play", "vlc", "reveal" ] },
+	{ url = "*.{3mf,3MF}",             use = [ "slicer", "cad", "reveal" ] },
+	{ url = "*.{step,STEP,stp,STP}",   use = [ "cad", "slicer", "reveal" ] },
+	{ url = "*.{FCStd,fcstd,FCSTD}",   use = [ "cad", "reveal" ] },
 ]
 
-# 3D models: plugins/model.yazi (3MF slicer thumbnail, else f3d render)
+# 3D models: plugins/model.yazi (3MF/FCStd embedded thumbnail, else f3d render)
 [plugin]
 prepend_preloaders = [
-	{ url = "*.{3mf,3MF,step,STEP,stp,STP}", run = "model" },
+	{ url = "*.{3mf,3MF,step,STEP,stp,STP,FCStd,fcstd,FCSTD}", run = "model" },
 ]
 prepend_previewers = [
-	{ url = "*.{3mf,3MF,step,STEP,stp,STP}", run = "model" },
+	{ url = "*.{3mf,3MF,step,STEP,stp,STP,FCStd,fcstd,FCSTD}", run = "model" },
 ]

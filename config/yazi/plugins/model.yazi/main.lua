@@ -1,5 +1,6 @@
 -- model.yazi — image preview for 3MF / STEP / STL / OBJ (mirrors ranger's scope.sh)
--- 3MF: embedded slicer thumbnail (unzip), else f3d render. STEP/STL/OBJ: f3d render.
+-- 3MF / FCStd: embedded thumbnail (unzip), else f3d render. STEP/STL/OBJ: f3d render.
+-- FCStd has no f3d fallback: enable "Save thumbnail" in FreeCAD prefs (default on).
 
 local SCRIPT = [[
 f=$1 out=$2
@@ -9,6 +10,10 @@ if [ "$ext" = 3mf ]; then
 	         Metadata/plate_1.png Metadata/thumbnail.png; do
 		unzip -p -- "$f" "$t" > "$out" 2>/dev/null && [ -s "$out" ] && exit 0
 	done
+fi
+if [ "$ext" = fcstd ]; then
+	unzip -p -- "$f" thumbnails/Thumbnail.png > "$out" 2>/dev/null && [ -s "$out" ] && exit 0
+	rm -f -- "$out"; exit 1
 fi
 command -v f3d >/dev/null || exit 127
 up=+Z dir=-1,1,-0.8
