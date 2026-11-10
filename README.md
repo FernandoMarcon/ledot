@@ -43,7 +43,7 @@ bash ~/ledot/setup/dotfiles.sh --links    # symlinks only
 bash ~/ledot/setup/dotfiles.sh nvim tmux  # activate specific items
 ```
 
-Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quickshell ranger rofi tmux vim vimb waybar` (+ `tools` for the ~/utils repo). Some install their plugin manager on activation: tmux → TPM, vim → Vundle, nvim → packer.nvim.
+Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quickshell ranger rofi tmux vim vimb waybar yazi` (+ `tools` for the ~/utils repo). Some install their plugin manager on activation: tmux → TPM, vim → Vundle, nvim → packer.nvim.
 
 ## 4. Setup items (install order)
 
@@ -53,7 +53,7 @@ Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quick
 | **CLI** | | |
 | 2 | `minimal` | essentials for a working CLI system, timezone, locale |
 | 3 | `network` | VPN, remote filesystems, Tailscale |
-| 4 | `files` | ranger previews, archives, file utilities |
+| 4 | `files` | yazi + ranger (ueberzugpp) previews, archives, file utilities |
 | 5 | `dev` | languages and dev tooling, Docker, Claude Code, Miniconda |
 | 6 | `tools` | everyday handy tools, Bitwarden CLI |
 | **Desktop** (skip on servers) | | |

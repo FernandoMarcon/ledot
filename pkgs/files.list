@@ -1,4 +1,4 @@
-# files.list — ranger previews, archives, file utilities
+# files.list — file manager previews, archives, file utilities
 
 # Ranger previews
 highlight
@@ -9,6 +9,18 @@ ffmpegthumbnailer
 chafa
 poppler-utils
 f3d
+ueberzugpp
+
+# yazi previews / search (ffmpeg, 7zip, jq, poppler-utils, imagemagick cover the rest)
+ffmpeg
+7zip
+jq
+imagemagick
+fd-find
+ripgrep
+fzf
+zoxide
+resvg
 
 # Archives
 atool

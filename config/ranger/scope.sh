@@ -89,7 +89,7 @@ handle_extension() {
 }
 
 # Show the image just written to IMAGE_CACHE_PATH: as a real image when ranger
-# draws images, else (e.g. inside tmux) as chafa text art
+# draws images, else (preview_images off) as chafa text art
 show_cached_image() {
     [[ -s "${IMAGE_CACHE_PATH}" ]] || return 1
     [[ "${PV_IMAGE_ENABLED}" == 'True' ]] && exit 6

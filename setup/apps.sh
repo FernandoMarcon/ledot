@@ -27,6 +27,6 @@ if command -v gnome-extensions &>/dev/null; then
         || note "Enable AppIndicator in Extensions (gnome-extensions-app) from a GNOME session"
 fi
 
-# ── Thunar opens folders (mod+E stays ranger) ────────────────────────────────
+# ── Thunar opens folders (mod+E stays yazi) ────────────────────────────────
 xdg-mime default thunar.desktop inode/directory
 info "Thunar set as default folder handler"
