@@ -10,3 +10,14 @@ linemode       = "size"
 [preview]
 max_width  = 1200
 max_height = 1800
+
+[opener]
+pdf = [
+	{ run = 'zathura "$@"', orphan = true, desc = "zathura" },
+	{ run = 'okular "$@"',  orphan = true, desc = "okular (annotate/forms/sign)" },
+]
+
+[open]
+prepend_rules = [
+	{ mime = "application/pdf", use = [ "pdf", "open" ] },
+]
