@@ -1,12 +1,17 @@
 #!/bin/bash
 # tools.sh → pkgs/tools.list: everyday handy tools
-# Also: Bitwarden CLI (bw, native binary → ~/.local/bin)
+# Also: tldr pages cache, Bitwarden CLI (bw, native binary → ~/.local/bin)
 # Usage: bash ~/ledot/setup/tools.sh
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
 install_list tools
+
+# tealdeer ships no pages; fetch the cache once so `tldr <cmd>` works offline
+if command -v tldr &>/dev/null; then
+    tldr --update >/dev/null && info "tldr pages cache updated"
+fi
 
 # ── Bitwarden CLI ────────────────────────────────────────────────────────────
 header "Bitwarden CLI"

@@ -40,7 +40,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `network` | `network.list`, `wifi.list` | Tailscale repo, vpn-slice, VPN password in pass; `wifi.list` (nm-applet) only when a wireless interface exists |
 | `files` | `files.list` | |
 | `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Antigravity, Miniconda + `tools` env (`python.libs`), radian, fabric, Singularity |
-| `tools` | `tools.list` | Bitwarden CLI (`bw`, native binary → `~/.local/bin`) |
+| `tools` | `tools.list` | tldr (tealdeer) + pages cache, Bitwarden CLI (`bw`, native binary → `~/.local/bin`) |
 | **Desktop** | | |
 | `desktop` | `desktop.list` | Hyprland PPA (incl. hyprsunset night light), Nerd Fonts, Zafiro + Qogir themes |
 | `display` | `display.list` | |

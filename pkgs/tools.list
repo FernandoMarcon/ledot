@@ -1,3 +1,5 @@
 # handy everyday-use tools
 
 translate-shell
+# tldr pages client (tldr command); pages cache filled by setup/tools.sh
+tealdeer
