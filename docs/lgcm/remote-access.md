@@ -100,7 +100,7 @@ Host lgcm-cf
 Client setup (Ubuntu 26.04, tested on carbon 2026-11-05):
 ```bash
 # Cloudflare's apt repo has no 'resolute' suite: use 'any'
-echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' \
+echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' \
   | sudo tee /etc/apt/sources.list.d/cloudflared.list
 sudo apt update && sudo apt install -y cloudflared
 ssh-copy-id -i ~/.ssh/id_ed25519.pub fernando@lgcm   # over Tailscale, authorizes the key

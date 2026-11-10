@@ -10,7 +10,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 if [ ! -f /etc/apt/sources.list.d/futo-notes.list ]; then
     curl -fsSL https://pkg.futoinfra.com/futo-archive-key.gpg \
         | sudo tee /usr/share/keyrings/futo-archive.gpg > /dev/null
-    echo "deb [signed-by=/usr/share/keyrings/futo-archive.gpg] https://pkg.futoinfra.com/futo-notes stable main" \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/futo-archive.gpg] https://pkg.futoinfra.com/futo-notes stable main" \
         | sudo tee /etc/apt/sources.list.d/futo-notes.list > /dev/null
     info "FUTO Notes repo added"
 fi
