@@ -88,3 +88,13 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias summarize="bash ~/utils/llm-tools/fabric-summarize "
 alias gemini="npx gemini"
 alias ?="query "
+
+
+alias mount-mentat="sshfs fm@MENTAT:/data ${HOME}/mentat/data"
+alias umount-mentat="fusermount3 -u ${HOME}/mentat/data"
+
+alias mount-mentat-hd="sshfs fm@MENTAT:/mnt/hd ${HOME}/mentat/hd"
+alias umount-mentat-hd="fusermount3 -u ${HOME}/mentat/hd"
+
+alias mount-mentat-passport="sshfs fm@MENTAT:/mnt/passport ${HOME}/mentat/passport"
+alias umount-mentat-passport="fusermount3 -u ${HOME}/mentat/passport"
