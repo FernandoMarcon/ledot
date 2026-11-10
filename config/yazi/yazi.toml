@@ -21,3 +21,12 @@ pdf = [
 prepend_rules = [
 	{ mime = "application/pdf", use = [ "pdf", "open" ] },
 ]
+
+# 3D models: plugins/model.yazi (3MF slicer thumbnail, else f3d render)
+[plugin]
+prepend_preloaders = [
+	{ url = "*.{3mf,3MF,step,STEP,stp,STP}", run = "model" },
+]
+prepend_previewers = [
+	{ url = "*.{3mf,3MF,step,STEP,stp,STP}", run = "model" },
+]
