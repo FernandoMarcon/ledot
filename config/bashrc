@@ -131,6 +131,22 @@ export VISUAL=vim;
 export EDITOR=vim;
 set -o vi
 
+# Vi normal mode: V edits the command line in nvim (fallback vim), then runs it.
+# Replaces readline's default `v` (which uses $VISUAL); $EDITOR/$VISUAL stay vim.
+_edit_cmdline() {
+    local ed=vim f
+    command -v nvim &>/dev/null && ed=nvim
+    f=$(mktemp --suffix=.sh) || return
+    printf '%s\n' "$READLINE_LINE" > "$f"
+    "$ed" "$f" < /dev/tty > /dev/tty
+    READLINE_LINE=$(< "$f")
+    READLINE_POINT=${#READLINE_LINE}
+    rm -f -- "$f"
+}
+bind -m vi-command -x '"\C-x\C-e": _edit_cmdline'
+bind -m vi-command '"V": "\C-x\C-e\C-m"'
+bind -m vi-command -r 'v'
+
 # --- Starship
 command -v starship &>/dev/null && eval "$(starship init bash)"
 

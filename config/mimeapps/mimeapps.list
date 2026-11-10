@@ -1,0 +1,31 @@
+# mimeapps.list — default apps (xdg-open). Linked by setup/dotfiles.sh to ~/.config/mimeapps.list
+# Note: xdg-mime/gio rewrite this file atomically, replacing the symlink; rerun dotfiles.sh to relink.
+
+[Default Applications]
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
+x-scheme-handler/chrome=firefox.desktop
+text/html=firefox.desktop
+application/x-extension-htm=firefox.desktop
+application/x-extension-html=firefox.desktop
+application/x-extension-shtml=firefox.desktop
+application/xhtml+xml=firefox.desktop
+application/x-extension-xhtml=firefox.desktop
+application/x-extension-xht=firefox.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+inode/directory=thunar.desktop
+x-scheme-handler/futonotes=futo-notes-tauri-handler.desktop
+application/pdf=firefox.desktop
+
+[Added Associations]
+x-scheme-handler/http=firefox.desktop;
+x-scheme-handler/https=firefox.desktop;
+x-scheme-handler/chrome=firefox.desktop;
+text/html=firefox.desktop;
+application/x-extension-htm=firefox.desktop;
+application/x-extension-html=firefox.desktop;
+application/x-extension-shtml=firefox.desktop;
+application/xhtml+xml=firefox.desktop;
+application/x-extension-xhtml=firefox.desktop;
+application/x-extension-xht=firefox.desktop;
+video/x-matroska=com.stremio.Stremio.desktop;vlc.desktop;org.fcast.Sender.desktop;
