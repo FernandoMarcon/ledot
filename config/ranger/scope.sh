@@ -93,7 +93,7 @@ handle_extension() {
 show_cached_image() {
     [[ -s "${IMAGE_CACHE_PATH}" ]] || return 1
     [[ "${PV_IMAGE_ENABLED}" == 'True' ]] && exit 6
-    chafa --format=symbols --animate=off --size="${PV_WIDTH}x${PV_HEIGHT}" \
+    chafa --format=symbols --colors=256 --animate=off --size="${PV_WIDTH}x${PV_HEIGHT}" \
         -- "${IMAGE_CACHE_PATH}" && exit 4
     return 1
 }
@@ -196,7 +196,7 @@ handle_mime() {
         image/*)
             # Preview as text conversion
             # img2txt --gamma=0.6 --width="${PV_WIDTH}" -- "${FILE_PATH}" && exit 4
-            chafa --format=symbols --animate=off --size="${PV_WIDTH}x${PV_HEIGHT}" \
+            chafa --format=symbols --colors=256 --animate=off --size="${PV_WIDTH}x${PV_HEIGHT}" \
                 -- "${FILE_PATH}" && exit 4
             exiftool "${FILE_PATH}" && exit 5
             exit 1;;
