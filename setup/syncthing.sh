@@ -12,6 +12,11 @@ DATA_DEV="/dev/nvme0n1p3"
 DATA_MNT="/data"
 DRIVE_DIR="/data/drive"   # synced as one Syncthing folder ("Drive")
 
+if is_work; then
+    info "Work PC (lgcm) — no data partition mount, /data links or Syncthing; skipping"
+    exit 0
+fi
+
 command -v curl &>/dev/null || die "curl not found — run setup/minimal.sh first"
 command -v systemctl &>/dev/null || die "systemd not found"
 command -v docker &>/dev/null || die "docker not found — run setup/dev.sh first"
@@ -19,6 +24,9 @@ command -v docker &>/dev/null || die "docker not found — run setup/dev.sh firs
 # ── 1. Mount data partition ───────────────────────────────────────────────────
 setup_data_mount() {
     [ -b "$DATA_DEV" ] || die "$DATA_DEV not found — is the NVMe drive present?"
+    # Device names differ per machine; never reuse the EFI/boot partition as /data
+    findmnt -n -S "$DATA_DEV" -o TARGET | grep -qx '/boot\(/efi\)\?' \
+        && die "$DATA_DEV is mounted at /boot or /boot/efi on this machine — not a data partition"
 
     # Create mount point
     sudo mkdir -p "$DATA_MNT"

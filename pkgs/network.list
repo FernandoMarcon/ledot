@@ -7,6 +7,3 @@ tailscale
 tor
 net-tools
 nmap
-
-# Tray applet (desktop only)
-network-manager-gnome

@@ -20,9 +20,11 @@ sudo ufw default deny routed >/dev/null
 sudo ufw allow in on tailscale0 to any port 22 proto tcp comment 'ssh (tailnet only)' >/dev/null
 sudo ufw allow 41641/udp comment 'tailscale direct' >/dev/null
 sudo ufw allow 5353/udp comment 'mdns' >/dev/null
-sudo ufw allow 22000/tcp comment 'syncthing' >/dev/null
-sudo ufw allow 22000/udp comment 'syncthing' >/dev/null
-sudo ufw allow 21027/udp comment 'syncthing discovery' >/dev/null
+if ! is_work; then   # no Syncthing on the work PC (setup/syncthing.sh)
+    sudo ufw allow 22000/tcp comment 'syncthing' >/dev/null
+    sudo ufw allow 22000/udp comment 'syncthing' >/dev/null
+    sudo ufw allow 21027/udp comment 'syncthing discovery' >/dev/null
+fi
 sudo ufw allow 12315/tcp comment 'grayjay sync' >/dev/null
 # Grayjay serves cast media on a random ephemeral port the TV pulls from; LAN only
 for lan in 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16; do

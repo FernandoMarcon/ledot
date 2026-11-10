@@ -1,6 +1,6 @@
 #!/bin/bash
 # network.sh → pkgs/network.list: VPN, remote filesystems, mesh networking
-# Also: Tailscale repo, vpn-slice
+# Also: Tailscale repo, vpn-slice, pkgs/wifi.list when a wireless interface exists
 # Usage: bash ~/ledot/setup/network.sh
 
 set -euo pipefail
@@ -17,6 +17,11 @@ if ! grep -rq "pkgs.tailscale.com" /etc/apt/sources.list.d/ 2>/dev/null; then
 fi
 
 install_list network
+if has_wifi; then
+    install_list wifi
+else
+    info "No wireless interface — skipping wifi.list"
+fi
 
 # ── vpn-slice ────────────────────────────────────────────────────────────────
 # Used by ~/utils/vpn to route only internal IPs (INCOR, GitLab) through the tunnel

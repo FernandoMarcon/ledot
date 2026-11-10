@@ -1,0 +1,4 @@
+# wifi.list — only installed when a wireless interface exists (setup/network.sh)
+
+# Tray applet for picking wifi networks
+network-manager-gnome

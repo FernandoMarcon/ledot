@@ -17,6 +17,12 @@ confirm() {
     [[ "${ans,,}" != "n" ]]
 }
 
+# is_work — the work PC (INCOR/LGCM): no greeter swap, no Syncthing or /data
+is_work() { [ "$(hostname)" = "lgcm" ]; }
+
+# has_wifi — any wireless network interface present
+has_wifi() { compgen -G "/sys/class/net/*/wireless" > /dev/null; }
+
 # confirm_no — like confirm, but Enter means no
 confirm_no() {
     local prompt="${1:-Continue?}"

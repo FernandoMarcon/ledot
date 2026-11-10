@@ -5,6 +5,11 @@
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
+if is_work; then
+    info "Work PC (lgcm) — keeping current display manager, skipping greeter"
+    exit 0
+fi
+
 # Replaces the current display manager (e.g. gdm3), so it asks first; default no
 dm="$(basename "$(readlink /etc/systemd/system/display-manager.service 2>/dev/null || echo none)" .service)"
 if [ "$dm" = "greetd" ]; then
