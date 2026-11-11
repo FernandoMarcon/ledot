@@ -17,8 +17,10 @@ alias lt='tree -I ".git" -L 2'
 # alias lf='find . -maxdepth 1 -type f'
 # alias lls='find . -maxdepth 1 -type l -ls'
 
-alias cc='xclip -sel copy'
-alias pp='xclip -sel clip -o'
+# alias cc='xclip -sel copy'
+alias cc='wl-copy'
+# alias pp='xclip -sel clip -o'
+alias pp='wl-paste -n'   # -n: don't add a newline, so pp > file is byte-identical
 alias qq=exit
 
 #alias dir='dir --color=auto'
