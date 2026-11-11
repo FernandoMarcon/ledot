@@ -11,6 +11,7 @@ dev|singularity|apt|singularity-container|0|Container runtime for HPC clusters (
 dev|antigravity|custom|antigravity|1|Google's agentic IDE (VS Code fork, Gemini). Redundant with nvim + Claude Code; adds Google's apt repo.
 system|gparted|apt|gparted|1|Graphical partition editor (resize/move/format, needs root). For repartitioning; gnome-disks covers mounting and SMART.
 system|hardinfo2|apt|hardinfo2|1|Hardware inventory and benchmarks (CPU, sensors, PCI/USB, memory). For checking a new or second-hand machine.
+system|wdisplays|apt|wdisplays|1|arandr-style GUI to try monitor resolution, scale and position live (Wayland). Nothing is saved: put the result in config/hypr/modules/monitors[.<hostname>].lua.
 media|vlc|apt|vlc|1|Media player with built-in codecs, DVD and network streams. mpv is the default player; VLC for odd formats, discs or casting menus.
 web|brave|custom|brave|1|Chromium-based browser with ad blocking and Brave Sync. Firefox (mod+alt+W) and vimb (mod+W) are the defaults; Brave adds its own apt repo.
 web|chromium|flatpak|org.chromium.Chromium|1|Plain Chromium (Flathub; Ubuntu's apt chromium is a snap wrapper and snapd is pinned off). For sites or web dev that need Blink.
