@@ -30,7 +30,7 @@ run() {
     done
     for step in "$@"; do
         header "${step}"
-        bash "${DISTRO}/${step}.sh"
+        bash "${DISTRO}/${step}.sh" || die "Step '${step}' failed (exit $?) — fix it, then: install.sh ${step}"
     done
 }
 

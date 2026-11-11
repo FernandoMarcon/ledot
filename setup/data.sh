@@ -27,7 +27,7 @@ if is_hub; then
 fi
 
 me() { echo "${USER}:$(id -gn)"; }
-saved() { sed -n "s/^$1=//p" "$LAYOUT_FILE" 2>/dev/null; }
+saved() { [ -f "$LAYOUT_FILE" ] || return 0; sed -n "s/^$1=//p" "$LAYOUT_FILE"; }   # empty when no layout saved yet
 save_layout() {
     mkdir -p "$LEDOT_STATE"
     printf 'mode=%s\nroot=%s\n' "$1" "$2" > "$LAYOUT_FILE"

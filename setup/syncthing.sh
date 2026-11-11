@@ -22,7 +22,8 @@ if is_hub; then
     exit 0
 fi
 
-DRIVE_ROOT="${1:-$(sed -n 's/^root=//p' "$LAYOUT_FILE" 2>/dev/null)}"
+DRIVE_ROOT="${1:-}"
+[ -n "$DRIVE_ROOT" ] || [ ! -f "$LAYOUT_FILE" ] || DRIVE_ROOT=$(sed -n 's/^root=//p' "$LAYOUT_FILE")
 [ -n "$DRIVE_ROOT" ] || die "No drive root — run: install.sh data"
 [ -d "$DRIVE_ROOT" ] || die "$DRIVE_ROOT does not exist — run: install.sh data"
 command -v docker &>/dev/null || die "docker not found — run: install.sh dev"
