@@ -1,10 +1,8 @@
 # web.list — browsers, torrents
 # vimb: minimal WebKitGTK browser (vim keys), low CPU/RAM — lighter than Min (Electron)
 # hunspell-pt-br: pt_BR dictionary for vimb spell checking (en,pt_BR)
-# brave-browser sets up its own repo (setup/web.sh runs Brave's installer)
 
 firefox
-brave-browser
 vimb
 hunspell-pt-br
 w3m

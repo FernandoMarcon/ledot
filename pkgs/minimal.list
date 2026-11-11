@@ -18,7 +18,6 @@ vim
 tmux
 
 # Files & monitoring
-ranger
 tree
 jq
 bat

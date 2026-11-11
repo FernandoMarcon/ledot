@@ -58,7 +58,7 @@ Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quick
 | **CLI** | | |
 | 2 | `minimal` | essentials for a working CLI system, timezone, locale |
 | 3 | `network` | VPN, remote filesystems, Tailscale |
-| 4 | `files` | yazi + ranger (ueberzugpp) previews, archives, file utilities |
+| 4 | `files` | yazi previews, archives, file utilities |
 | 5 | `dev` | languages and dev tooling, Docker, Claude Code, Miniconda |
 | 6 | `tools` | everyday handy tools, Bitwarden CLI |
 | **Desktop** (skip on servers) | | |
@@ -69,7 +69,7 @@ Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quick
 | 11 | `media` | players, downloaders, image tools |
 | 12 | `web` | browsers, torrents |
 | 13 | `system` | disks, power, monitoring |
-| 14 | `apps` | office, remote desktop, file manager, Proton, LocalSend, FreeCAD |
+| 14 | `apps` | office, remote desktop, file manager, Proton, LocalSend |
 | 15 | `firewall` | ufw deny-all-incoming + allowlist |
 | 16 | `greeter` | greetd + tuigreet login on tty1, replacing gdm3 (asks, default no) |
 | **Device** | | |
@@ -77,10 +77,11 @@ Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quick
 | **After packages** | | |
 | 18 | `dotfiles` | config symlinks, ~/utils, /etc/hosts |
 | 19 | `functions` | `functions/*` on PATH + their dependencies |
-| 20 | `second-brain` | Obsidian + Second Brain workspace |
+| 20 | `second-brain` | Second Brain workspace (Obsidian: `extra`) |
 | 21 | `data` | where Drive lives (/data partition, /data/drive dir, sshfs to mentat, ~/.drive), `~/<dir>` links → `syncthing` |
 | — | `syncthing` | Syncthing in Docker, `Drive` paired with mentat over ssh (run by `data`) |
 | 22 | `r` | R packages (slow; asks, default no) |
+| 23 | `extra` | optional tools menu: redundant with a default or for specific situations (Brave, Chromium, VLC, Okular, Obsidian, Inkscape, FreeCAD, ranger, coredump, …), grouped by step; tick to install, untick to remove |
 | **Optional** (`install.sh <group>` only) | | |
 | — | `nvim` | Neovim from `progs/` tarball → GitHub release → apt |
 | — | `elegoo` | ElegooSlicer 3D printing slicer ([docs](docs/printers/elegoo-slicer.md)) |

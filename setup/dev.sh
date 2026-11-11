@@ -1,7 +1,7 @@
 #!/bin/bash
 # dev.sh → pkgs/dev.list: languages and dev tooling
-# Also: NodeSource repo, Docker, AI CLIs (Claude Code, Gemini, Antigravity), Miniconda + 'tools' env,
-#       radian, fabric, Singularity (R packages: setup/r.sh)
+# Also: NodeSource repo, Docker, AI CLIs (Claude Code, Gemini), Miniconda + 'tools' env,
+#       radian, fabric (R packages: setup/r.sh; Antigravity, Singularity: setup/extra.sh)
 # Usage: bash ~/ledot/setup/dev.sh
 
 set -euo pipefail
@@ -96,21 +96,6 @@ elif confirm "Install Gemini CLI (npm global)?"; then
     info "Gemini CLI installed"
 fi
 
-# ── Antigravity ──────────────────────────────────────────────────────────────
-header "Antigravity"
-if command -v antigravity &>/dev/null; then
-    info "Antigravity already installed — skipping"
-elif confirm "Install Antigravity?"; then
-    sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg \
-        | sudo gpg --dearmor --yes -o /etc/apt/keyrings/antigravity-repo-key.gpg
-    echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" \
-        | sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
-    apt_update
-    sudo apt-get install -y antigravity
-    info "Antigravity installed"
-fi
-
 # ── Miniconda + 'tools' env (pkgs/python.libs) ───────────────────────────────
 header "Python (Miniconda)"
 if [ -d "$HOME/miniconda3" ]; then
@@ -159,12 +144,3 @@ pipx_install radian
 
 # ── fabric (AI augmentation framework) ───────────────────────────────────────
 pipx_install fabric
-
-# ── Singularity (HPC containers) ─────────────────────────────────────────────
-header "Singularity"
-if command -v singularity &>/dev/null; then
-    info "Singularity already installed — skipping"
-elif confirm "Install Singularity?"; then
-    sudo apt-get install -y singularity-container
-    info "Singularity $(singularity --version) installed"
-fi

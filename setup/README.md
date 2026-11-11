@@ -33,8 +33,8 @@ bash ~/ledot/install.sh --state    # what was installed outside apt/flatpak, fro
 
 | Profile | Machines | `install.sh` runs |
 |---|---|---|
-| `personal` | carbon | bootstrap → CLI → [desktop → [greeter]] → [carbon] → dotfiles → functions → second-brain → data → [R] |
-| `server` | mentat, fremen, sardaukar | bootstrap → CLI → dotfiles → functions → data → [R] (no desktop, no second-brain) |
+| `personal` | carbon | bootstrap → CLI → [desktop → [greeter]] → [carbon] → dotfiles → functions → second-brain → data → [R] → extra |
+| `server` | mentat, fremen, sardaukar | bootstrap → CLI → dotfiles → functions → data → [R] → extra (no desktop, no second-brain) |
 | `work` | lgcm | asks before each step (default **no**); never greeter, data/Syncthing or second-brain; `dotfiles` asks per link and leaves `dotfiles.state` alone |
 
 Known hostnames map to a profile (`KNOWN_PROFILES` in `lib/common.sh`); a new machine is asked once and the answer kept in `~/.local/state/ledot/profile`.
@@ -61,7 +61,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `minimal` | `minimal.list` | GitHub CLI repo, timezone, `en_US.UTF-8` locale, sshd enabled (always-on, not socket-activated) |
 | `network` | `network.list`, `wifi.list` | Tailscale repo, vpn-slice, VPN password in pass; `wifi.list` (nm-applet) only when a wireless interface exists |
 | `files` | `files.list` | |
-| `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Antigravity, Miniconda + `tools` env (`python.libs`), radian, fabric, Singularity |
+| `dev` | `dev.list` | NodeSource repo, Docker (`bin/docker_install.sh`), Claude Code + skills, Gemini CLI, Miniconda + `tools` env (`python.libs`), radian, fabric |
 | `tools` | `tools.list` | tldr (tealdeer) + pages cache, Bitwarden CLI (`bw`, native binary → `~/.local/bin`) |
 | **Desktop** | | |
 | `desktop` | `desktop.list` | Hyprland PPA (incl. hyprsunset night light), Nerd Fonts, Zafiro + Qogir themes |
@@ -69,7 +69,7 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | `audio` | `audio.list` | |
 | `bluetooth` | `bluetooth.list` | skipped without a bluetooth adapter; `/etc/bluetooth` mode 555 |
 | `media` | `media.list`, `media.flatpak` | yt-dlp via pipx with `curl_cffi` (`--impersonate`) |
-| `web` | `web.list` | Brave + Mozilla repos, browser logins, Tor Browser |
+| `web` | `web.list` | Mozilla repo, browser logins (Firefox) |
 | `system` | `system.list` | upower enabled at boot |
 | `apps` | `apps.list`, `apps.flatpak` | FUTO Notes repo, AppIndicator GNOME extension (Proton VPN tray icon), Thunar as default folder handler |
 | `firewall` | ufw | resets ufw to deny-all-incoming + allowlist: ssh on tailscale0 + private LANs, tailscale 41641/udp, mDNS, Syncthing 22000 + 21027/udp (not on work PC), Grayjay sync 12315/tcp + cast (ephemeral tcp ports, private LANs only); silent IGMP drop |
@@ -79,11 +79,12 @@ Installs that apt/flatpak don't track (tarballs, curl installers, npm, pipx, con
 | **After packages** | | |
 | `dotfiles` | | symlinks from `config/dotfiles.state`, ~/utils repo, /etc/hosts (`dotfiles.sh --links`: symlinks only) |
 | `functions` | `functions.list` | yt-dlp via pipx with `curl_cffi`, `functions/*` executable and on PATH (`~/.locales`), `~/.history/query` for `query` (prompt: `patterns/query.md`), `~/tunel` (offers `Host mentat` + key for `tunelcp`, not on mentat); warns about each function's missing commands |
-| `second-brain` | | Obsidian, `second-brain/setup.sh` |
+| `second-brain` | | `second-brain/setup.sh` (Obsidian is in `extra`) |
 | `data` | — | skipped on the work profile and on mentat (the hub); where Drive lives (see above), `~/<dir>` links, then `syncthing` (except with the sshfs layout) |
 | `syncthing` | — | Syncthing in Docker (`config/syncthing/compose.yml`, per-machine values in `~/.local/state/ledot/syncthing.env`; ports opened by `firewall`), pairs `Drive` with mentat over ssh; removes the apt package/user service |
 | `r` | `r-build.list`, `r.libs` | R packages; runs last and asks first (default **no**) — slow to build |
+| `extra` | `extra.catalog` | optional tools, last in every profile: a menu grouped by step (↑↓ move, space tick, enter apply; installed tools in green, description in a side panel). Ticking installs, unticking an installed tool removes it. Without a terminal, or with `--ask`, it asks y/N per missing tool; `--list` shows status. Desktop apps are hidden where no desktop is installed. Catalog line: `group\|name\|kind\|target\|gui\|description`, kind `apt`, `flatpak` or `custom` (`install_/remove_/has_<target>` in `extra.sh`) |
 | **Optional** (not in the full run: `install.sh <step>`) | | |
 | `elegoo` | `elegoo.list` | ElegooSlicer release AppImage → `~/.local/bin/elegoo-slicer` + menu entry; `--source` builds it with Ubuntu 26.04 fixes ([docs/printers/elegoo-slicer.md](../docs/printers/elegoo-slicer.md)) |
 
-Shared helpers (colors, `confirm`, `install_list`, `install_flatpaks`, `confirm_no`, `pipx_install`, `track_install`, `track_detected`, profiles, mentat/hub settings, `ensure_hub_ssh`) live in `lib/common.sh`; disk planning for `data` in `lib/partition.sh`.
+Shared helpers (colors, `confirm`, `install_list`, `install_flatpaks`, `confirm_no`, `pipx_install`, `track_install`, `track_detected`, `track_forget`, profiles, mentat/hub settings, `ensure_hub_ssh`) live in `lib/common.sh`; disk planning for `data` in `lib/partition.sh`.

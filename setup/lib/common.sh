@@ -207,3 +207,12 @@ track_install() {
 track_detected() {
     grep -q "^$1	" "$INSTALL_STATE" 2>/dev/null || track_install "$1" detected "${2:-}"
 }
+
+# track_forget <name> — drop <name>'s line (after an uninstall)
+track_forget() {
+    local tmp
+    [ -f "$INSTALL_STATE" ] || return 0
+    tmp=$(mktemp)
+    awk -F'\t' -v n="$1" '$1 != n' "$INSTALL_STATE" > "$tmp"
+    mv "$tmp" "$INSTALL_STATE"
+}

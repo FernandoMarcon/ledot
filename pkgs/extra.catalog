@@ -1,0 +1,21 @@
+# extra.catalog — non-essential tools for setup/extra.sh: redundant with a primary choice, or only for specific situations
+# Format: group|name|kind|target|gui|description   (blank and '#' lines skipped; '|' is the separator)
+#   group  the setup step it belongs to (install.sh --list order: CLI steps, then desktop steps)
+#   kind   apt (target: space-separated packages) · flatpak (target: Flathub app ID) · custom (target: install_<target> in extra.sh)
+#   gui    1 = desktop app, hidden on machines without a desktop (no hyprland, no graphical session)
+
+network|nmap|apt|nmap|0|Network scanner: find hosts on a LAN, open ports, service versions. For debugging networks or auditing a server's exposed ports.
+files|ranger|apt|ranger highlight odt2txt|0|Vim-keys TUI file manager (+ its text previews). Replaced by yazi (mod+E); config/ranger is still linked by dotfiles.
+dev|coredump|apt|systemd-coredump|0|Keeps a compressed memory snapshot when a program crashes (coredumpctl list / coredumpctl gdb <prog>). For debugging crashes like Hyprland's; capped by /etc/systemd/coredump.conf (MaxUse=).
+dev|singularity|apt|singularity-container|0|Container runtime for HPC clusters (runs .sif images without root). Only when an analysis must match a cluster's environment; Docker covers local containers.
+dev|antigravity|custom|antigravity|1|Google's agentic IDE (VS Code fork, Gemini). Redundant with nvim + Claude Code; adds Google's apt repo.
+system|gparted|apt|gparted|1|Graphical partition editor (resize/move/format, needs root). For repartitioning; gnome-disks covers mounting and SMART.
+system|hardinfo2|apt|hardinfo2|1|Hardware inventory and benchmarks (CPU, sensors, PCI/USB, memory). For checking a new or second-hand machine.
+media|vlc|apt|vlc|1|Media player with built-in codecs, DVD and network streams. mpv is the default player; VLC for odd formats, discs or casting menus.
+web|brave|custom|brave|1|Chromium-based browser with ad blocking and Brave Sync. Firefox (mod+alt+W) and vimb (mod+W) are the defaults; Brave adds its own apt repo.
+web|chromium|flatpak|org.chromium.Chromium|1|Plain Chromium (Flathub; Ubuntu's apt chromium is a snap wrapper and snapd is pinned off). For sites or web dev that need Blink.
+web|tor-browser|apt|torbrowser-launcher|1|Downloads, verifies and launches the Tor Browser (anonymous browsing over Tor). Run torbrowser-launcher once after installing.
+apps|okular|apt|okular|1|KDE document viewer: PDF annotation, forms and signatures, EPUB, DjVu. PDFs open in Firefox by default.
+apps|obsidian|custom|obsidian|1|Markdown notes app (.deb from GitHub releases). Opens the ~/Vaults set up by the second-brain step; FUTO Notes is installed by apps.
+apps|inkscape|apt|inkscape|1|Vector graphics editor (SVG): diagrams, figures for papers, icons, laser/plotter files.
+apps|freecad|flatpak|org.freecad.FreeCAD|1|Parametric 3D CAD (Flathub, ~1 GB). For designing parts to 3D print; slicing is in the elegoo step.

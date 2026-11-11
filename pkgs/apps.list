@@ -1,8 +1,6 @@
 # apps.list — office, remote desktop, file manager
 
 libreoffice
-# PDF annotate/forms/sign (zathura is the default reader)
-okular
 remmina
 remmina-plugin-rdp
 remmina-plugin-vnc

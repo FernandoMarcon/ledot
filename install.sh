@@ -2,11 +2,12 @@
 # install.sh → run setup steps in order (each step is setup/<step>.sh), by machine profile
 # Usage:
 #   install.sh                 setup for this machine's profile (asked once on a new machine, see --profile):
-#                                personal: bootstrap → CLI → [desktop → [greeter]] → [carbon] → dotfiles → functions → second-brain → data → [R]
-#                                server:   bootstrap → CLI → dotfiles → functions → data → [R]
+#                                personal: bootstrap → CLI → [desktop → [greeter]] → [carbon] → dotfiles → functions → second-brain → data → [R] → extra
+#                                server:   bootstrap → CLI → dotfiles → functions → data → [R] → extra
 #                                work:     asks before each step; never greeter, data/Syncthing or second-brain
 #   install.sh server          the server steps, whatever the profile
 #   install.sh <step> [...]    run specific steps, e.g. install.sh dev web
+#   install.sh extra           optional tools menu (redundant or situational, grouped by step; pkgs/extra.catalog)
 #   install.sh --profile [p]   show this machine's profile, or set it (personal, server, work)
 #   install.sh --list          show available steps
 #   install.sh --state         show tools installed outside apt/flatpak ($XDG_STATE_HOME/ledot/installs.tsv)
@@ -19,7 +20,7 @@ source "${DISTRO}/lib/common.sh"
 CLI_STEPS=(minimal network files dev tools)
 GUI_STEPS=(desktop display audio bluetooth media web system apps firewall)
 # work: offered one by one, default no (shared PC, IT-managed: nothing personal unless you say so)
-WORK_STEPS=(bootstrap "${CLI_STEPS[@]}" "${GUI_STEPS[@]}" dotfiles functions r)
+WORK_STEPS=(bootstrap "${CLI_STEPS[@]}" "${GUI_STEPS[@]}" dotfiles functions r extra)
 
 is_carbon() { grep -q "X1 Carbon" /sys/class/dmi/id/product_version 2>/dev/null; }
 
@@ -45,10 +46,10 @@ run_profile() {
                 run "${GUI_STEPS[@]}" greeter
             fi
             if is_carbon; then run carbon; fi
-            run dotfiles functions second-brain data r
+            run dotfiles functions second-brain data r extra
             ;;
         server)
-            run bootstrap "${CLI_STEPS[@]}" dotfiles functions data r
+            run bootstrap "${CLI_STEPS[@]}" dotfiles functions data r extra
             ;;
         work)
             for step in "${WORK_STEPS[@]}"; do
@@ -90,7 +91,7 @@ case "${1:-}" in
         exit 0
         ;;
     -h|--help)
-        sed -n '2,13s/^# \{0,1\}//p' "$0"
+        sed -n '2,14s/^# \{0,1\}//p' "$0"
         exit 0
         ;;
     *)
