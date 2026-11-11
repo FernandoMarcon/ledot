@@ -1,9 +1,13 @@
 #!/bin/bash
-# install.sh → run setup steps in order (each step is setup/<step>.sh)
+# install.sh → run setup steps in order (each step is setup/<step>.sh), by machine profile
 # Usage:
-#   install.sh                 full setup: bootstrap → CLI lists → [desktop lists → [greeter]] → [carbon] → dotfiles → functions → second-brain → syncthing → [R packages]
-#   install.sh server          headless:   bootstrap → CLI lists → dotfiles → functions → [R packages]
+#   install.sh                 setup for this machine's profile (asked once on a new machine, see --profile):
+#                                personal: bootstrap → CLI → [desktop → [greeter]] → [carbon] → dotfiles → functions → second-brain → data → [R]
+#                                server:   bootstrap → CLI → dotfiles → functions → data → [R]
+#                                work:     asks before each step; never greeter, data/Syncthing or second-brain
+#   install.sh server          the server steps, whatever the profile
 #   install.sh <step> [...]    run specific steps, e.g. install.sh dev web
+#   install.sh --profile [p]   show this machine's profile, or set it (personal, server, work)
 #   install.sh --list          show available steps
 #   install.sh --state         show tools installed outside apt/flatpak ($XDG_STATE_HOME/ledot/installs.tsv)
 
@@ -14,6 +18,8 @@ source "${DISTRO}/lib/common.sh"
 
 CLI_STEPS=(minimal network files dev tools)
 GUI_STEPS=(desktop display audio bluetooth media web system apps firewall)
+# work: offered one by one, default no (shared PC, IT-managed: nothing personal unless you say so)
+WORK_STEPS=(bootstrap "${CLI_STEPS[@]}" "${GUI_STEPS[@]}" dotfiles functions r)
 
 is_carbon() { grep -q "X1 Carbon" /sys/class/dmi/id/product_version 2>/dev/null; }
 
@@ -28,17 +34,47 @@ run() {
     done
 }
 
+run_profile() {
+    local profile="$1" step
+    export LEDOT_PROFILE="$profile"   # steps see the same profile without asking again
+    info "Profile: ${profile} ($(hostname))"
+    case "$profile" in
+        personal)
+            run bootstrap "${CLI_STEPS[@]}"
+            if confirm "Install desktop packages (${GUI_STEPS[*]})?"; then
+                run "${GUI_STEPS[@]}" greeter
+            fi
+            if is_carbon; then run carbon; fi
+            run dotfiles functions second-brain data r
+            ;;
+        server)
+            run bootstrap "${CLI_STEPS[@]}" dotfiles functions data r
+            ;;
+        work)
+            for step in "${WORK_STEPS[@]}"; do
+                if confirm_no "Run '${step}' ($(sed -En '2s/^# [^ ]* (→|—) //p' "${DISTRO}/${step}.sh" | cut -c1-70))?"; then
+                    run "$step"
+                fi
+            done
+            ;;
+    esac
+}
+
 case "${1:-}" in
     "")
-        run bootstrap "${CLI_STEPS[@]}"
-        if confirm "Install desktop packages (${GUI_STEPS[*]})?"; then
-            run "${GUI_STEPS[@]}" greeter
-        fi
-        is_carbon && run carbon
-        run dotfiles functions second-brain syncthing r
+        run_profile "$(machine_profile)"
         ;;
     server)
-        run bootstrap "${CLI_STEPS[@]}" dotfiles functions r
+        run_profile server
+        ;;
+    --profile)
+        if [ -n "${2:-}" ]; then
+            save_profile "$2"
+            info "Profile for $(hostname): $2"
+        else
+            echo "$(machine_profile)  (${PROFILE_FILE})"
+        fi
+        exit 0
         ;;
     -l|--list)
         echo "Steps (setup/<step>.sh):"
@@ -54,7 +90,7 @@ case "${1:-}" in
         exit 0
         ;;
     -h|--help)
-        sed -n '2,8s/^# \{0,1\}//p' "$0"
+        sed -n '2,13s/^# \{0,1\}//p' "$0"
         exit 0
         ;;
     *)

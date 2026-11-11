@@ -1,111 +1,46 @@
 #!/bin/bash
-# syncthing.sh → mount data partition, link ~/<dir> → /data/drive/<dir>, run Syncthing in Docker (config/syncthing/compose.yml)
-# Usage: bash ~/ledot/setup/syncthing.sh
+# syncthing.sh → Syncthing in Docker (config/syncthing/compose.yml) + pair the "Drive" folder with mentat
+# Run after: data (it picks where Drive lives and calls this). Standalone: re-uses the layout data.sh saved
+# Usage: bash ~/ledot/setup/syncthing.sh [drive-root]   (default: root from ~/.local/state/ledot/data-layout)
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
-COMPOSE_DIR="${DOTFILES}/config/syncthing"   # compose.yml + .env (PUID, PGID, SYNCTHING_STATE)
+COMPOSE_DIR="${DOTFILES}/config/syncthing"
+ENV_FILE="${LEDOT_STATE}/syncthing.env"     # per-machine compose values (uid, state dir, mount)
+LAYOUT_FILE="${LEDOT_STATE}/data-layout"    # written by data.sh: mode=…, root=…
 KEYRING="/usr/share/keyrings/syncthing-archive-keyring.gpg"
 SOURCES="/etc/apt/sources.list.d/syncthing.list"
-DATA_DEV="/dev/nvme0n1p3"
-DATA_MNT="/data"
-DRIVE_DIR="/data/drive"   # synced as one Syncthing folder ("Drive")
+VERSIONS_KEEP=5                             # simple file versioning, like carbon
 
 if is_work; then
-    info "Work PC (lgcm) — no data partition mount, /data links or Syncthing; skipping"
+    info "Work profile — no Syncthing; skipping"
+    exit 0
+fi
+if is_hub; then
+    info "${HUB_HOST} is the Syncthing hub (~/stacks/syncthing) — nothing to do here"
     exit 0
 fi
 
-command -v curl &>/dev/null || die "curl not found — run setup/minimal.sh first"
-command -v systemctl &>/dev/null || die "systemd not found"
-command -v docker &>/dev/null || die "docker not found — run setup/dev.sh first"
+DRIVE_ROOT="${1:-$(sed -n 's/^root=//p' "$LAYOUT_FILE" 2>/dev/null)}"
+[ -n "$DRIVE_ROOT" ] || die "No drive root — run: install.sh data"
+[ -d "$DRIVE_ROOT" ] || die "$DRIVE_ROOT does not exist — run: install.sh data"
+command -v docker &>/dev/null || die "docker not found — run: install.sh dev"
 
-# ── 1. Mount data partition ───────────────────────────────────────────────────
-setup_data_mount() {
-    [ -b "$DATA_DEV" ] || die "$DATA_DEV not found — is the NVMe drive present?"
-    # Device names differ per machine; never reuse the EFI/boot partition as /data
-    findmnt -n -S "$DATA_DEV" -o TARGET | grep -qx '/boot\(/efi\)\?' \
-        && die "$DATA_DEV is mounted at /boot or /boot/efi on this machine — not a data partition"
+# Bind-mount /data when Drive lives under it (keeps the nested folders on carbon working), else Drive itself
+if [[ "$DRIVE_ROOT" == /data/* ]]; then SYNC_MOUNT=/data; else SYNC_MOUNT="$DRIVE_ROOT"; fi
 
-    # Create mount point
-    sudo mkdir -p "$DATA_MNT"
-    info "Mount point $DATA_MNT ready"
+st() { docker exec syncthing syncthing cli "$@"; }
 
-    # Mount if not already mounted
-    if mountpoint -q "$DATA_MNT"; then
-        info "$DATA_DEV already mounted at $DATA_MNT"
-    else
-        info "Mounting $DATA_DEV at $DATA_MNT..."
-        sudo mount "$DATA_DEV" "$DATA_MNT"
-        info "Mounted $DATA_DEV → $DATA_MNT"
-    fi
-
-    # Drop a bare-device duplicate of an existing /data entry (older runs of this script added one)
-    if [ "$(findmnt --fstab -n -o TARGET "$DATA_MNT" | wc -l)" -gt 1 ] && grep -q "^${DATA_DEV}[[:space:]]" /etc/fstab; then
-        sudo sed -i "\\|^${DATA_DEV}[[:space:]]|d" /etc/fstab
-        warn "Removed duplicate fstab entry for $DATA_DEV"
-    fi
-
-    # Persist in /etc/fstab (by UUID) if not already present
-    if findmnt --fstab -n "$DATA_MNT" &>/dev/null; then
-        info "fstab entry already exists for $DATA_MNT"
-    else
-        local uuid fstype
-        uuid=$(sudo blkid -o value -s UUID "$DATA_DEV")
-        fstype=$(sudo blkid -o value -s TYPE "$DATA_DEV")
-        [ -n "$uuid" ] && [ -n "$fstype" ] || die "Could not read UUID/filesystem of $DATA_DEV"
-        echo "UUID=${uuid}  ${DATA_MNT}  ${fstype}  defaults,nofail  0  2" \
-            | sudo tee -a /etc/fstab >/dev/null
-        info "Added fstab entry (${fstype}): UUID=${uuid} → $DATA_MNT"
-    fi
-
-    # Create drive dir (after mount so it lands on the right fs)
-    sudo mkdir -p "$DRIVE_DIR"
-    sudo chown "${USER}:${USER}" "$DRIVE_DIR"
-    info "Drive dir ready: $DRIVE_DIR"
+# api <METHOD> <path> [json] — local REST API (GUI listens on 127.0.0.1:8384, host network)
+api() {
+    local key
+    key=$(st config gui apikey get)
+    curl -fsS -X "$1" -H "X-API-Key: ${key}" -H 'Content-Type: application/json' \
+        "http://127.0.0.1:8384/rest/$2" ${3:+--data "$3"}
 }
 
-# ── 2. Create drive dirs and home symlinks (~/<dir> → /data/drive/<dir>) ─────
-setup_drive_links() {
-    local -a DIRS=(Audio Cursos Data Documents Images Projects Vaults Videos Work dockers utils)
-
-    for name in "${DIRS[@]}"; do
-        local home_path="${HOME}/${name}"
-        local drive_path="${DRIVE_DIR}/${name}"
-
-        mkdir -p "$drive_path"
-
-        # Already correctly linked — skip
-        if [ -L "$home_path" ] && [ "$(readlink -f "$home_path")" = "$drive_path" ]; then
-            info "Already linked: $home_path → $drive_path"
-            continue
-        fi
-
-        # Symlink pointing somewhere else — warn and skip
-        if [ -L "$home_path" ]; then
-            warn "Skipping $home_path — already a symlink to $(readlink "$home_path")"
-            continue
-        fi
-
-        # Real directory — migrate existing contents then replace with symlink
-        if [ -d "$home_path" ]; then
-            if [ -n "$(ls -A "$home_path" 2>/dev/null)" ]; then
-                info "Migrating $home_path → $drive_path"
-                cp -a "${home_path}/." "$drive_path/"
-            fi
-            rm -rf "$home_path"
-        fi
-
-        ln -sf "$drive_path" "$home_path"
-        info "Linked: $home_path → $drive_path"
-    done
-
-    # homelab lives inside Projects
-    mkdir -p "${DRIVE_DIR}/Projects/homelab"
-}
-
-# ── 3. Retire the native (apt + user service) Syncthing — it fights the container for the config lock ──
+# ── 1. Retire the native (apt + user service) Syncthing — it fights the container for the config lock ──
 remove_native() {
     if systemctl --user is-enabled syncthing &>/dev/null || systemctl --user is-active syncthing &>/dev/null; then
         systemctl --user disable --now syncthing || true
@@ -123,38 +58,86 @@ remove_native() {
     fi
 }
 
-# ── 4. Run the container ──────────────────────────────────────────────────────
+# ── 2. Run the container ──────────────────────────────────────────────────────
 start_container() {
-    local state
-    state=$(sed -n 's/^SYNCTHING_STATE=//p' "${COMPOSE_DIR}/.env")
-    mkdir -p "$state"
+    local state="${XDG_STATE_HOME:-${HOME}/.local/state}/syncthing"
+    mkdir -p "$state" "$LEDOT_STATE"
+    printf 'PUID=%s\nPGID=%s\nSYNCTHING_STATE=%s\nSYNC_MOUNT=%s\n' \
+        "$(id -u)" "$(id -g)" "$state" "$SYNC_MOUNT" > "$ENV_FILE"
 
-    info "Starting Syncthing container..."
-    docker compose --project-directory "$COMPOSE_DIR" up -d
-    info "Syncthing container running (restart: unless-stopped)"
+    info "Starting Syncthing container (mount: ${SYNC_MOUNT})..."
+    docker compose --project-directory "$COMPOSE_DIR" --env-file "$ENV_FILE" up -d
+
+    for _ in $(seq 30); do
+        st show system &>/dev/null && { info "Syncthing container running (restart: unless-stopped)"; return 0; }
+        sleep 1
+    done
+    die "Syncthing didn't come up — docker logs syncthing"
 }
 
-# ── 5. Show status ────────────────────────────────────────────────────────────
-show_info() {
-    local device_id
-    device_id=$(docker exec syncthing syncthing device-id 2>/dev/null || echo "unavailable (container still starting?)")
+# ── 3. Pair Drive with mentat: each side adds the other device; Drive shared both ways ──
+pair_with_hub() {
+    local my_id hub_id
+    my_id=$(st show system | sed -n 's/.*"myID": *"\([^"]*\)".*/\1/p')
 
+    if ! ensure_hub_ssh; then
+        warn "Can't reach ${HUB_HOST} over ssh — pair by hand:"
+        note "on ${HUB_HOST}'s GUI: add device ${my_id}, share the 'Drive' folder with it"
+        note "here (http://localhost:8384): accept ${HUB_HOST} and the 'Drive' folder at ${DRIVE_ROOT}"
+        return 0
+    fi
+
+    hub_id=$(hub_ssh "$HUB_ST_CLI show system" | sed -n 's/.*"myID": *"\([^"]*\)".*/\1/p')
+    [ -n "$hub_id" ] || die "Couldn't read ${HUB_HOST}'s Syncthing device ID"
+
+    # mentat: know this device, share Drive with it
+    if hub_ssh "$HUB_ST_CLI config devices list" | grep -qx "$my_id"; then
+        info "${HUB_HOST} already knows $(hostname)"
+    else
+        hub_ssh "$HUB_ST_CLI config devices add --device-id $my_id --name $(hostname)"
+        info "${HUB_HOST}: added device $(hostname)"
+    fi
+    if hub_ssh "$HUB_ST_CLI config folders $HUB_FOLDER_ID devices list" | grep -qx "$my_id"; then
+        info "${HUB_HOST}: Drive already shared with $(hostname)"
+    else
+        hub_ssh "$HUB_ST_CLI config folders $HUB_FOLDER_ID devices add --device-id $my_id"
+        info "${HUB_HOST}: Drive shared with $(hostname)"
+    fi
+
+    # here: know mentat, have Drive at $DRIVE_ROOT with simple versioning
+    st config devices list | grep -qx "$hub_id" \
+        || { st config devices add --device-id "$hub_id" --name "$HUB_HOST"; info "Added device ${HUB_HOST}"; }
+
+    local versioning="{\"type\":\"simple\",\"params\":{\"keep\":\"${VERSIONS_KEEP}\",\"cleanoutDays\":\"0\"}}"
+    if st config folders list | grep -qx "$HUB_FOLDER_ID"; then
+        api PATCH "config/folders/${HUB_FOLDER_ID}" "{\"path\":\"${DRIVE_ROOT}\",\"versioning\":${versioning}}" >/dev/null
+        st config folders "$HUB_FOLDER_ID" devices list | grep -qx "$hub_id" \
+            || st config folders "$HUB_FOLDER_ID" devices add --device-id "$hub_id"
+        info "Drive folder: ${DRIVE_ROOT} (updated)"
+    else
+        api POST "config/folders" "{\"id\":\"${HUB_FOLDER_ID}\",\"label\":\"Drive\",\"path\":\"${DRIVE_ROOT}\",
+            \"type\":\"sendreceive\",\"devices\":[{\"deviceID\":\"${my_id}\"},{\"deviceID\":\"${hub_id}\"}],
+            \"versioning\":${versioning}}" >/dev/null
+        info "Drive folder added: ${DRIVE_ROOT} ⇄ ${HUB_HOST}:${HUB_DRIVE} (simple versioning, keep ${VERSIONS_KEEP})"
+    fi
+}
+
+# ── 4. Show status ────────────────────────────────────────────────────────────
+show_info() {
     echo ""
     info "Syncthing setup complete!"
     echo ""
     echo -e "  Web UI:      ${GREEN}http://localhost:8384${RESET}"
-    echo -e "  Device ID:   ${YELLOW}${device_id}${RESET}"
-    echo -e "  Compose:     ${COMPOSE_DIR}/compose.yml"
+    echo -e "  Device ID:   ${YELLOW}$(docker exec syncthing syncthing device-id 2>/dev/null || echo unavailable)${RESET}"
+    echo -e "  Drive:       ${DRIVE_ROOT} ⇄ ${HUB_HOST}:${HUB_DRIVE}"
     echo ""
     info "To manage the container:"
-    echo "     docker compose --project-directory ${COMPOSE_DIR} ps"
-    echo "     docker restart syncthing"
+    echo "     docker compose --project-directory ${COMPOSE_DIR} --env-file ${ENV_FILE} ps"
     echo "     docker logs -f syncthing"
 }
 
 # ── Run ───────────────────────────────────────────────────────────────────────
-setup_data_mount
-setup_drive_links
 remove_native
 start_container
+pair_with_hub
 show_info

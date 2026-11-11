@@ -105,7 +105,7 @@ activate() {
         echo "  [+] $item: activated"
     fi
 
-    set_state "$item" "yes"
+    [ -n "${NO_STATE:-}" ] || set_state "$item" "yes"
 
     [ "$LINKS_ONLY" -eq 1 ] && return 0
     if declare -f "post_activate_${item}" > /dev/null 2>&1; then
@@ -241,7 +241,23 @@ setup_hosts() {
     echo "  [+] hosts: applied"
 }
 
+# Work profile (shared PC): ask before each link, never touch dotfiles.state (it's in git), no ~/utils or /etc/hosts
+apply_work() {
+    echo "Work profile: asking before each dotfile (state file left untouched)"
+    local item
+    for item in "${ALL_ITEMS[@]}"; do
+        [ "$(get_state "$item")" = "yes" ] || continue
+        if is_dotfiles_link "${ITEM_DST[$item]}" "${ITEM_SRC[$item]}"; then
+            echo "  [=] $item: already active"
+        elif confirm_no "Link ${item} (→ ${ITEM_DST[$item]/#$HOME/\~})?"; then
+            NO_STATE=1 activate "$item"
+        fi
+    done
+    if confirm_no "Clone your ~/utils repo?"; then setup_tools; fi
+}
+
 apply_state_file() {
+    if is_work; then apply_work; return 0; fi
     echo "Applying state from $STATE_FILE ..."
     while IFS=' ' read -r item state _rest; do
         [[ -z "$item" || "$item" == \#* ]] && continue

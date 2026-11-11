@@ -16,9 +16,14 @@ gh repo clone FernandoMarcon/ledot ~/ledot
 Then run the full setup (`bootstrap` creates the SSH key, adds it to GitHub and sets the git identity):
 
 ```bash
-bash ~/ledot/install.sh           # desktop: asks before the desktop group, R packages last
-bash ~/ledot/install.sh server    # headless: CLI steps + dotfiles + functions + [R]
+bash ~/ledot/install.sh              # this machine's profile: personal | server | work
+bash ~/ledot/install.sh server       # headless: CLI steps + dotfiles + functions + data + [R]
+bash ~/ledot/install.sh --profile    # show the profile (--profile <name> sets it)
 ```
+
+The **profile** decides what runs. carbon is `personal` (everything). mentat, fremen and sardaukar are `server` (lean: no desktop, no second-brain). lgcm is `work`: it asks before every step, and never sets up Syncthing, `/data` or personal state. A new hostname is asked once.
+
+The **`data`** step decides where Drive (`~/Documents`, `~/Projects`, …) lives, synced with mentat's `/data/drive`. It reuses an existing `/data`. On a new machine it offers: repartition into `/` | UPS | `/data`, a `/data/drive` folder on `/`, an sshfs mount of mentat's Drive (stationary machines), or `~/.drive`. See [setup/README.md](setup/README.md#where-drive-lives-data-step).
 
 Every step is idempotent, so re-running is safe.
 
@@ -73,7 +78,8 @@ Items: `aliases alacritty bashrc btop cava hypr kitty locales nvim profile quick
 | 18 | `dotfiles` | config symlinks, ~/utils, /etc/hosts |
 | 19 | `functions` | `functions/*` on PATH + their dependencies |
 | 20 | `second-brain` | Obsidian + Second Brain workspace |
-| 21 | `syncthing` | data partition, `~/<dir>` links, Syncthing in Docker |
+| 21 | `data` | where Drive lives (/data partition, /data/drive dir, sshfs to mentat, ~/.drive), `~/<dir>` links → `syncthing` |
+| — | `syncthing` | Syncthing in Docker, `Drive` paired with mentat over ssh (run by `data`) |
 | 22 | `r` | R packages (slow; asks, default no) |
 | **Optional** (`install.sh <group>` only) | | |
 | — | `nvim` | Neovim from `progs/` tarball → GitHub release → apt |

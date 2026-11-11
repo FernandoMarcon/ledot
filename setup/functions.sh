@@ -54,10 +54,16 @@ fi
 mkdir -p "${HOME}/.history/query"
 info "query: ~/.history/query ready"
 
-# tunelcp: copies land in ~/tunel; needs a 'mentat' host in ~/.ssh/config
+# tunelcp: copies land in ~/tunel; hops through mentat (offers to set up `ssh mentat`; not needed on mentat)
 mkdir -p "${HOME}/tunel"
-grep -qiE '^\s*Host\s+.*\bmentat\b' "${HOME}/.ssh/config" 2>/dev/null \
-    || warn "tunelcp: no 'Host mentat' in ~/.ssh/config"
+if is_hub; then
+    info "tunelcp: this is ${HUB_HOST} — no hop needed"
+elif has_hub_ssh_entry; then
+    info "tunelcp: 'Host ${HUB_HOST}' in ~/.ssh/config"
+else
+    note "tunelcp hops through ${HUB_HOST}: needs 'ssh ${HUB_HOST}' without a password"
+    ensure_hub_ssh || note "tunelcp: skipped — set up later with: install.sh functions"
+fi
 
 # ── Dependency check ─────────────────────────────────────────────────────────
 missing=0

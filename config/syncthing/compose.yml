@@ -1,5 +1,7 @@
 # compose.yml — Syncthing in Docker (setup/syncthing.sh brings it up)
-# Config/keys live on the host in ${SYNCTHING_STATE}; synced folders under /data/drive
+# Config/keys live on the host in ${SYNCTHING_STATE}; the synced "Drive" folder lives under ${SYNC_MOUNT}
+# setup/syncthing.sh writes the per-machine values to ~/.local/state/ledot/syncthing.env (--env-file);
+# .env holds the defaults
 
 services:
   syncthing:
@@ -11,6 +13,6 @@ services:
       - STGUIADDRESS=   # use the GUI address from config.xml (127.0.0.1:8384)
     volumes:
       - ${SYNCTHING_STATE}:/var/syncthing/config
-      - /data:/data
+      - ${SYNC_MOUNT}:${SYNC_MOUNT}   # same path inside and out: /data, or ~/.drive (home layout)
     network_mode: host  # LAN discovery (21027/udp) + sync (22000)
     restart: unless-stopped

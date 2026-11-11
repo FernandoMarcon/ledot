@@ -17,8 +17,87 @@ confirm() {
     [[ "${ans,,}" != "n" ]]
 }
 
-# is_work — the work PC (INCOR/LGCM): no greeter swap, no Syncthing or /data
-is_work() { [ "$(hostname)" = "lgcm" ]; }
+# ── Machine profile ──────────────────────────────────────────────────────────
+# personal — daily-driver PC (carbon): everything
+# server   — headless host (mentat, fremen, …): lean, no desktop/second-brain
+# work     — shared work PC (lgcm): asks before every step; no Syncthing, /data or personal state
+LEDOT_STATE="${XDG_STATE_HOME:-${HOME}/.local/state}/ledot"
+PROFILE_FILE="${LEDOT_STATE}/profile"
+PROFILES=(personal server work)
+
+# Known machines; anything else is asked once (then remembered in $PROFILE_FILE)
+declare -A KNOWN_PROFILES=([carbon]=personal [mentat]=server [fremen]=server [sardaukar]=server [lgcm]=work)
+
+valid_profile() { [[ " ${PROFILES[*]} " == *" $1 "* ]]; }
+
+save_profile() {
+    valid_profile "$1" || die "Unknown profile: $1 (${PROFILES[*]})"
+    mkdir -p "$LEDOT_STATE"
+    echo "$1" > "$PROFILE_FILE"
+}
+
+# machine_profile — print this machine's profile: $LEDOT_PROFILE, saved, known hostname, or ask (prompts go to stderr)
+machine_profile() {
+    if [ -n "${LEDOT_PROFILE:-}" ]; then echo "$LEDOT_PROFILE"; return; fi
+    if [ -s "$PROFILE_FILE" ]; then cat "$PROFILE_FILE"; return; fi
+    local p="${KNOWN_PROFILES[$(hostname)]:-}"
+    if [ -z "$p" ]; then
+        {
+            echo -e "${YELLOW}[?]${RESET} New machine '$(hostname)' — which profile?"
+            echo "     1) personal  daily-driver PC: everything (desktop, Syncthing /data/drive, second-brain)"
+            echo "     2) server    headless host: lean CLI + Syncthing /data/drive"
+            echo "     3) work      shared work PC: asks before every step, nothing personal"
+        } >&2
+        local ans
+        read -rp "     Profile [1-3]: " ans
+        case "$ans" in 1|personal) p=personal ;; 2|server) p=server ;; 3|work) p=work ;; *) die "No profile chosen" ;; esac
+    fi
+    save_profile "$p"
+    echo "$p"
+}
+
+# is_work — the work PC: no greeter swap, no Syncthing or /data, nothing personal
+is_work() { [ "$(machine_profile)" = "work" ]; }
+
+# ── Hub (mentat) ─────────────────────────────────────────────────────────────
+# mentat runs the Syncthing hub (~/stacks/syncthing, lscr image) every machine's /data/drive syncs with
+HUB_HOST="mentat"                  # its hostname and ~/.ssh/config alias
+HUB_USER="fm"
+HUB_LAN_IP="192.168.15.200"        # used when tailscale's MagicDNS can't resolve $HUB_HOST
+HUB_DRIVE="/data/drive"
+HUB_FOLDER_ID="gfkqq-hqhzy"        # Syncthing "Drive" folder (path $HUB_DRIVE on every machine)
+HUB_ST_CLI="docker exec -u abc syncthing syncthing cli --home /config"
+SSH_KEY="${HOME}/.ssh/id_ed25519"
+
+is_hub() { [ "$(hostname)" = "$HUB_HOST" ]; }
+
+has_hub_ssh_entry() { grep -qiE "^\s*Host\s+(.*\s)?${HUB_HOST}(\s|$)" "${HOME}/.ssh/config" 2>/dev/null; }
+
+hub_ssh() { ssh -o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new "$HUB_HOST" "$@"; }
+
+# ensure_hub_ssh — make `ssh mentat` work without a password: Host entry, key, key on mentat (asks each); 1 if not
+ensure_hub_ssh() {
+    is_hub && return 0
+    if ! has_hub_ssh_entry; then
+        local addr="$HUB_HOST"
+        getent hosts "$HUB_HOST" &>/dev/null || addr="$HUB_LAN_IP"
+        confirm "Add 'Host ${HUB_HOST}' (→ ${HUB_USER}@${addr}) to ~/.ssh/config?" || return 1
+        mkdir -p "${HOME}/.ssh" && chmod 700 "${HOME}/.ssh"
+        printf '\nHost %s\n    HostName %s\n    User %s\n    IdentityFile %s\n    IdentitiesOnly yes\n' \
+            "$HUB_HOST" "$addr" "$HUB_USER" "${SSH_KEY/#$HOME/\~}" >> "${HOME}/.ssh/config"
+        chmod 600 "${HOME}/.ssh/config"
+        info "~/.ssh/config: Host ${HUB_HOST} → ${addr}"
+    fi
+    if [ ! -f "$SSH_KEY" ]; then
+        confirm "No SSH key — generate ${SSH_KEY/#$HOME/\~}?" || return 1
+        ssh-keygen -q -t ed25519 -C "${USER}@$(hostname)" -f "$SSH_KEY" -N ""
+    fi
+    hub_ssh true 2>/dev/null && { info "ssh ${HUB_HOST} OK"; return 0; }
+    warn "ssh ${HUB_HOST} needs a password (or ${HUB_HOST} is unreachable)"
+    confirm "Copy your key to ${HUB_HOST} (asks ${HUB_USER}'s password there)?" || return 1
+    ssh-copy-id -i "${SSH_KEY}.pub" -o StrictHostKeyChecking=accept-new "$HUB_HOST" || return 1
+    hub_ssh true && info "ssh ${HUB_HOST} OK"
+}
 
 # has_wifi — any wireless network interface present
 has_wifi() { compgen -G "/sys/class/net/*/wireless" > /dev/null; }
