@@ -1,0 +1,22 @@
+#!/bin/sh
+# NetworkManager dispatcher script: keep the static IP on one interface at a time.
+# Cable connected -> Wi-Fi down. Cable unplugged -> Wi-Fi up (same IP).
+#
+# Install (see docs/network/nmcli_setup_static_ip.md):
+#   sudo install -o root -g root -m 755 bin/70-wifi-failover /etc/NetworkManager/dispatcher.d/
+#
+# NetworkManager calls it as: $1 = interface, $2 = action (up, down, ...).
+
+# Set these to the host's names (`ip -br link`, `nmcli con show`).
+ETH=enp2s0
+WIFI_IF=wlp3s0
+WIFI_CON="<wifi-name>"
+
+eth_connected() { nmcli -t -f DEVICE,STATE dev | grep -q "^$ETH:connected$"; }
+
+case "$1:$2" in
+  "$ETH:up")     nmcli con down "$WIFI_CON" ;;
+  "$ETH:down")   nmcli con up "$WIFI_CON" ;;
+  "$WIFI_IF:up") eth_connected && nmcli con down "$WIFI_CON" ;;
+esac
+exit 0
