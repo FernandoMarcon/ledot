@@ -32,9 +32,16 @@ user = "_greetd"
 CONF
 
 # Start after boot jobs finish and take a fresh, cleared VT, so systemd status
-# lines don't print over the greeter; greeter stderr goes to the journal
+# lines don't print over the greeter; greeter stderr goes to the journal.
+# Ubuntu's greetd unit only conflicts with getty@tty7, but Ubuntu Server enables
+# getty@tty1: agetty then shares tty1 with greetd and takes the VT back when the
+# session starts, killing Hyprland and leaving a plain "login:" prompt
 sudo mkdir -p /etc/systemd/system/greetd.service.d
 sudo tee /etc/systemd/system/greetd.service.d/override.conf > /dev/null <<'CONF'
+[Unit]
+Conflicts=getty@tty1.service
+After=getty@tty1.service
+
 [Service]
 Type=idle
 StandardInput=tty
@@ -45,6 +52,7 @@ TTYVHangup=true
 TTYVTDisallocate=true
 CONF
 sudo systemctl daemon-reload
+sudo systemctl disable getty@tty1.service 2>/dev/null || true
 # --force replaces the display-manager.service alias another DM (gdm3) holds
 sudo systemctl enable --force greetd
 info "greetd configured"
