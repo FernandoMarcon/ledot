@@ -1,31 +1,28 @@
-# mimeapps.list — default apps (xdg-open). Linked by setup/dotfiles.sh to ~/.config/mimeapps.list
-# Note: xdg-mime/gio rewrite this file atomically, replacing the symlink; rerun dotfiles.sh to relink.
-
 [Default Applications]
-x-scheme-handler/http=firefox.desktop
-x-scheme-handler/https=firefox.desktop
-x-scheme-handler/chrome=firefox.desktop
-text/html=firefox.desktop
-application/x-extension-htm=firefox.desktop
-application/x-extension-html=firefox.desktop
-application/x-extension-shtml=firefox.desktop
-application/xhtml+xml=firefox.desktop
-application/x-extension-xhtml=firefox.desktop
-application/x-extension-xht=firefox.desktop
+x-scheme-handler/http=userapp-Firefox-9Y9YX3.desktop
+x-scheme-handler/https=userapp-Firefox-9Y9YX3.desktop
+x-scheme-handler/chrome=userapp-Firefox-9Y9YX3.desktop
+text/html=userapp-Firefox-9Y9YX3.desktop
+application/x-extension-htm=userapp-Firefox-9Y9YX3.desktop
+application/x-extension-html=userapp-Firefox-9Y9YX3.desktop
+application/x-extension-shtml=userapp-Firefox-9Y9YX3.desktop
+application/xhtml+xml=userapp-Firefox-9Y9YX3.desktop
+application/x-extension-xhtml=userapp-Firefox-9Y9YX3.desktop
+application/x-extension-xht=userapp-Firefox-9Y9YX3.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
 inode/directory=thunar.desktop
 x-scheme-handler/futonotes=futo-notes-tauri-handler.desktop
 application/pdf=firefox.desktop
 
 [Added Associations]
-x-scheme-handler/http=firefox.desktop;
-x-scheme-handler/https=firefox.desktop;
-x-scheme-handler/chrome=firefox.desktop;
-text/html=firefox.desktop;
-application/x-extension-htm=firefox.desktop;
-application/x-extension-html=firefox.desktop;
-application/x-extension-shtml=firefox.desktop;
-application/xhtml+xml=firefox.desktop;
-application/x-extension-xhtml=firefox.desktop;
-application/x-extension-xht=firefox.desktop;
+x-scheme-handler/http=userapp-Firefox-9Y9YX3.desktop;firefox.desktop;
+x-scheme-handler/https=userapp-Firefox-9Y9YX3.desktop;firefox.desktop;
+x-scheme-handler/chrome=userapp-Firefox-9Y9YX3.desktop;firefox.desktop;
+text/html=firefox.desktop;userapp-Firefox-9Y9YX3.desktop;
+application/x-extension-htm=firefox.desktop;userapp-Firefox-9Y9YX3.desktop;
+application/x-extension-html=firefox.desktop;userapp-Firefox-9Y9YX3.desktop;
+application/x-extension-shtml=firefox.desktop;userapp-Firefox-9Y9YX3.desktop;
+application/xhtml+xml=firefox.desktop;userapp-Firefox-9Y9YX3.desktop;
+application/x-extension-xhtml=firefox.desktop;userapp-Firefox-9Y9YX3.desktop;
+application/x-extension-xht=firefox.desktop;userapp-Firefox-9Y9YX3.desktop;
 video/x-matroska=com.stremio.Stremio.desktop;vlc.desktop;org.fcast.Sender.desktop;
