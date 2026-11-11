@@ -9,6 +9,7 @@
 -- Same config runs on laptop, laptop + external and two-monitor desktop.
 -- Outputs are matched generically; workspaces are laid out from whatever
 -- is connected and re-laid out on hotplug.
+-- Machine-specific monitor setup goes in monitors.<hostname>.lua (loaded after this).
 
 -- Laptop panel
 hl.monitor({
@@ -40,7 +41,7 @@ local function ordered_monitors()
     local externals, internals = {}, {}
     for _, m in ipairs(hl.get_monitors()) do
         if m.enabled and not m.is_mirror then
-            table.insert(m.name:match("^eDP") and internals or externals, m)
+            table.insert((m.name:match("^eDP") or m.name:match("^LVDS")) and internals or externals, m)
         end
     end
     table.sort(externals, function(a, b) return a.x < b.x end)
@@ -75,11 +76,13 @@ local function apply_layout()
     end
 end
 
-apply_layout()
-
 -- Hotplug: wait for the monitor list to settle, then re-layout
 local function schedule_layout()
     hl.timer(apply_layout, { timeout = 500, type = "oneshot" })
 end
+
+-- Now, and again once host overrides (monitors.<hostname>.lua) have taken effect
+apply_layout()
+schedule_layout()
 hl.on("monitor.added",   schedule_layout)
 hl.on("monitor.removed", schedule_layout)

@@ -2,8 +2,9 @@
 # dotfiles.sh → manage dotfile symlinks via state file
 # Run after: the package scripts (packages must exist for post-activate hooks)
 # Usage:
-#   dotfiles.sh              — apply current state from dotfiles.state, then ~/utils and /etc/hosts
-#   dotfiles.sh --links      — apply state links only (no ~/utils, /etc/hosts or plugin installs)
+#   dotfiles.sh              — apply current state from dotfiles.state, then ~/utils, /etc/hosts and host /etc overrides
+#   dotfiles.sh --links      — apply state links only (no ~/utils, /etc or plugin installs)
+#   dotfiles.sh etc          — install this machine's /etc overrides only (see setup_host_etc)
 #   dotfiles.sh [item ...]   — activate specific items (use 'tools' to set up ~/utils)
 
 set -euo pipefail
@@ -241,6 +242,29 @@ setup_hosts() {
     echo "  [+] hosts: applied"
 }
 
+# setup_host_etc — copy config/etc/**/<name>.<hostname>[.ext] to /etc/**/<name>[.ext], on that host only
+# e.g. config/etc/systemd/logind.conf.d/ledot-lid.fremen.conf → /etc/systemd/logind.conf.d/ledot-lid.conf (fremen)
+setup_host_etc() {
+    local host src rel dst changed=()
+    host="$(hostname)"
+    while IFS= read -r -d '' src; do
+        rel="${src#"${DOTFILES}/config/etc/"}"
+        dst="/etc/${rel/.${host}/}"
+        if sudo cmp -s "$src" "$dst" 2>/dev/null; then
+            echo "  [=] etc: ${dst} up to date"
+            continue
+        fi
+        sudo install -D -m 644 "$src" "$dst"
+        echo "  [+] etc: ${dst} (from ${src#"${DOTFILES}"/})"
+        changed+=("$dst")
+    done < <(find "${DOTFILES}/config/etc" -type f \( -name "*.${host}" -o -name "*.${host}.*" \) -print0 2>/dev/null)
+    [ ${#changed[@]} -eq 0 ] && { echo "  [=] etc: no overrides for ${host}"; return; }
+    # logind re-reads its config on SIGHUP (a restart would kill the graphical session)
+    if printf '%s\n' "${changed[@]}" | grep -q '^/etc/systemd/logind.conf'; then
+        sudo systemctl kill -s HUP systemd-logind && echo "  [>] etc: systemd-logind reloaded"
+    fi
+}
+
 # Work profile (shared PC): ask before each link, never touch dotfiles.state (it's in git), no ~/utils or /etc/hosts
 apply_work() {
     echo "Work profile: asking before each dotfile (state file left untouched)"
@@ -272,6 +296,7 @@ apply_state_file() {
     [ "$LINKS_ONLY" -eq 1 ] && return 0
     setup_tools
     setup_hosts
+    setup_host_etc
 }
 
 usage() {
@@ -280,7 +305,7 @@ usage() {
     echo "  dotfiles.sh --links      apply state links only (no ~/utils, /etc/hosts or plugin installs)"
     echo "  dotfiles.sh [item ...]   activate specific items"
     echo ""
-    echo "Available items: ${ALL_ITEMS[*]} tools"
+    echo "Available items: ${ALL_ITEMS[*]} tools etc"
 }
 
 init_state_file
@@ -298,6 +323,8 @@ else
     for item in "$@"; do
         if [ "$item" = "tools" ]; then
             setup_tools
+        elif [ "$item" = "etc" ]; then
+            setup_host_etc
         elif [[ -v ITEM_SRC[$item] ]]; then
             activate "$item"
         else
