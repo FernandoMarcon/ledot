@@ -24,7 +24,12 @@ install_brave() {
     rm -f "$installer"
     return $rc
 }
-remove_brave() { sudo apt-get remove -y brave-browser; }
+remove_brave() {
+    # Brave's installer writes the apt source outside any package, so removing brave-keyring
+    # deletes the key but leaves the source → apt update fails with NO_PUBKEY. Drop both.
+    sudo apt-get purge -y brave-browser brave-keyring \
+        && sudo rm -f /etc/apt/sources.list.d/brave-browser-release.sources /etc/apt/sources.list.d/brave-browser-release.list
+}
 
 has_obsidian() { deb_installed obsidian; }
 install_obsidian() {
