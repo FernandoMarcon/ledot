@@ -27,6 +27,19 @@ hl.monitor({
     scale    = "1",
 })
 
+-- Per-monitor overrides, matched by EDID ("desc:<make> <model> <serial>") so they
+-- follow the physical screen across machines and ports. Get the string from
+-- the "description:" line of `hyprctl monitors all`.
+
+-- Dell 2007FP (1600x1200 VGA) behind an HDMI->VGA adapter: the adapter can't
+-- carry the native 1600x1200@60 (162 MHz pixel clock) -> green LED, black screen.
+hl.monitor({
+    output   = "desc:Dell Inc. DELL 2007FP G324H01M2AML",
+    mode     = "1280x1024@60",
+    position = "auto-left",
+    scale    = "1",
+})
+
 
 ----------------------------
 ---- WORKSPACE LAYOUT ------
