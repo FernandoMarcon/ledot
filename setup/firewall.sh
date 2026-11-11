@@ -16,8 +16,13 @@ sudo ufw default deny incoming >/dev/null
 sudo ufw default allow outgoing >/dev/null
 sudo ufw default deny routed >/dev/null
 
+LANS=(10.0.0.0/8 172.16.0.0/12 192.168.0.0/16)   # RFC 1918 private ranges
+
 # ── Allowlist ────────────────────────────────────────────────────────────────
-sudo ufw allow in on tailscale0 to any port 22 proto tcp comment 'ssh (tailnet only)' >/dev/null
+sudo ufw allow in on tailscale0 to any port 22 proto tcp comment 'ssh (tailnet)' >/dev/null
+for lan in "${LANS[@]}"; do
+    sudo ufw allow proto tcp from "$lan" to any port 22 comment 'ssh (lan)' >/dev/null
+done
 sudo ufw allow 41641/udp comment 'tailscale direct' >/dev/null
 sudo ufw allow 5353/udp comment 'mdns' >/dev/null
 if ! is_work; then   # no Syncthing on the work PC (setup/syncthing.sh)
@@ -27,7 +32,7 @@ if ! is_work; then   # no Syncthing on the work PC (setup/syncthing.sh)
 fi
 sudo ufw allow 12315/tcp comment 'grayjay sync' >/dev/null
 # Grayjay serves cast media on a random ephemeral port the TV pulls from; LAN only
-for lan in 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16; do
+for lan in "${LANS[@]}"; do
     sudo ufw allow proto tcp from "$lan" to any port 32768:60999 comment 'grayjay cast (lan)' >/dev/null
 done
 
