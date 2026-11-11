@@ -50,6 +50,21 @@ hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(dotfiles .. "/bin/color_picker.sh
 
 -- [ Layout ] ------------------------------------------------------------------------------------------
 hl.bind(mainMod .. " + ALT + J", hl.dsp.layout("togglesplit"))    -- dwindle only
+-- Cycle tiling layout of the current workspace: dwindle -> master -> scrolling
+-- Uses a workspace rule; same-selector rules merge into one (e.g. the monitor/name
+-- rule from monitors.lua), so never set_enabled(false) the handle: it would
+-- disable the merged rule. Re-applying just overrides the layout field.
+local layouts = { "dwindle", "master", "scrolling" }
+hl.bind(mainMod .. " + ALT + L", function()
+    local ws = hl.get_active_workspace()
+    if not ws then return end
+    local next_layout = layouts[1]
+    for i, name in ipairs(layouts) do
+        if name == ws.tiled_layout then next_layout = layouts[i % #layouts + 1] end
+    end
+    hl.workspace_rule({ workspace = ws.special and ws.name or tostring(ws.id), layout = next_layout })
+    hl.notification.create({ text = "Layout (" .. ws.name .. "): " .. next_layout, timeout = 1500 })
+end)
 -- Float + pin (visible on all workspaces); pressing again unpins and re-tiles
 hl.bind(mainMod .. " + O", function()
     local w = hl.get_active_window()
