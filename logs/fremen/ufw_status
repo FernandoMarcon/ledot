@@ -1,0 +1,32 @@
+sudo ufw status
+
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp on tailscale0       ALLOW       Anywhere                   # ssh (tailnet only)
+41641/udp                  ALLOW       Anywhere                   # tailscale direct
+5353/udp                   ALLOW       Anywhere                   # mdns
+22000/tcp                  ALLOW       Anywhere                   # syncthing
+22000/udp                  ALLOW       Anywhere                   # syncthing
+21027/udp                  ALLOW       Anywhere                   # syncthing discovery
+12315/tcp                  ALLOW       Anywhere                   # grayjay sync
+32768:60999/tcp            ALLOW       10.0.0.0/8                 # grayjay cast (lan)
+32768:60999/tcp            ALLOW       172.16.0.0/12              # grayjay cast (lan)
+32768:60999/tcp            ALLOW       192.168.0.0/16             # grayjay cast (lan)
+22/tcp (v6) on tailscale0  ALLOW       Anywhere (v6)              # ssh (tailnet only)
+41641/udp (v6)             ALLOW       Anywhere (v6)              # tailscale direct
+5353/udp (v6)              ALLOW       Anywhere (v6)              # mdns
+22000/tcp (v6)             ALLOW       Anywhere (v6)              # syncthing
+22000/udp (v6)             ALLOW       Anywhere (v6)              # syncthing
+21027/udp (v6)             ALLOW       Anywhere (v6)              # syncthing discovery
+12315/tcp (v6)             ALLOW       Anywhere (v6)              # grayjay sync
+
+
+
+
+./install.sh data
+
+
+[0;34m[1m━━━ data ━━━[0m
+
