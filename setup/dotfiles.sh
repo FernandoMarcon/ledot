@@ -27,6 +27,7 @@ ITEM_SRC[hypr]="${DOTFILES}/config/hypr";             ITEM_DST[hypr]="${CONFIG}/
 ITEM_SRC[kitty]="${DOTFILES}/config/kitty";           ITEM_DST[kitty]="${CONFIG}/kitty"
 ITEM_SRC[nvim]="${DOTFILES}/config/nvim";             ITEM_DST[nvim]="${CONFIG}/nvim"
 ITEM_SRC[mimeapps]="${DOTFILES}/config/mimeapps/mimeapps.list"; ITEM_DST[mimeapps]="${CONFIG}/mimeapps.list"
+ITEM_SRC[starship]="${DOTFILES}/config/starship/starship.toml"; ITEM_DST[starship]="${CONFIG}/starship.toml"
 ITEM_SRC[locales]="${DOTFILES}/config/locales";       ITEM_DST[locales]="${HOME}/.locales"
 ITEM_SRC[profile]="${DOTFILES}/config/profile";       ITEM_DST[profile]="${HOME}/.profile"
 ITEM_SRC[quickshell]="${DOTFILES}/config/quickshell"; ITEM_DST[quickshell]="${CONFIG}/quickshell"
@@ -38,7 +39,7 @@ ITEM_SRC[vimb]="${DOTFILES}/config/vimb";             ITEM_DST[vimb]="${CONFIG}/
 ITEM_SRC[waybar]="${DOTFILES}/config/waybar";         ITEM_DST[waybar]="${CONFIG}/waybar"
 ITEM_SRC[yazi]="${DOTFILES}/config/yazi";             ITEM_DST[yazi]="${CONFIG}/yazi"
 
-ALL_ITEMS=(aliases alacritty bashrc btop cava hypr kitty locales mimeapps nvim profile quickshell ranger rofi tmux vim vimb waybar yazi)
+ALL_ITEMS=(aliases alacritty bashrc btop cava hypr kitty locales mimeapps nvim profile quickshell ranger rofi starship tmux vim vimb waybar yazi)
 
 # --links: symlinks only, skip post-activate hooks, ~/utils and /etc/hosts
 LINKS_ONLY=0

@@ -1,0 +1,5 @@
+# Starship prompt (defaults otherwise). Linked to ~/.config/starship.toml by setup/dotfiles.sh.
+
+# Directory scan budget in ms (default 30). Right after boot the disk cache is cold and the
+# first terminals time out on slow machines (fremen) → "Scanning current directory timed out".
+scan_timeout = 300
