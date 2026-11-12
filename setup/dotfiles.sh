@@ -2,9 +2,9 @@
 # dotfiles.sh → manage dotfile symlinks via state file
 # Run after: the package scripts (packages must exist for post-activate hooks)
 # Usage:
-#   dotfiles.sh              — apply current state from dotfiles.state, then ~/utils, /etc/hosts and host /etc overrides
+#   dotfiles.sh              — apply current state from dotfiles.state, then ~/utils, /etc/hosts, host /etc overrides and setup/dotfiles.<hostname>.sh
 #   dotfiles.sh --links      — apply state links only (no ~/utils, /etc or plugin installs)
-#   dotfiles.sh etc          — install this machine's /etc overrides only (see setup_host_etc)
+#   dotfiles.sh etc          — install this machine's /etc overrides and run dotfiles.<hostname>.sh
 #   dotfiles.sh [item ...]   — activate specific items (use 'tools' to set up ~/utils)
 
 set -euo pipefail
@@ -266,6 +266,16 @@ setup_host_etc() {
     fi
 }
 
+# setup_host_script — run setup/dotfiles.<hostname>.sh if it exists (e.g. dotfiles.mentat.sh)
+setup_host_script() {
+    local script
+    script="$(dirname "${BASH_SOURCE[0]}")/dotfiles.$(hostname).sh"
+    if [ -f "$script" ]; then
+        echo "  [>] host: running ${script##*/}"
+        bash "$script"
+    fi
+}
+
 # Work profile (shared PC): ask before each link, never touch dotfiles.state (it's in git), no ~/utils or /etc/hosts
 apply_work() {
     echo "Work profile: asking before each dotfile (state file left untouched)"
@@ -298,6 +308,7 @@ apply_state_file() {
     setup_tools
     setup_hosts
     setup_host_etc
+    setup_host_script
 }
 
 usage() {
@@ -326,6 +337,7 @@ else
             setup_tools
         elif [ "$item" = "etc" ]; then
             setup_host_etc
+            setup_host_script
         elif [[ -v ITEM_SRC[$item] ]]; then
             activate "$item"
         else
