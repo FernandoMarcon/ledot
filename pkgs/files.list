@@ -22,6 +22,10 @@ fzf
 zoxide
 resvg
 
+# yazi PDF opener (config/yazi/yazi.toml [opener].pdf)
+zathura
+zathura-pdf-poppler
+
 # Archives
 atool
 rar
